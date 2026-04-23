@@ -15,7 +15,7 @@
 
 - [x] **RELY-01**: User gets a meaningful error message (not a blank 500) when the defend tool fails due to an Anthropic outage or rate limit
 - [x] **RELY-02**: User sees a clear error state when contract analysis fails due to malformed AI output (JSON extraction handles preambles and truncation)
-- [ ] **RELY-03**: User is redirected to login with an error message when Google OAuth callback fails (expired or replayed code)
+- [x] **RELY-03**: User is redirected to login with an error message when Google OAuth callback fails (expired or replayed code)
 - [x] **RELY-04**: User's free-tier credit is never consumed when the AI response save to the database fails
 
 ### Plan Gating
@@ -27,7 +27,7 @@
 ### Validation
 
 - [x] **VALID-01**: Defend route rejects invalid `tool_type` values and `situation` inputs over 2000 characters with a 400 error
-- [ ] **VALID-02**: Projects POST route validates `title`, `client_name`, and `project_value` with schema-level type and length checks (not just truthiness)
+- [x] **VALID-02**: Projects POST route validates `title`, `client_name`, and `project_value` with schema-level type and length checks (not just truthiness)
 - [x] **VALID-03**: Contracts analyze route validates file type and size before calling the Anthropic Files API
 
 ### Infrastructure
@@ -114,13 +114,13 @@
 |-------------|-------|--------|
 | RELY-01 | Phase 1 | Complete (01-03) |
 | RELY-02 | Phase 1 | Complete (01-04) |
-| RELY-03 | Phase 1 | Pending |
+| RELY-03 | Phase 1 | Complete (01-02) |
 | RELY-04 | Phase 1 | Complete (01-03) |
 | GATE-01 | Phase 1 | Complete (01-03) |
 | GATE-02 | Phase 1 | Complete (01-04) |
 | GATE-03 | Phase 1 | Pending |
 | VALID-01 | Phase 1 | Complete (01-03) |
-| VALID-02 | Phase 1 | Pending |
+| VALID-02 | Phase 1 | Complete (01-05) |
 | VALID-03 | Phase 1 | Complete (01-04) |
 | INFRA-01 | Phase 2 | Pending |
 | INFRA-02 | Phase 2 | Pending |
