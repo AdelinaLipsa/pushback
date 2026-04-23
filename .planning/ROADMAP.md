@@ -36,7 +36,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — Install Zod and write + apply atomic RPC migration (Wave 0, prerequisite)
 - [x] 01-02-PLAN.md — Fix auth callback error handling, login error banner, off-topic system prompt guard (Wave 1)
-- [ ] 01-03-PLAN.md — Harden defend route: Zod + atomic RPC gate + try/catch + credit-safe insert (Wave 2)
+- [x] 01-03-PLAN.md — Harden defend route: Zod + atomic RPC gate + try/catch + credit-safe insert (Wave 2)
 - [ ] 01-04-PLAN.md — Harden contracts analyze route: file validation + atomic RPC + extractJson + credit-safe update (Wave 2)
 - [ ] 01-05-PLAN.md — Add Zod schema to projects POST route (Wave 2)
 - [x] 01-06-PLAN.md — Response history gating: history page plan fetch + ResponseHistory locked cards (Wave 3)

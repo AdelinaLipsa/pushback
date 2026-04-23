@@ -42,7 +42,10 @@ Progress: [██████████] 100% (6/6 plans complete in Phase 1)
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Supabase RPC for atomic plan gating — non-atomic read-then-write is a real revenue leak; fix in Phase 1
+- Supabase RPC for atomic plan gating — non-atomic read-then-write is a real revenue leak; fix in Phase 1 (completed in 01-03)
+- D-01 error string: 'AI generation failed — please try again' — exact message for Anthropic failure in defend route
+- D-02 error string: 'Failed to save response — your credit was not used. Please try again.' — exact message for insert failure in defend route
+- preIncrementCount compensating decrement: applied on all failure paths after RPC gate (Zod failure, 404, Anthropic error, insert failure)
 - middleware.ts → proxy.ts rename — Next.js 16 breaking change; handle in Phase 2 before any framework upgrade
 - OAuth error propagation via ?error=auth_failed query param — strict equality check prevents reflected XSS
 - Off-topic guard is UX guardrail not security control — prompt injection can still override it (accepted risk for v1)
