@@ -53,6 +53,9 @@ Make all AI route handlers safe under real production conditions: add try/catch 
 ### JSON Extraction — Contract Analysis (RELY-02)
 - **D-13:** Claude's Discretion — implement a JSON extraction helper: try `JSON.parse(rawText)` first; if it throws, attempt to extract the first JSON object using a regex (`/{[\s\S]*}/`) and parse that; if both fail, return `{ error: 'Contract analysis returned malformed output — please try again' }` with status 500 and set contract status to 'error'.
 
+### System Prompt Off-Topic Guard
+- **D-14:** Add a short guardrail to `DEFENSE_SYSTEM_PROMPT` in `lib/anthropic.ts`: if the submitted situation is not a freelancer-client dispute (e.g. unrelated topics, homework, tests), Claude should respond with: "This tool is designed for freelancer-client situations only." No pre-flight classification call — the instruction lives in the system prompt only.
+
 ### Claude's Discretion
 - Error boundary in the defend route: structure of the catch block, specific error categories (rate limit vs. network vs. auth) can all be decided by the planner.
 - Zod library is not yet in package.json — the planner must add it. `zod` is the standard choice.
