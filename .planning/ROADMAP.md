@@ -2,7 +2,7 @@
 
 ## Overview
 
-The scaffold is complete. All pages, routes, and components exist. These 5 phases harden, secure, and complete the missing pieces that stand between the current scaffold and first paying customers. Phases execute in order — reliability first because broken AI calls affect every other phase, infrastructure second because a misconfigured webhook kills revenue from the first paid signup.
+The scaffold is complete. All pages, routes, and components exist. Phases 1–5 harden, secure, and complete the missing pieces between the current scaffold and first paying customers. Phases 6–7 add the two features that close the main competitive gap: proactive client message analysis and lightweight payment tracking — both confirmed missing from every competing tool as of 2026.
 
 ## Phases
 
@@ -17,6 +17,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: Legal & Email** - Privacy Policy, Terms of Service, signup page links, and transactional emails on signup and upgrade
 - [ ] **Phase 4: Missing UI** - Project edit form, project delete, contract delete, and pre-wall upgrade nudge at 2/3 usage
 - [ ] **Phase 5: Types & Observability** - Supabase type generation, Sentry error capture, and Anthropic spend alert
+- [ ] **Phase 6: Proactive Detection** - Analyze a raw client message, identify the situation type, pre-fill the right defense tool
+- [ ] **Phase 7: Payment Tracking** - Add payment due date per project, dashboard overdue badge, one-click Late Payment tool pre-fill
 
 ## Phase Details
 
@@ -78,10 +80,33 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. An Anthropic billing threshold alert is configured — a notification fires before unexpected spend becomes a problem
 **Plans**: TBD
 
+### Phase 6: Proactive Detection
+**Goal**: Freelancers can paste any raw client message and immediately know what kind of situation they're dealing with and which response to send — closing the gap no competitor has addressed
+**Depends on**: Phase 5
+**Requirements**: DETECT-01, DETECT-02, DETECT-03
+**Success Criteria** (what must be TRUE):
+  1. A user can paste a client message into a project and receive a situation classification (e.g. "scope creep") with a 1-sentence explanation of why — in under 5 seconds
+  2. After analysis, clicking through pre-selects the correct defense tool and pre-fills the situation field with context extracted from the message — no re-typing required
+  3. Each message analysis counts against the free-tier limit; free users who have used all 3 credits see the upgrade prompt instead of the analyze button
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 7: Payment Tracking
+**Goal**: Freelancers can see at a glance which clients owe them money and jump directly to a pre-filled late payment response — closing the gap that FreshBooks partially covers but without requiring invoice management
+**Depends on**: Phase 6
+**Requirements**: PAY-01, PAY-02, PAY-03, PAY-04
+**Success Criteria** (what must be TRUE):
+  1. A user can set a payment due date and expected amount on any project — the fields save and persist
+  2. The dashboard shows an overdue indicator on any project where the payment due date has passed and payment is not marked received
+  3. An overdue project shows a "Handle Late Payment" button that opens the Late Payment defense tool with amount, due date, and days overdue already filled in
+  4. A user can mark a payment as received — the overdue indicator clears immediately
+**Plans**: TBD
+**UI hint**: yes
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -90,3 +115,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 3. Legal & Email | 0/? | Not started | - |
 | 4. Missing UI | 0/? | Not started | - |
 | 5. Types & Observability | 0/? | Not started | - |
+| 6. Proactive Detection | 0/? | Not started | - |
+| 7. Payment Tracking | 0/? | Not started | - |

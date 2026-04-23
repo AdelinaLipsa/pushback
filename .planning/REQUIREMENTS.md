@@ -62,6 +62,19 @@
 - [ ] **OBS-01**: Sentry (or equivalent) is configured and captures unhandled errors in Route Handlers with request context
 - [ ] **OBS-02**: Anthropic spend alert is configured in the Anthropic dashboard (billing threshold notification)
 
+### Proactive Detection
+
+- [ ] **DETECT-01**: User can paste a raw client message into a project and receive an AI-identified situation type (e.g. "scope creep", "late payment") with a brief explanation of why the message was flagged
+- [ ] **DETECT-02**: After analysis, the identified defense tool is pre-selected and the situation context is pre-filled from the analyzed message — user can generate a response in one click without re-describing the situation
+- [ ] **DETECT-03**: The analyze-message feature is plan-gated — each analysis counts toward the free-tier usage limit alongside defense responses
+
+### Payment Tracking
+
+- [ ] **PAY-01**: User can add a payment due date and expected amount to any project
+- [ ] **PAY-02**: Dashboard shows an overdue badge on projects where the payment due date has passed and payment status is not marked as received
+- [ ] **PAY-03**: Overdue projects show a one-click "Handle Late Payment" CTA that opens the Late Payment defense tool with payment context (amount, due date, days overdue) pre-filled
+- [ ] **PAY-04**: User can mark a payment as received on a project, clearing the overdue badge
+
 ## v2 Requirements
 
 ### Retention
@@ -126,10 +139,17 @@
 | TYPES-01 | Phase 5 | Pending |
 | OBS-01 | Phase 5 | Pending |
 | OBS-02 | Phase 5 | Pending |
+| DETECT-01 | Phase 6 | Pending |
+| DETECT-02 | Phase 6 | Pending |
+| DETECT-03 | Phase 6 | Pending |
+| PAY-01 | Phase 7 | Pending |
+| PAY-02 | Phase 7 | Pending |
+| PAY-03 | Phase 7 | Pending |
+| PAY-04 | Phase 7 | Pending |
 
 **Coverage:**
-- v1 requirements: 27 total
-- Mapped to phases: 27
+- v1 requirements: 34 total
+- Mapped to phases: 34
 - Unmapped: 0 ✓
 
 ---
