@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 ## Current Position
 
 Phase: 1 of 5 (Route Handler Hardening)
-Plan: 1 of 6 in current phase (01-01 in progress — blocked on human action)
-Status: Blocked — awaiting user to apply Supabase migration
-Last activity: 2026-04-23 — Task 1 complete: zod installed, 002_atomic_gating.sql written and committed (64eb1aa). Task 2 requires user to run `supabase db push`.
+Plan: 2 of 6 in current phase (01-01 complete — ready for 01-02)
+Status: Active — 01-01 complete, proceeding to Wave 1 plans
+Last activity: 2026-04-23 — 01-01 complete: zod installed (64eb1aa), atomic RPC migration applied by user. SUMMARY written.
 
-Progress: [░░░░░░░░░░] 0% (plan 01-01 not complete until migration applied)
+Progress: [█░░░░░░░░░] 17% (1/6 plans complete in Phase 1)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: ~15 min (automated portion)
+- Total execution time: ~15 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-route-handler-hardening | 1 | ~15 min | ~15 min |
 
 **Recent Trend:**
-- Last 5 plans: —
+- Last 5 plans: 01-01
 - Trend: —
 
 *Updated after each plan completion*
@@ -66,5 +66,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-04-23
-Stopped at: 01-01 Task 1 complete (64eb1aa) — blocked at Task 2 checkpoint:human-action (apply migration)
-Resume signal: User types "migration applied" after confirming both RPC functions exist in the database
+Stopped at: Completed 01-01-PLAN.md — SUMMARY written, STATE and ROADMAP updated
+Resume signal: None — ready to proceed to 01-02-PLAN.md
