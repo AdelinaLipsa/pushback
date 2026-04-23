@@ -39,7 +39,7 @@ Plans:
 - [ ] 01-03-PLAN.md — Harden defend route: Zod + atomic RPC gate + try/catch + credit-safe insert (Wave 2)
 - [ ] 01-04-PLAN.md — Harden contracts analyze route: file validation + atomic RPC + extractJson + credit-safe update (Wave 2)
 - [ ] 01-05-PLAN.md — Add Zod schema to projects POST route (Wave 2)
-- [ ] 01-06-PLAN.md — Response history gating: history page plan fetch + ResponseHistory locked cards (Wave 3)
+- [x] 01-06-PLAN.md — Response history gating: history page plan fetch + ResponseHistory locked cards (Wave 3)
 
 ### Phase 2: Infrastructure & Security
 **Goal**: The payment webhook reliably upgrades accounts, the app is protected from basic web attacks, and the Next.js 16 breaking change is addressed before it breaks production
@@ -117,7 +117,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Route Handler Hardening | 2/6 | In progress | - |
+| 1. Route Handler Hardening | 6/6 | Complete | 2026-04-24 |
 | 2. Infrastructure & Security | 0/? | Not started | - |
 | 3. Legal & Email | 0/? | Not started | - |
 | 4. Missing UI | 0/? | Not started | - |

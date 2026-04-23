@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 ## Current Position
 
 Phase: 1 of 5 (Route Handler Hardening)
-Plan: 3 of 6 in current phase (01-02 complete — ready for 01-03)
-Status: Active — 01-02 complete, proceeding to Wave 2 plans
-Last activity: 2026-04-24 — 01-02 complete: auth callback hardened, login error banner, off-topic guard added. SUMMARY written.
+Plan: 6 of 6 in current phase (01-06 complete — Phase 1 fully complete)
+Status: Active — 01-06 complete: response history gating enforced with blur overlay and Upgrade to Pro CTA
+Last activity: 2026-04-24 — 01-06 complete: history page fetches plan, ResponseHistory renders locked cards for free users at index 3+. SUMMARY written.
 
-Progress: [██░░░░░░░░] 33% (2/6 plans complete in Phase 1)
+Progress: [██████████] 100% (6/6 plans complete in Phase 1)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: ~13 min (automated portion)
-- Total execution time: ~25 min
+- Total plans completed: 6 (Phase 1 complete)
+- Average duration: ~10 min (automated portion)
+- Total execution time: ~30 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-route-handler-hardening | 2 | ~25 min | ~13 min |
+| 01-route-handler-hardening | 6 | ~30 min | ~10 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01, 01-02
+- Last 5 plans: 01-01, 01-02, 01-03, 01-04, 01-05, 01-06
 - Trend: —
 
 *Updated after each plan completion*
@@ -46,6 +46,8 @@ Recent decisions affecting current work:
 - middleware.ts → proxy.ts rename — Next.js 16 breaking change; handle in Phase 2 before any framework upgrade
 - OAuth error propagation via ?error=auth_failed query param — strict equality check prevents reflected XSS
 - Off-topic guard is UX guardrail not security control — prompt injection can still override it (accepted risk for v1)
+- D-04 (GATE-03): Fetch all responses server-side; blur is cosmetic gating for v1 — RPC gate on API routes is authoritative enforcement
+- D-05 (GATE-03): Locked card upgrade overlay uses position:absolute over position:relative card with overflow:hidden; copies handleUpgrade pattern from UpgradePrompt.tsx
 
 ### Pending Todos
 
@@ -54,7 +56,6 @@ None yet.
 ### Blockers/Concerns
 
 - Creem merchant checklist exact requirements for legal page URLs unknown — Phase 3 legal content may need adjustment after checking Creem docs
-- Response history gating inconsistency: lib/plans.ts lists it as Pro-only but /projects/[id]/history has no plan check — GATE-03 addresses this in Phase 1
 
 ## Deferred Items
 
@@ -68,5 +69,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-04-24
-Stopped at: Completed 01-02-PLAN.md — SUMMARY written, STATE and ROADMAP updated
-Resume signal: None — ready to proceed to 01-03-PLAN.md
+Stopped at: Completed 01-06-PLAN.md — SUMMARY written, STATE and ROADMAP updated. Phase 1 fully complete.
+Resume signal: None — ready to proceed to Phase 2 (Infrastructure & Security)
