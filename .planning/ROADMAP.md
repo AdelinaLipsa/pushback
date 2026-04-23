@@ -32,7 +32,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. When two concurrent requests from the same free user hit the defend route simultaneously, exactly one succeeds and one is blocked — the usage counter never exceeds 3
   4. When a free user's AI response fails to save, their usage counter is not incremented — they do not lose a credit
   5. Submitting a defend request with an invalid tool type or a situation over 2000 characters returns a 400 error with a description of what failed
-**Plans**: TBD
+**Plans**: 6 plans
+Plans:
+- [ ] 01-01-PLAN.md — Install Zod and write + apply atomic RPC migration (Wave 0, prerequisite)
+- [ ] 01-02-PLAN.md — Fix auth callback error handling, login error banner, off-topic system prompt guard (Wave 1)
+- [ ] 01-03-PLAN.md — Harden defend route: Zod + atomic RPC gate + try/catch + credit-safe insert (Wave 2)
+- [ ] 01-04-PLAN.md — Harden contracts analyze route: file validation + atomic RPC + extractJson + credit-safe update (Wave 2)
+- [ ] 01-05-PLAN.md — Add Zod schema to projects POST route (Wave 2)
+- [ ] 01-06-PLAN.md — Response history gating: history page plan fetch + ResponseHistory locked cards (Wave 3)
 
 ### Phase 2: Infrastructure & Security
 **Goal**: The payment webhook reliably upgrades accounts, the app is protected from basic web attacks, and the Next.js 16 breaking change is addressed before it breaks production
@@ -110,7 +117,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Route Handler Hardening | 0/? | Not started | - |
+| 1. Route Handler Hardening | 0/6 | In progress (01-01 blocked: migration pending) | - |
 | 2. Infrastructure & Security | 0/? | Not started | - |
 | 3. Legal & Email | 0/? | Not started | - |
 | 4. Missing UI | 0/? | Not started | - |
