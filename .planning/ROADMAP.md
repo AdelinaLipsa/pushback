@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 6 plans
 Plans:
 - [x] 01-01-PLAN.md — Install Zod and write + apply atomic RPC migration (Wave 0, prerequisite)
-- [ ] 01-02-PLAN.md — Fix auth callback error handling, login error banner, off-topic system prompt guard (Wave 1)
+- [x] 01-02-PLAN.md — Fix auth callback error handling, login error banner, off-topic system prompt guard (Wave 1)
 - [ ] 01-03-PLAN.md — Harden defend route: Zod + atomic RPC gate + try/catch + credit-safe insert (Wave 2)
 - [ ] 01-04-PLAN.md — Harden contracts analyze route: file validation + atomic RPC + extractJson + credit-safe update (Wave 2)
 - [ ] 01-05-PLAN.md — Add Zod schema to projects POST route (Wave 2)
@@ -117,7 +117,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Route Handler Hardening | 1/6 | In progress | - |
+| 1. Route Handler Hardening | 2/6 | In progress | - |
 | 2. Infrastructure & Security | 0/? | Not started | - |
 | 3. Legal & Email | 0/? | Not started | - |
 | 4. Missing UI | 0/? | Not started | - |

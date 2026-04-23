@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 ## Current Position
 
 Phase: 1 of 5 (Route Handler Hardening)
-Plan: 2 of 6 in current phase (01-01 complete — ready for 01-02)
-Status: Active — 01-01 complete, proceeding to Wave 1 plans
-Last activity: 2026-04-23 — 01-01 complete: zod installed (64eb1aa), atomic RPC migration applied by user. SUMMARY written.
+Plan: 3 of 6 in current phase (01-02 complete — ready for 01-03)
+Status: Active — 01-02 complete, proceeding to Wave 2 plans
+Last activity: 2026-04-24 — 01-02 complete: auth callback hardened, login error banner, off-topic guard added. SUMMARY written.
 
-Progress: [█░░░░░░░░░] 17% (1/6 plans complete in Phase 1)
+Progress: [██░░░░░░░░] 33% (2/6 plans complete in Phase 1)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: ~15 min (automated portion)
-- Total execution time: ~15 min
+- Total plans completed: 2
+- Average duration: ~13 min (automated portion)
+- Total execution time: ~25 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-route-handler-hardening | 1 | ~15 min | ~15 min |
+| 01-route-handler-hardening | 2 | ~25 min | ~13 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01
+- Last 5 plans: 01-01, 01-02
 - Trend: —
 
 *Updated after each plan completion*
@@ -44,6 +44,8 @@ Recent decisions affecting current work:
 
 - Supabase RPC for atomic plan gating — non-atomic read-then-write is a real revenue leak; fix in Phase 1
 - middleware.ts → proxy.ts rename — Next.js 16 breaking change; handle in Phase 2 before any framework upgrade
+- OAuth error propagation via ?error=auth_failed query param — strict equality check prevents reflected XSS
+- Off-topic guard is UX guardrail not security control — prompt injection can still override it (accepted risk for v1)
 
 ### Pending Todos
 
@@ -65,6 +67,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-23
-Stopped at: Completed 01-01-PLAN.md — SUMMARY written, STATE and ROADMAP updated
-Resume signal: None — ready to proceed to 01-02-PLAN.md
+Last session: 2026-04-24
+Stopped at: Completed 01-02-PLAN.md — SUMMARY written, STATE and ROADMAP updated
+Resume signal: None — ready to proceed to 01-03-PLAN.md
