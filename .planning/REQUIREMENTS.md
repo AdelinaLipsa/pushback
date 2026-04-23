@@ -14,21 +14,21 @@
 ### Reliability
 
 - [x] **RELY-01**: User gets a meaningful error message (not a blank 500) when the defend tool fails due to an Anthropic outage or rate limit
-- [ ] **RELY-02**: User sees a clear error state when contract analysis fails due to malformed AI output (JSON extraction handles preambles and truncation)
+- [x] **RELY-02**: User sees a clear error state when contract analysis fails due to malformed AI output (JSON extraction handles preambles and truncation)
 - [ ] **RELY-03**: User is redirected to login with an error message when Google OAuth callback fails (expired or replayed code)
 - [x] **RELY-04**: User's free-tier credit is never consumed when the AI response save to the database fails
 
 ### Plan Gating
 
 - [x] **GATE-01**: Free-tier defense response limit is enforced atomically — concurrent requests cannot both succeed past the 3-response cap
-- [ ] **GATE-02**: Free-tier contract analysis limit is enforced atomically — concurrent requests cannot both succeed past the 1-analysis cap
+- [x] **GATE-02**: Free-tier contract analysis limit is enforced atomically — concurrent requests cannot both succeed past the 1-analysis cap
 - [ ] **GATE-03**: Response history is consistently gated (free users see last 3 responses; Pro users see full history) — matches what `lib/plans.ts` advertises
 
 ### Validation
 
 - [x] **VALID-01**: Defend route rejects invalid `tool_type` values and `situation` inputs over 2000 characters with a 400 error
 - [ ] **VALID-02**: Projects POST route validates `title`, `client_name`, and `project_value` with schema-level type and length checks (not just truthiness)
-- [ ] **VALID-03**: Contracts analyze route validates file type and size before calling the Anthropic Files API
+- [x] **VALID-03**: Contracts analyze route validates file type and size before calling the Anthropic Files API
 
 ### Infrastructure
 
@@ -113,15 +113,15 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | RELY-01 | Phase 1 | Complete (01-03) |
-| RELY-02 | Phase 1 | Pending |
+| RELY-02 | Phase 1 | Complete (01-04) |
 | RELY-03 | Phase 1 | Pending |
 | RELY-04 | Phase 1 | Complete (01-03) |
 | GATE-01 | Phase 1 | Complete (01-03) |
-| GATE-02 | Phase 1 | Pending |
+| GATE-02 | Phase 1 | Complete (01-04) |
 | GATE-03 | Phase 1 | Pending |
 | VALID-01 | Phase 1 | Complete (01-03) |
 | VALID-02 | Phase 1 | Pending |
-| VALID-03 | Phase 1 | Pending |
+| VALID-03 | Phase 1 | Complete (01-04) |
 | INFRA-01 | Phase 2 | Pending |
 | INFRA-02 | Phase 2 | Pending |
 | INFRA-03 | Phase 2 | Pending |

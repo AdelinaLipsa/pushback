@@ -51,6 +51,9 @@ Recent decisions affecting current work:
 - Off-topic guard is UX guardrail not security control — prompt injection can still override it (accepted risk for v1)
 - D-04 (GATE-03): Fetch all responses server-side; blur is cosmetic gating for v1 — RPC gate on API routes is authoritative enforcement
 - D-05 (GATE-03): Locked card upgrade overlay uses position:absolute over position:relative card with overflow:hidden; copies handleUpgrade pattern from UpgradePrompt.tsx
+- D-13 extractJson is inline in analyze/route.ts (not a separate lib module) — keeps extraction logic co-located with the route that owns it
+- preIncrementCount compensating decrement in analyze route: applied on all failure paths after RPC gate (contract insert failure, file type/size validation, no-file/text, DB update failure, catch-all)
+- extractJson regex /\{[\s\S]*\}/ is greedy — matches outermost {…} which is always the top-level contract analysis object
 
 ### Pending Todos
 
@@ -71,6 +74,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-24
-Stopped at: Completed 01-06-PLAN.md — SUMMARY written, STATE and ROADMAP updated. Phase 1 fully complete.
-Resume signal: None — ready to proceed to Phase 2 (Infrastructure & Security)
+Last session: 2026-04-23
+Stopped at: Completed 01-04-PLAN.md — SUMMARY written, STATE and ROADMAP updated.
+Resume signal: None — ready to proceed to 01-05 (projects POST route Zod validation)
