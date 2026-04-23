@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { DefenseResponse, Plan } from '@/types'
+import { DefenseResponse } from '@/types'
 import CopyButton from '@/components/shared/CopyButton'
 
 interface ResponseHistoryProps {
   responses: DefenseResponse[]
-  plan: Plan
+  lockedCount: number
 }
 
 const TOOL_LABELS: Record<string, string> = {
@@ -20,7 +20,7 @@ const TOOL_LABELS: Record<string, string> = {
   dispute_response: 'Dispute Response',
 }
 
-export default function ResponseHistory({ responses, plan }: ResponseHistoryProps) {
+export default function ResponseHistory({ responses, lockedCount }: ResponseHistoryProps) {
   const [expanded, setExpanded] = useState<string | null>(null)
   const [upgradeLoading, setUpgradeLoading] = useState(false)
 
@@ -35,7 +35,7 @@ export default function ResponseHistory({ responses, plan }: ResponseHistoryProp
     }
   }
 
-  if (responses.length === 0) {
+  if (responses.length === 0 && lockedCount === 0) {
     return (
       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No messages generated yet.</p>
     )
@@ -43,93 +43,86 @@ export default function ResponseHistory({ responses, plan }: ResponseHistoryProp
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-      {responses.map((r, index) => {
-        const isLocked = plan === 'free' && index >= 3
-
-        return (
-          <div
-            key={r.id}
+      {responses.map((r) => (
+        <div
+          key={r.id}
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--bg-border)',
+            borderRadius: '0.75rem',
+            overflow: 'hidden',
+          }}
+        >
+          <button
+            onClick={() => setExpanded(expanded === r.id ? null : r.id)}
             style={{
-              position: 'relative',
-              backgroundColor: 'var(--bg-surface)',
-              border: '1px solid var(--bg-border)',
-              borderRadius: '0.75rem',
-              overflow: 'hidden',
+              width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '1rem 1.25rem', background: 'none', border: 'none', cursor: 'pointer',
+              color: 'var(--text-primary)', textAlign: 'left',
             }}
           >
-            {/* Card content — blurred when locked (D-04) */}
-            <div style={isLocked ? { filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none' } : undefined}>
-              <button
-                onClick={() => setExpanded(expanded === r.id ? null : r.id)}
-                style={{
-                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '1rem 1.25rem', background: 'none', border: 'none', cursor: 'pointer',
-                  color: 'var(--text-primary)', textAlign: 'left',
-                }}
-              >
-                <div>
-                  <div style={{ fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.2rem' }}>
-                    {TOOL_LABELS[r.tool_type] ?? r.tool_type}
-                  </div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                    {new Date(r.created_at).toLocaleDateString()} · {r.was_sent ? '✓ Sent' : r.was_copied ? '✓ Copied' : 'Not sent'}
-                  </div>
-                </div>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{expanded === r.id ? '▲' : '▼'}</span>
-              </button>
-
-              {expanded === r.id && (
-                <div style={{ padding: '0 1.25rem 1.25rem' }}>
-                  <pre style={{
-                    fontFamily: 'var(--font-mono), monospace', fontSize: '0.8rem', lineHeight: 1.7,
-                    color: 'var(--text-primary)', whiteSpace: 'pre-wrap', wordBreak: 'break-word',
-                    backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)',
-                    borderRadius: '0.5rem', padding: '1rem', margin: '0 0 1rem',
-                  }}>
-                    {r.response}
-                  </pre>
-                  <CopyButton text={r.response} responseId={r.id} />
-                </div>
-              )}
-            </div>
-
-            {/* Upgrade overlay — only shown for locked cards (D-05) */}
-            {isLocked && (
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(0,0,0,0.6)',
-                gap: '0.75rem',
-              }}>
-                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                  Upgrade to see full history
-                </span>
-                <button
-                  onClick={handleUpgrade}
-                  disabled={upgradeLoading}
-                  style={{
-                    backgroundColor: 'var(--brand-amber)',
-                    color: '#0a0a0a',
-                    fontWeight: 700,
-                    padding: '0.7rem 1.5rem',
-                    borderRadius: '0.5rem',
-                    border: 'none',
-                    cursor: upgradeLoading ? 'not-allowed' : 'pointer',
-                    fontSize: '0.9rem',
-                    opacity: upgradeLoading ? 0.7 : 1,
-                  }}
-                >
-                  {upgradeLoading ? 'Loading…' : 'Upgrade to Pro'}
-                </button>
+            <div>
+              <div style={{ fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.2rem' }}>
+                {TOOL_LABELS[r.tool_type] ?? r.tool_type}
               </div>
-            )}
-          </div>
-        )
-      })}
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
+                {new Date(r.created_at).toLocaleDateString()} · {r.was_sent ? '✓ Sent' : r.was_copied ? '✓ Copied' : 'Not sent'}
+              </div>
+            </div>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{expanded === r.id ? '▲' : '▼'}</span>
+          </button>
+
+          {expanded === r.id && (
+            <div style={{ padding: '0 1.25rem 1.25rem' }}>
+              <pre style={{
+                fontFamily: 'var(--font-mono), monospace', fontSize: '0.8rem', lineHeight: 1.7,
+                color: 'var(--text-primary)', whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+                backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)',
+                borderRadius: '0.5rem', padding: '1rem', margin: '0 0 1rem',
+              }}>
+                {r.response}
+              </pre>
+              <CopyButton text={r.response} responseId={r.id} />
+            </div>
+          )}
+        </div>
+      ))}
+
+      {lockedCount > 0 && (
+        <div
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--bg-border)',
+            borderRadius: '0.75rem',
+            padding: '1.5rem 1.25rem',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '0.75rem',
+          }}
+        >
+          <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+            {lockedCount} response{lockedCount === 1 ? '' : 's'} hidden — Upgrade to Pro
+          </span>
+          <button
+            onClick={handleUpgrade}
+            disabled={upgradeLoading}
+            style={{
+              backgroundColor: 'var(--brand-amber)',
+              color: '#0a0a0a',
+              fontWeight: 700,
+              padding: '0.7rem 1.5rem',
+              borderRadius: '0.5rem',
+              border: 'none',
+              cursor: upgradeLoading ? 'not-allowed' : 'pointer',
+              fontSize: '0.9rem',
+              opacity: upgradeLoading ? 0.7 : 1,
+            }}
+          >
+            {upgradeLoading ? 'Loading…' : 'Upgrade to Pro'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
