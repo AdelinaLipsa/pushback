@@ -12,7 +12,7 @@ The scaffold is complete. All pages, routes, and components exist. Phases 1–5 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Route Handler Hardening** - Atomic plan gating, try/catch error handling, Zod input validation, and robust JSON extraction for all AI routes
+- [x] **Phase 1: Route Handler Hardening** - Atomic plan gating, try/catch error handling, Zod input validation, and robust JSON extraction for all AI routes
 - [ ] **Phase 2: Infrastructure & Security** - Service-role client fix, webhook secret guard, middleware rename to proxy.ts, settings route protection, and security headers
 - [ ] **Phase 3: Legal & Email** - Privacy Policy, Terms of Service, signup page links, and transactional emails on signup and upgrade
 - [ ] **Phase 4: Missing UI** - Project edit form, project delete, contract delete, and pre-wall upgrade nudge at 2/3 usage
@@ -32,7 +32,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. When two concurrent requests from the same free user hit the defend route simultaneously, exactly one succeeds and one is blocked — the usage counter never exceeds 3
   4. When a free user's AI response fails to save, their usage counter is not incremented — they do not lose a credit
   5. Submitting a defend request with an invalid tool type or a situation over 2000 characters returns a 400 error with a description of what failed
-**Plans**: 6 plans
+**Plans**: 7 plans
 Plans:
 - [x] 01-01-PLAN.md — Install Zod and write + apply atomic RPC migration (Wave 0, prerequisite)
 - [x] 01-02-PLAN.md — Fix auth callback error handling, login error banner, off-topic system prompt guard (Wave 1)
@@ -40,6 +40,7 @@ Plans:
 - [x] 01-04-PLAN.md — Harden contracts analyze route: file validation + atomic RPC + extractJson + credit-safe update (Wave 2)
 - [x] 01-05-PLAN.md — Add Zod schema to projects POST route (Wave 2)
 - [x] 01-06-PLAN.md — Response history gating: history page plan fetch + ResponseHistory locked cards (Wave 3)
+- [x] 01-07-PLAN.md — GATE-03 gap closure: server-side response slicing + count-only placeholder card (gap closure)
 
 ### Phase 2: Infrastructure & Security
 **Goal**: The payment webhook reliably upgrades accounts, the app is protected from basic web attacks, and the Next.js 16 breaking change is addressed before it breaks production

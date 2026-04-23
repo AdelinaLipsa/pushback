@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-04-23)
 
 **Core value:** A freelancer in an uncomfortable client situation gets a professional, ready-to-send response in under 30 seconds.
-**Current focus:** Phase 1 — Route Handler Hardening
+**Current focus:** Phase 2 — Infrastructure & Security
 
 ## Current Position
 
-Phase: 1 of 5 (Route Handler Hardening)
-Plan: 6 of 6 in current phase (01-06 complete — Phase 1 fully complete)
-Status: Active — 01-06 complete: response history gating enforced with blur overlay and Upgrade to Pro CTA
-Last activity: 2026-04-24 — 01-06 complete: history page fetches plan, ResponseHistory renders locked cards for free users at index 3+. SUMMARY written.
+Phase: 1 of 5 (Route Handler Hardening) — COMPLETE
+Plan: 7 of 7 in Phase 1 (01-07 gap closure complete — GATE-03 enforced at data layer)
+Status: Phase 1 complete — advancing to Phase 2 (Infrastructure & Security)
+Last activity: 2026-04-24 — 01-07 complete: server-side response slicing replaces CSS blur; lockedCount placeholder card; GATE-03 fully closed.
 
-Progress: [██████████] 100% (6/6 plans complete in Phase 1)
+Progress: [██████████] 100% (7/7 plans complete in Phase 1)
 
 ## Performance Metrics
 

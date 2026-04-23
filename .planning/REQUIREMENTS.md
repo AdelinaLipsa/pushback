@@ -22,7 +22,7 @@
 
 - [x] **GATE-01**: Free-tier defense response limit is enforced atomically — concurrent requests cannot both succeed past the 3-response cap
 - [x] **GATE-02**: Free-tier contract analysis limit is enforced atomically — concurrent requests cannot both succeed past the 1-analysis cap
-- [ ] **GATE-03**: Response history is consistently gated (free users see last 3 responses; Pro users see full history) — matches what `lib/plans.ts` advertises
+- [x] **GATE-03**: Response history is consistently gated (free users see last 3 responses; Pro users see full history) — matches what `lib/plans.ts` advertises
 
 ### Validation
 
@@ -118,7 +118,7 @@
 | RELY-04 | Phase 1 | Complete (01-03) |
 | GATE-01 | Phase 1 | Complete (01-03) |
 | GATE-02 | Phase 1 | Complete (01-04) |
-| GATE-03 | Phase 1 | Pending |
+| GATE-03 | Phase 1 | Complete (01-07) |
 | VALID-01 | Phase 1 | Complete (01-03) |
 | VALID-02 | Phase 1 | Complete (01-05) |
 | VALID-03 | Phase 1 | Complete (01-04) |
