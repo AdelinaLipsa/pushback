@@ -38,15 +38,15 @@ function welcomeHtml(): string {
         <tr><td style="padding:32px 40px;">
           <h1 style="color:#fafafa;font-size:1.25rem;margin:0 0 16px;">Your free account is ready.</h1>
           <p style="color:#a1a1aa;line-height:1.6;margin:0 0 16px;">
-            You have <strong style="color:#fafafa;">3 free AI-powered responses</strong> and <strong style="color:#fafafa;">1 contract analysis</strong>. Use them on any project &mdash; no credit card needed.
+            You have <strong style="color:#fafafa;">1 free AI-powered response</strong> and <strong style="color:#fafafa;">1 contract analysis</strong>. Use them on any project &mdash; no credit card needed.
           </p>
           <p style="color:#a1a1aa;line-height:1.6;margin:0 0 24px;">
             When you&rsquo;re ready for unlimited access, upgrade to Pro.
           </p>
-          <a href="${APP_URL}/dashboard" style="display:inline-block;background:#f59e0b;color:#0a0a0a;font-weight:700;padding:16px 24px;border-radius:8px;text-decoration:none;font-size:0.95rem;">Go to Dashboard</a>
+          <a href="${APP_URL}/dashboard" style="display:inline-block;background:#84cc16;color:#0a0a0a;font-weight:700;padding:16px 24px;border-radius:8px;text-decoration:none;font-size:0.95rem;">Go to Dashboard</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #2a2a2a;">
-          <p style="color:#52525b;font-size:13px;margin:0;">Pushback &mdash; adelina.lipsa@gmail.com</p>
+          <p style="color:#52525b;font-size:13px;margin:0;">Pushback &mdash; ${process.env.SUPPORT_EMAIL ?? FROM}</p>
         </td></tr>
       </table>
     </td></tr>
@@ -83,7 +83,7 @@ function upgradeHtml(billing: BillingDetails): string {
           <a href="${APP_URL}/dashboard" style="display:inline-block;background:#f59e0b;color:#0a0a0a;font-weight:700;padding:16px 24px;border-radius:8px;text-decoration:none;font-size:0.95rem;">Back to Dashboard</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #2a2a2a;">
-          <p style="color:#52525b;font-size:13px;margin:0;">Pushback &mdash; adelina.lipsa@gmail.com</p>
+          <p style="color:#52525b;font-size:13px;margin:0;">Pushback &mdash; ${process.env.SUPPORT_EMAIL ?? FROM}</p>
         </td></tr>
       </table>
     </td></tr>

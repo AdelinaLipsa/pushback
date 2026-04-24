@@ -92,3 +92,7 @@ export const URGENCY_COLORS = {
   medium: { border: '#f97316', glow: 'rgba(249,115,22,0.12)', bg: 'rgba(249,115,22,0.08)' },
   high: { border: '#ef4444', glow: 'rgba(239,68,68,0.12)', bg: 'rgba(239,68,68,0.08)' },
 }
+
+export const TOOL_LABELS: Record<string, string> = Object.fromEntries(
+  DEFENSE_TOOLS.map(t => [t.type, t.label])
+)

@@ -2,10 +2,10 @@ export const PLANS = {
   free: {
     name: 'Free',
     price: 0,
-    defense_responses: 3,
+    defense_responses: 1,
     contracts: 1,
     features: [
-      '3 defense tool responses',
+      '1 defense tool response',
       '1 contract analysis',
       'All 8 situation types',
       'Copy-ready messages'
@@ -14,6 +14,8 @@ export const PLANS = {
   pro: {
     name: 'Pro',
     price: 12,
+    currency: 'EUR' as const,
+    priceDisplay: '€12/month',
     defense_responses: -1,
     contracts: -1,
     features: [

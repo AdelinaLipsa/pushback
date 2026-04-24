@@ -70,3 +70,17 @@ export const dialogContentStyle: React.CSSProperties = {
   maxWidth: '440px',
   width: '100%',
 }
+
+// Canonical risk-level color map — import this instead of redefining per component
+export const RISK_COLORS: Record<string, string> = {
+  high: '#ef4444',
+  medium: '#f97316',
+  low: '#22c55e',
+}
+
+// Rich variant for ClauseCard-style badge rendering
+export const RISK_COLORS_RICH: Record<string, { border: string; badge: string; badgeText: string }> = {
+  high: { border: '#ef4444', badge: 'rgba(239,68,68,0.12)', badgeText: '#ef4444' },
+  medium: { border: '#f97316', badge: 'rgba(249,115,22,0.12)', badgeText: '#f97316' },
+  low: { border: '#22c55e', badge: 'rgba(34,197,94,0.12)', badgeText: '#22c55e' },
+}
