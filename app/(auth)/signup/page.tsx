@@ -32,11 +32,17 @@ export default function SignupPage() {
   }
 
   async function handleGoogle() {
+    setError('')
+    setLoading(true)
     const supabase = createClient()
-    await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     })
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+    }
   }
 
   if (sent) {
@@ -67,11 +73,13 @@ export default function SignupPage() {
         <div style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)', borderRadius: '1rem', padding: '2rem' }}>
           <button
             onClick={handleGoogle}
+            disabled={loading}
             style={{
               width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
               backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--bg-border)',
               color: 'var(--text-primary)', padding: '0.75rem', borderRadius: '0.5rem',
-              fontWeight: 500, fontSize: '0.9rem', cursor: 'pointer', marginBottom: '1.5rem',
+              fontWeight: 500, fontSize: '0.9rem', cursor: loading ? 'not-allowed' : 'pointer',
+              marginBottom: '1.5rem', opacity: loading ? 0.7 : 1,
             }}
             className="hover:border-white/20 transition-colors"
           >

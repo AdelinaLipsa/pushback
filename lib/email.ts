@@ -1,8 +1,24 @@
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM = process.env.RESEND_FROM_EMAIL!
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL!
+
+function requireEnv(name: string): string {
+  const value = process.env[name]
+  if (!value) throw new Error(`${name} is not set`)
+  return value
+}
+
+const FROM = requireEnv('RESEND_FROM_EMAIL')
+const APP_URL = requireEnv('NEXT_PUBLIC_APP_URL')
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
 
 export interface BillingDetails {
   amount: string | null
@@ -43,8 +59,8 @@ function upgradeHtml(billing: BillingDetails): string {
   const billingBlock =
     billing.amount !== null && billing.nextBillingDate !== null
       ? `<p style="color:#a1a1aa;line-height:1.6;margin:0 0 16px;">
-          Amount charged: <strong style="color:#fafafa;">${billing.amount}</strong><br>
-          Next billing date: <strong style="color:#fafafa;">${billing.nextBillingDate}</strong>
+          Amount charged: <strong style="color:#fafafa;">${escapeHtml(billing.amount)}</strong><br>
+          Next billing date: <strong style="color:#fafafa;">${escapeHtml(billing.nextBillingDate)}</strong>
         </p>`
       : `<p style="color:#a1a1aa;line-height:1.6;margin:0 0 16px;">Billing details are available in your Stripe dashboard.</p>`
 

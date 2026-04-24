@@ -25,6 +25,7 @@ export async function POST(request: Request) {
     const session = event.data.object
     const userId = session.metadata?.user_id
     if (!userId) return Response.json({ received: true })
+    if (!session.subscription) return Response.json({ received: true })
 
     const { error } = await supabase
       .from('user_profiles')
