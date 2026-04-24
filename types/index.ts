@@ -62,8 +62,8 @@ export type UserProfile = {
   plan: Plan
   defense_responses_used: number
   contracts_used: number
-  creem_customer_id: string | null
-  creem_subscription_id: string | null
+  stripe_customer_id: string | null
+  stripe_subscription_id: string | null
   created_at: string
 }
 
@@ -108,4 +108,10 @@ export type DefenseResponse = {
   was_copied: boolean
   was_sent: boolean
   created_at: string
+}
+
+export type MessageAnalysis = {
+  tool_type: DefenseTool
+  explanation: string
+  situation_context: string
 }
