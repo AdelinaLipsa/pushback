@@ -8,10 +8,11 @@ interface SituationPanelProps {
   onGenerate: (situation: string, extraContext: Record<string, string | number>) => void
   onClose: () => void
   loading: boolean
+  initialSituation?: string
 }
 
-export default function SituationPanel({ tool, onGenerate, onClose, loading }: SituationPanelProps) {
-  const [situation, setSituation] = useState('')
+export default function SituationPanel({ tool, onGenerate, onClose, loading, initialSituation }: SituationPanelProps) {
+  const [situation, setSituation] = useState(initialSituation ?? '')
   const [extra, setExtra] = useState<Record<string, string>>({})
 
   function handleSubmit(e: React.FormEvent) {
