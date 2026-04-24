@@ -100,7 +100,11 @@ Plans:
   1. Supabase types are generated from the live schema and applied — the defend route, project detail page, and ProjectCard compile without any as-any casts on joined query shapes
   2. Unhandled errors in Route Handlers are captured by Sentry with request context — errors are visible in the Sentry dashboard within seconds of occurring
   3. An Anthropic billing threshold alert is configured — a notification fires before unexpected spend becomes a problem
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 05-01-PLAN.md — Generate database.types.ts, apply Database generic to supabase server/client/admin factories, add gen:types + types:check scripts (Wave 1)
+- [ ] 05-02-PLAN.md — Remove as-any casts in defend/route.ts, ProjectCard.tsx, and project detail page using typed client (Wave 2)
+- [ ] 05-03-PLAN.md — Install @sentry/nextjs, create instrumentation.ts + instrumentation-client.ts + sentry.server.config.ts, wrap next.config.ts with withSentryConfig, extend CSP connect-src, configure Anthropic spend alert (Wave 1)
 
 ### Phase 6: Proactive Detection
 **Goal**: Freelancers can paste any raw client message and immediately know what kind of situation they're dealing with and which response to send — closing the gap no competitor has addressed
@@ -110,7 +114,11 @@ Plans:
   1. A user can paste a client message into a project and receive a situation classification (e.g. "scope creep") with a 1-sentence explanation of why — in under 5 seconds
   2. After analysis, clicking through pre-selects the correct defense tool and pre-fills the situation field with context extracted from the message — no re-typing required
   3. Each message analysis counts against the free-tier limit; free users who have used all 3 credits see the upgrade prompt instead of the analyze button
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [x] 06-01-PLAN.md — Add MessageAnalysis type to types/index.ts, CLASSIFY_SYSTEM_PROMPT to lib/anthropic.ts, initialSituation prop to SituationPanel.tsx (Wave 1)
+- [ ] 06-02-PLAN.md — Create POST /api/projects/[id]/analyze-message route: auth, RPC gate, Anthropic call, Zod validation, compensating decrement (Wave 2)
+- [ ] 06-03-PLAN.md — Update DefenseDashboard.tsx: analyze section card, result banner, Start over, divider, handleAnalyze, SituationPanel pre-fill (Wave 3)
 **UI hint**: yes
 
 ### Phase 7: Payment Tracking
@@ -136,6 +144,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. Infrastructure & Security | 3/3 | Complete | 2026-04-24 |
 | 3. Legal & Email | 4/4 | Complete | 2026-04-24 |
 | 4. Missing UI | 4/4 | Complete   | 2026-04-24 |
-| 5. Types & Observability | 0/? | Not started | - |
-| 6. Proactive Detection | 0/? | Not started | - |
+| 5. Types & Observability | 0/3 | Planned | - |
+| 6. Proactive Detection | 1/3 | In Progress | - |
 | 7. Payment Tracking | 0/? | Not started | - |
