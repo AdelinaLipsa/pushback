@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next'
+import { withSentryConfig } from '@sentry/nextjs'
 
 const cspHeader = `
   default-src 'self';
@@ -6,7 +7,7 @@ const cspHeader = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data:;
   font-src 'self';
-  connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+  connect-src 'self' https://*.supabase.co wss://*.supabase.co https://sentry.io https://*.sentry.io;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -47,4 +48,10 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withSentryConfig(nextConfig, {
+  org: 'bitly-2h',
+  project: 'pushback',
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  disableLogger: true,
+})
