@@ -28,6 +28,7 @@ export default function ContractDeleteButton({ contractId }: ContractDeleteButto
       return
     }
 
+    router.refresh()
     router.push('/contracts')
   }
 
