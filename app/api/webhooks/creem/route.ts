@@ -14,7 +14,13 @@ export async function POST(request: Request) {
   const secret = process.env.CREEM_WEBHOOK_SECRET
 
   const expected = crypto.createHmac('sha256', secret).update(body).digest('hex')
-  if (expected !== signature) {
+  const expectedBuf = Buffer.from(expected, 'hex')
+  const signatureBuf = Buffer.from(signature, 'hex')
+
+  if (
+    expectedBuf.length !== signatureBuf.length ||
+    !crypto.timingSafeEqual(expectedBuf, signatureBuf)
+  ) {
     return Response.json({ error: 'Invalid signature' }, { status: 401 })
   }
 
