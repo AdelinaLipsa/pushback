@@ -47,7 +47,7 @@ export default function SignupPage() {
 
   if (sent) {
     return (
-      <div style={{ backgroundColor: 'var(--bg-base)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
+      <div style={{ backgroundColor: 'var(--bg-base)', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
         <div style={{ textAlign: 'center', maxWidth: '400px' }}>
           <div style={{ marginBottom: '1.5rem', color: 'var(--brand-lime)' }}>
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
