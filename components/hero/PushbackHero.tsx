@@ -256,7 +256,7 @@ function SituationLine({ children, index }: SituationLineProps) {
         fontSize: "clamp(2.8rem, 7vw, 6.5rem)",
         fontWeight: 900,
         letterSpacing: "-0.03em",
-        color: isHovered ? "#f59e0b" : "rgba(250,250,250,0.92)",
+        color: isHovered ? "#84cc16" : "rgba(250,250,250,0.92)",
         transition: "color 0.3s ease",
         textShadow: isHovered ? "0 0 40px rgba(245,158,11,0.4)" : "none",
       }}
@@ -425,7 +425,7 @@ export default function PushbackHero() {
             className="text-xl font-black tracking-tight"
             style={{ color: "#fafafa", letterSpacing: "-0.04em" }}
           >
-            pushback<span style={{ color: "#f59e0b" }}>.</span>
+            pushback<span style={{ color: "#84cc16" }}>.</span>
           </span>
           <div className="text-right hidden md:block">
             <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(161,161,170,0.7)" }}>For freelancers</p>
@@ -444,7 +444,7 @@ export default function PushbackHero() {
             <p className="mb-1 text-base font-semibold leading-snug" style={{ color: "rgba(250,250,250,0.9)" }}>
               Your client just asked for more.
             </p>
-            <p className="mb-5 text-base font-semibold" style={{ fontStyle: "italic", color: "#f59e0b" }}>
+            <p className="mb-5 text-base font-semibold" style={{ fontStyle: "italic", color: "#84cc16" }}>
               Again.
             </p>
             <p className="mb-6 text-sm leading-relaxed" style={{ color: "rgba(161,161,170,0.8)" }}>

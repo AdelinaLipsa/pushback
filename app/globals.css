@@ -39,7 +39,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
 
-  --color-brand-amber: #f59e0b;
+  --color-brand-amber: #84cc16;
   --color-brand-amber-dim: #92400e;
   --color-brand-green: #22c55e;
   --color-brand-green-dim: #14532d;
@@ -64,7 +64,7 @@
   --card-foreground: #fafafa;
   --popover: #1a1a1a;
   --popover-foreground: #fafafa;
-  --primary: #f59e0b;
+  --primary: #84cc16;
   --primary-foreground: #0a0a0a;
   --secondary: #1a1a1a;
   --secondary-foreground: #fafafa;
@@ -75,18 +75,18 @@
   --destructive: #ef4444;
   --border: #2a2a2a;
   --input: #0a0a0a;
-  --ring: #f59e0b;
+  --ring: #84cc16;
   --radius: 0.625rem;
   --sidebar: #111111;
   --sidebar-foreground: #fafafa;
-  --sidebar-primary: #f59e0b;
+  --sidebar-primary: #84cc16;
   --sidebar-primary-foreground: #0a0a0a;
   --sidebar-accent: #1a1a1a;
   --sidebar-accent-foreground: #fafafa;
   --sidebar-border: #2a2a2a;
-  --sidebar-ring: #f59e0b;
+  --sidebar-ring: #84cc16;
 
-  --brand-amber: #f59e0b;
+  --brand-amber: #84cc16;
   --brand-amber-dim: #92400e;
   --brand-green: #22c55e;
   --brand-green-dim: #14532d;
