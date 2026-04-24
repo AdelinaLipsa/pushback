@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 3 complete — /privacy, /terms, signup links, welcome email (auth callback), upgrade email (Stripe webhook). Verification passed (human testing pending for browser rendering and email delivery).
-last_updated: "2026-04-24T09:00:00Z"
+stopped_at: Phase 4 executing — Wave 0 complete (04-01 done), Wave 1 (04-02, 04-03, 04-04) ready to run
+last_updated: "2026-04-24T11:43:30Z"
 last_activity: 2026-04-24
 progress:
   total_phases: 7
   completed_phases: 3
-  total_plans: 14
-  completed_plans: 16
-  percent: 43
+  total_plans: 18
+  completed_plans: 17
+  percent: 46
 ---
 
 # Project State
@@ -25,8 +25,8 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 
 ## Current Position
 
-Phase: 4 of 7 (Missing UI) — Not started
-Status: Phase 3 verified (human UAT pending) — ready for Phase 4
+Phase: 4 of 7 (Missing UI) — In progress (Plan 1 of 4 complete)
+Status: Wave 0 complete — 04-01 prereqs (Dialog + lib/ui.ts + --brand-lime) installed; Wave 1 plans 04-02, 04-03, 04-04 ready to execute
 Last activity: 2026-04-24
 
 ## Performance Metrics
@@ -84,6 +84,9 @@ Recent decisions affecting current work:
 - 03-01: JSX HTML entities (&quot; &apos;) used in legal page prose to avoid linting issues with unescaped characters
 - [Phase 03]: lib/email.ts uses #f59e0b for amber (matches globals.css --brand-amber, ignoring #f5a623 stale value in D-10)
 - [Phase 03]: 03-02: BillingDetails interface exported from lib/email.ts; RESEND_API_KEY passed without ! to Resend constructor; billing fallback triggers when EITHER amount OR nextBillingDate is null
+- [Phase 04]: 04-01: btnStyles named export (not buttonVariants) avoids name collision with cva() export from components/ui/button.tsx
+- [Phase 04]: 04-01: btnStyles.primary uses var(--brand-lime) per user lime override — not var(--brand-amber) from UI-SPEC
+- [Phase 04]: 04-01: lib/ui.ts uses named exports only (lib module pattern); type-only React import for CSSProperties annotation
 
 ### Pending Todos
 
@@ -104,6 +107,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-24T08:39:20.781Z
-Stopped at: Completed 03-02-PLAN.md — lib/email.ts created with sendWelcomeEmail and sendUpgradeEmail. EMAIL-01, EMAIL-02 prerequisites satisfied.
-Resume signal: None — 03-02 (email helper lib) is next
+Last session: 2026-04-24T11:43:30Z
+Stopped at: Completed 04-01-PLAN.md — Dialog component, lib/ui.ts style constants, --brand-lime CSS variable installed. Wave 1 plans 04-02, 04-03, 04-04 unblocked.
+Resume signal: None
