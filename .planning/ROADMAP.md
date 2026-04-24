@@ -130,7 +130,12 @@ Plans:
   2. The dashboard shows an overdue indicator on any project where the payment due date has passed and payment is not marked received
   3. An overdue project shows a "Handle Late Payment" button that opens the Late Payment defense tool with amount, due date, and days overdue already filled in
   4. A user can mark a payment as received — the overdue indicator clears immediately
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 07-01-PLAN.md — Create 005_payment_tracking.sql migration, manually update database.types.ts + types/index.ts, push to live DB [BLOCKING] (Wave 1)
+- [ ] 07-02-PLAN.md — Extend PATCH route allowed list; add OVERDUE badge to ProjectCard and ProjectHeader (Wave 2)
+- [ ] 07-03-PLAN.md — Add initialContextFields to SituationPanel; add initialPaymentPrefill prop + useEffect to DefenseDashboard (Wave 2)
+- [ ] 07-04-PLAN.md — Create PaymentSection and ProjectDetailClient; wire into project detail page.tsx (Wave 3)
 **UI hint**: yes
 
 ## Progress
@@ -146,4 +151,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Missing UI | 4/4 | Complete   | 2026-04-24 |
 | 5. Types & Observability | 0/3 | Planned | - |
 | 6. Proactive Detection | 3/3 | Complete | 2026-04-24 |
-| 7. Payment Tracking | 0/? | Not started | - |
+| 7. Payment Tracking | 0/4 | Not started | - |
