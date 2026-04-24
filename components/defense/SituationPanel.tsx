@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { DefenseToolMeta } from '@/types'
+import { inputStyle } from '@/lib/ui'
 
 interface SituationPanelProps {
   tool: DefenseToolMeta
@@ -24,12 +25,6 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
       }
     })
     onGenerate(situation, extraContext)
-  }
-
-  const inputStyle = {
-    width: '100%', backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)',
-    borderRadius: '0.5rem', padding: '0.75rem', color: 'var(--text-primary)',
-    fontSize: '0.875rem', outline: 'none', resize: 'vertical' as const,
   }
 
   return (
@@ -65,8 +60,8 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
             onChange={e => setSituation(e.target.value)}
             placeholder="e.g. Client just emailed asking to add a mobile app to the website project, same budget..."
             rows={4}
-            style={inputStyle}
-            onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-amber)' }}
+            style={{ ...inputStyle, resize: 'vertical' as const }}
+            onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
             onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
           />
         </div>
@@ -82,8 +77,8 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
               onChange={e => setExtra(prev => ({ ...prev, [field.key]: e.target.value }))}
               placeholder={field.placeholder}
               required={field.required}
-              style={{ ...inputStyle, resize: undefined }}
-              onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-amber)' }}
+              style={inputStyle}
+              onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
               onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
             />
           </div>
@@ -93,7 +88,7 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
           type="submit"
           disabled={loading || !situation.trim()}
           style={{
-            backgroundColor: 'var(--brand-amber)', color: '#0a0a0a', fontWeight: 700,
+            backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 700,
             padding: '0.85rem', borderRadius: '0.5rem', border: 'none',
             cursor: loading || !situation.trim() ? 'not-allowed' : 'pointer',
             fontSize: '0.95rem', opacity: loading || !situation.trim() ? 0.6 : 1,

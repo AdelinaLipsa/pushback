@@ -3,37 +3,19 @@
 import { useState } from 'react'
 import { DefenseResponse } from '@/types'
 import CopyButton from '@/components/shared/CopyButton'
+import { TOOL_LABELS } from '@/lib/defenseTools'
+import { startCheckout } from '@/lib/checkout'
 
 interface ResponseHistoryProps {
   responses: DefenseResponse[]
   lockedCount: number
 }
 
-const TOOL_LABELS: Record<string, string> = {
-  scope_change: 'Scope Change',
-  payment_first: 'Payment Reminder',
-  payment_second: 'Payment Follow-Up',
-  payment_final: 'Final Payment Notice',
-  revision_limit: 'Revision Limit',
-  kill_fee: 'Kill Fee',
-  delivery_signoff: 'Delivery Sign-Off',
-  dispute_response: 'Dispute Response',
-}
-
 export default function ResponseHistory({ responses, lockedCount }: ResponseHistoryProps) {
   const [expanded, setExpanded] = useState<string | null>(null)
   const [upgradeLoading, setUpgradeLoading] = useState(false)
 
-  async function handleUpgrade() {
-    setUpgradeLoading(true)
-    const res = await fetch('/api/checkout', { method: 'POST' })
-    const data = await res.json()
-    if (data.url) {
-      window.location.href = data.url
-    } else {
-      setUpgradeLoading(false)
-    }
-  }
+  async function handleUpgrade() { await startCheckout(setUpgradeLoading) }
 
   if (responses.length === 0 && lockedCount === 0) {
     return (

@@ -31,7 +31,7 @@ export default function ResponseOutput({ response, responseId, onRegenerate }: R
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ color: 'var(--brand-amber)', fontWeight: 700 }}>✦</span>
+          <span style={{ color: 'var(--brand-lime)', fontWeight: 700 }}>✦</span>
           <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Your message is ready</span>
         </div>
         <button

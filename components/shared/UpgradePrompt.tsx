@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { startCheckout } from '@/lib/checkout'
 
 interface UpgradePromptProps {
   responsesUsed: number
@@ -11,16 +12,7 @@ export default function UpgradePrompt({ responsesUsed }: UpgradePromptProps) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  async function handleUpgrade() {
-    setLoading(true)
-    const res = await fetch('/api/checkout', { method: 'POST' })
-    const data = await res.json()
-    if (data.url) {
-      window.location.href = data.url
-    } else {
-      setLoading(false)
-    }
-  }
+  async function handleUpgrade() { await startCheckout(setLoading) }
 
   return (
     <div style={{
@@ -39,7 +31,7 @@ export default function UpgradePrompt({ responsesUsed }: UpgradePromptProps) {
           onClick={handleUpgrade}
           disabled={loading}
           style={{
-            backgroundColor: 'var(--brand-amber)', color: '#0a0a0a', fontWeight: 700,
+            backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 700,
             padding: '0.7rem 1.5rem', borderRadius: '0.5rem', border: 'none',
             cursor: loading ? 'not-allowed' : 'pointer', fontSize: '0.9rem',
             opacity: loading ? 0.7 : 1,

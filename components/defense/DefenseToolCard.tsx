@@ -18,8 +18,8 @@ export default function DefenseToolCard({ tool, selected, loading, onSelect }: D
       onClick={onSelect}
       style={{
         backgroundColor: selected ? 'var(--bg-elevated)' : 'var(--bg-surface)',
-        border: selected ? `2px solid var(--brand-amber)` : `1px solid var(--bg-border)`,
-        borderLeft: loading && selected ? `4px solid var(--brand-amber)` : `4px solid ${colors.border}`,
+        border: selected ? `2px solid var(--brand-lime)` : `1px solid var(--bg-border)`,
+        borderLeft: loading && selected ? `4px solid var(--brand-lime)` : `4px solid ${colors.border}`,
         borderRadius: '0.75rem',
         padding: '1.25rem',
         textAlign: 'left',
@@ -51,7 +51,7 @@ export default function DefenseToolCard({ tool, selected, loading, onSelect }: D
         {tool.description}
       </div>
       {loading && selected && (
-        <div style={{ marginTop: '0.75rem', color: 'var(--brand-amber)', fontSize: '0.78rem', fontWeight: 500 }}>
+        <div style={{ marginTop: '0.75rem', color: 'var(--brand-lime)', fontSize: '0.78rem', fontWeight: 500 }}>
           Writing your message<span className="animate-pulse">...</span>
         </div>
       )}
