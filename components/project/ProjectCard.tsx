@@ -14,6 +14,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const riskLevel = contract?.risk_level
   const riskScore = contract?.risk_score
 
+  const isOverdue =
+    project.payment_due_date !== null &&
+    project.payment_received_at === null &&
+    new Date(project.payment_due_date) < new Date()
+
   function formatValue() {
     if (!project.project_value) return null
     return `${project.currency} ${Number(project.project_value).toLocaleString()}`
@@ -53,6 +58,20 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               padding: '0.2rem 0.6rem', borderRadius: '9999px',
             }}>
               Risk {riskScore}/10
+            </span>
+          )}
+          {isOverdue && (
+            <span style={{
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              color: 'var(--urgency-high)',
+              fontSize: '0.7rem',
+              fontWeight: 600,
+              padding: '0.2rem 0.6rem',
+              borderRadius: '9999px',
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase' as const,
+            }}>
+              OVERDUE
             </span>
           )}
         </div>
