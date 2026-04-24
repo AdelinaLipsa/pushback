@@ -33,7 +33,7 @@ export default function Navbar({ profile }: NavbarProps) {
         width: '240px', flexShrink: 0, backgroundColor: 'var(--bg-surface)',
         borderRight: '1px solid var(--bg-border)', display: 'flex', flexDirection: 'column',
         height: '100vh', position: 'sticky', top: 0,
-      }} className="flex">
+      }} className="hidden md:flex">
         {/* Logo */}
         <div style={{ padding: '1.5rem 1.25rem 1rem', borderBottom: '1px solid var(--bg-border)' }}>
           <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '0.15rem', textDecoration: 'none' }}>
@@ -133,6 +133,31 @@ export default function Navbar({ profile }: NavbarProps) {
         </div>
       </aside>
 
+      {/* Mobile bottom bar */}
+      <nav style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
+        backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)',
+        display: 'flex', padding: '0.5rem',
+      }} className="md:hidden">
+        {NAV_ITEMS.map(({ href, label, Icon }) => {
+          const active = pathname.startsWith(href)
+          return (
+            <Link
+              key={href}
+              href={href}
+              style={{
+                flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem',
+                padding: '0.5rem', borderRadius: '0.5rem', textDecoration: 'none',
+                color: active ? 'var(--brand-lime)' : 'var(--text-muted)',
+                fontSize: '0.7rem', fontWeight: active ? 600 : 400,
+              }}
+            >
+              <Icon size={20} strokeWidth={active ? 2 : 1.5} />
+              {label}
+            </Link>
+          )
+        })}
+      </nav>
     </>
   )
 }
