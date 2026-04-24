@@ -22,6 +22,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
   const [response, setResponse] = useState<{ text: string; id: string } | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [upgradeLoading, setUpgradeLoading] = useState(false)
+  const [generateError, setGenerateError] = useState<string | null>(null)
 
   const FREE_LIMIT = 3
   const isAtLimit = plan === 'free' && responsesUsed >= FREE_LIMIT
@@ -71,8 +72,12 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
       return
     }
 
-    if (!res.ok) return
+    if (!res.ok) {
+      setGenerateError(data?.error ?? 'Something went wrong. Please try again.')
+      return
+    }
 
+    setGenerateError(null)
     setResponse({ text: data.response, id: data.id })
     router.refresh()
   }
@@ -128,7 +133,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
           borderRadius: '0.5rem',
           fontSize: '0.85rem',
         }}>
-          <span style={{ color: 'var(--text-secondary)' }}>2 of 3 responses used</span>
+          <span style={{ color: 'var(--text-secondary)' }}>{responsesUsed} of {FREE_LIMIT} responses used</span>
           <button
             onClick={handleUpgrade}
             disabled={upgradeLoading}
@@ -160,6 +165,12 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
           />
         ))}
       </div>
+
+      {generateError && (
+        <p style={{ color: 'var(--urgency-high)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+          {generateError}
+        </p>
+      )}
 
       {selectedTool && !response && (
         <SituationPanel
