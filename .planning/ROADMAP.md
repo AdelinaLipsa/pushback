@@ -58,7 +58,7 @@ Plans:
 - [x] 02-03-PLAN.md — Add security headers to next.config.ts: CSP, HSTS, X-Frame-Options, Referrer-Policy, poweredByHeader: false (Wave 1)
 
 ### Phase 3: Legal & Email
-**Goal**: The app is legally compliant enough for Creem to activate live payments, and users receive email confirmation of key account events
+**Goal**: The app is legally compliant enough to activate live Stripe payments, and users receive email confirmation of key account events
 **Depends on**: Phase 2
 **Requirements**: LEGAL-01, LEGAL-02, LEGAL-03, EMAIL-01, EMAIL-02
 **Success Criteria** (what must be TRUE):
@@ -66,8 +66,13 @@ Plans:
   2. /terms returns a Terms of Service page with an AI output disclaimer and subscription cancellation terms
   3. The signup page links to /privacy and /terms with working hyperlinks
   4. New signups receive a welcome email that states free-tier limits and links to the dashboard
-  5. After a Creem subscription activates, the user receives an upgrade confirmation email with billing confirmation and a dashboard link
-**Plans**: TBD
+  5. After a Stripe subscription activates, the user receives an upgrade confirmation email with billing confirmation and a dashboard link
+**Plans**: 4 plans
+Plans:
+- [x] 03-01-PLAN.md — Create /privacy and /terms pages + convert signup legal footer to Link components (Wave 1)
+- [ ] 03-02-PLAN.md — Create lib/email.ts with Resend client + sendWelcomeEmail + sendUpgradeEmail helpers (Wave 1)
+- [ ] 03-03-PLAN.md — Wire welcome email into auth callback with new-signup detection and fire-and-forget (Wave 2)
+- [ ] 03-04-PLAN.md — Wire upgrade confirmation email into Stripe webhook checkout.session.completed block (Wave 2)
 **UI hint**: yes
 
 ### Phase 4: Missing UI
@@ -124,7 +129,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Route Handler Hardening | 6/6 | Complete | 2026-04-24 |
 | 2. Infrastructure & Security | 3/3 | Complete | 2026-04-24 |
-| 3. Legal & Email | 0/? | Not started | - |
+| 3. Legal & Email | 1/4 | In progress | - |
 | 4. Missing UI | 0/? | Not started | - |
 | 5. Types & Observability | 0/? | Not started | - |
 | 6. Proactive Detection | 0/? | Not started | - |

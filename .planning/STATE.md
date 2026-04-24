@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 ## Current Position
 
 Phase: 3 of 7 (Legal & Email) — In progress
-Plan: 0 of ? in Phase 3 (context captured, planning next)
-Status: Phase 3 UI-SPEC approved — ready for /gsd-plan-phase 3
-Last activity: 2026-04-24 — Phase 3 UI-SPEC approved: shadcn base-nova, Inter font, dark palette (bg-base/bg-surface/brand-amber), 4 type sizes (13.5/16/20/28px), 2 weights (400/700), 16 copy elements defined, no third-party registries.
+Plan: 1 of 4 in Phase 3 (03-01 complete)
+Status: Phase 3 executing — 03-01 legal pages complete; 03-02 email helper next (Wave 1)
+Last activity: 2026-04-24 — 03-01 complete: /privacy and /terms Server Component pages created, signup legal footer converted to Link components. All 3 tasks committed. LEGAL-01, LEGAL-02, LEGAL-03 satisfied.
 
-Progress: [██████████] 100% (3/3 plans complete in Phase 2)
+Progress: [██░░░░░░░░] 25% (1/4 plans complete in Phase 3)
 
 ## Performance Metrics
 
@@ -63,6 +63,9 @@ Recent decisions affecting current work:
 - D-06: connect-src includes https://*.supabase.co and wss://*.supabase.co — covers all Supabase subdomains including realtime WebSocket
 - D-06: frame-ancestors 'none' in CSP plus X-Frame-Options: DENY — dual clickjacking defense for maximum browser compat
 - D-06: cspHeader declared at module scope as template literal; newlines stripped at runtime via .replace(/\n/g, '')
+- 03-01: Legal pages placed at app/privacy and app/terms (top-level, not in route groups) to avoid inheriting auth/dashboard layouts
+- 03-01: Server Components only for legal pages — static prose, no 'use client' needed
+- 03-01: JSX HTML entities (&quot; &apos;) used in legal page prose to avoid linting issues with unescaped characters
 
 ### Pending Todos
 
@@ -70,7 +73,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- Stripe requires a privacy policy and terms of service to be linked from the checkout page — confirm exact URL requirements before going live
+None — Stripe legal prerequisite satisfied by 03-01 (/privacy and /terms pages live).
 
 ## Deferred Items
 
@@ -84,5 +87,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-04-24
-Stopped at: Completed 02-03-PLAN.md — SUMMARY written, STATE and ROADMAP updated. Phase 2 complete.
-Resume signal: None — Phase 3 (Legal & Email) is next
+Stopped at: Completed 03-01-PLAN.md — /privacy and /terms pages created, signup Link components added. SUMMARY written, STATE and ROADMAP updated.
+Resume signal: None — 03-02 (email helper lib) is next
