@@ -20,6 +20,9 @@ interface ProjectHeaderProps {
     currency: string | null
     status: string | null
     notes: string | null
+    payment_due_date?: string | null
+    payment_amount?: string | number | null
+    payment_received_at?: string | null
   }
 }
 
@@ -40,6 +43,11 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
     status: project.status ?? 'active',
     notes: project.notes ?? '',
   })
+
+  const isOverdue =
+    (project.payment_due_date ?? null) !== null &&
+    (project.payment_received_at ?? null) === null &&
+    new Date(project.payment_due_date!) < new Date()
 
   function set(key: string, value: string) {
     setForm(f => ({ ...f, [key]: value }))
@@ -115,6 +123,20 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
               }}>
                 {project.status}
               </span>
+              {isOverdue && (
+                <span style={{
+                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                  color: 'var(--urgency-high)',
+                  fontSize: '0.7rem',
+                  fontWeight: 600,
+                  padding: '0.2rem 0.6rem',
+                  borderRadius: '9999px',
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase' as const,
+                }}>
+                  OVERDUE
+                </span>
+              )}
               <button onClick={() => setEditing(true)} style={btnStyles.outline}>
                 Edit
               </button>
