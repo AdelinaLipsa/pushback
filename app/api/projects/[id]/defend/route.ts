@@ -82,8 +82,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       project.notes ? `NOTES: ${project.notes}` : null,
     ].filter(Boolean).join('\n')
 
-    const contractContext = (project.contracts as any)?.analysis
-      ? `\n\nCONTRACT DATA:\n${JSON.stringify((project.contracts as any).analysis, null, 2)}`
+    const contractAnalysis = Array.isArray(project.contracts)
+      ? project.contracts[0]?.analysis
+      : project.contracts?.analysis
+    const contractContext = contractAnalysis
+      ? `\n\nCONTRACT DATA:\n${JSON.stringify(contractAnalysis, null, 2)}`
       : '\n\n(No contract — do not reference or invent contract terms)'
 
     const extraBlock = extra_context && Object.keys(extra_context).length > 0

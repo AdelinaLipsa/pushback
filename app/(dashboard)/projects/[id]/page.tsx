@@ -11,10 +11,6 @@ const RISK_COLORS: Record<string, string> = {
   high: 'var(--urgency-high)', critical: 'var(--urgency-high)',
 }
 
-type ProjectWithContract = {
-  contracts: { id: string; risk_score: number; risk_level: string; title: string }[] | null
-}
-
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createServerSupabaseClient()
@@ -35,7 +31,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
   const p = profile as UserProfile | null
 
-  const contractsRaw = (project as unknown as ProjectWithContract).contracts
+  const contractsRaw = project.contracts
   const contract = Array.isArray(contractsRaw) ? contractsRaw[0] ?? null : contractsRaw ?? null
   const riskLevel = contract?.risk_level
 

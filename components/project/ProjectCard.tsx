@@ -13,10 +13,11 @@ const RISK_COLORS: Record<string, string> = {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
-  const responses = (project as any).defense_responses ?? []
+  const responses = project.defense_responses ?? []
   const lastResponse = responses[0]
-  const riskLevel = (project as any).contracts?.risk_level
-  const riskScore = (project as any).contracts?.risk_score
+  const contract = Array.isArray(project.contracts) ? project.contracts[0] : project.contracts
+  const riskLevel = contract?.risk_level
+  const riskScore = contract?.risk_score
 
   function formatValue() {
     if (!project.project_value) return null
