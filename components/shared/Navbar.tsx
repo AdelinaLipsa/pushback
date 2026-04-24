@@ -137,8 +137,8 @@ export default function Navbar({ profile }: NavbarProps) {
       <nav style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
         backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)',
-        display: 'flex', padding: '0.5rem',
-      }} className="md:hidden">
+        padding: '0.5rem',
+      }} className="flex md:hidden">
         {NAV_ITEMS.map(({ href, label, Icon }) => {
           const active = pathname.startsWith(href)
           return (
