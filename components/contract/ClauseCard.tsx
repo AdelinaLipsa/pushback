@@ -2,21 +2,15 @@
 
 import { useState } from 'react'
 import { FlaggedClause } from '@/types'
+import { RISK_COLORS_RICH } from '@/lib/ui'
 
 interface ClauseCardProps {
   clause: FlaggedClause
 }
 
-const RISK_COLORS: Record<string, { border: string; badge: string; badgeText: string }> = {
-  low: { border: 'var(--urgency-low)', badge: 'rgba(107,114,128,0.15)', badgeText: 'var(--urgency-low)' },
-  medium: { border: 'var(--urgency-medium)', badge: 'rgba(249,115,22,0.12)', badgeText: 'var(--urgency-medium)' },
-  high: { border: 'var(--urgency-high)', badge: 'rgba(239,68,68,0.12)', badgeText: 'var(--urgency-high)' },
-  critical: { border: 'var(--urgency-high)', badge: 'var(--urgency-high-dim)', badgeText: 'var(--urgency-high)' },
-}
-
 export default function ClauseCard({ clause }: ClauseCardProps) {
   const [expanded, setExpanded] = useState(false)
-  const colors = RISK_COLORS[clause.risk_level] ?? RISK_COLORS.medium
+  const colors = RISK_COLORS_RICH[clause.risk_level] ?? RISK_COLORS_RICH.medium
 
   return (
     <div style={{

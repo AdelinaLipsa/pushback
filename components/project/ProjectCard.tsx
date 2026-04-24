@@ -1,15 +1,10 @@
 import Link from 'next/link'
 import { Project } from '@/types'
+import { RISK_COLORS } from '@/lib/ui'
+import { timeAgo } from '@/lib/utils'
 
 interface ProjectCardProps {
   project: Project
-}
-
-const RISK_COLORS: Record<string, string> = {
-  low: 'var(--urgency-low)',
-  medium: 'var(--urgency-medium)',
-  high: 'var(--urgency-high)',
-  critical: 'var(--urgency-high)',
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
@@ -22,14 +17,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   function formatValue() {
     if (!project.project_value) return null
     return `${project.currency} ${Number(project.project_value).toLocaleString()}`
-  }
-
-  function timeAgo(date: string) {
-    const diff = Date.now() - new Date(date).getTime()
-    const days = Math.floor(diff / 86400000)
-    if (days === 0) return 'today'
-    if (days === 1) return '1 day ago'
-    return `${days} days ago`
   }
 
   return (

@@ -4,12 +4,9 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import DefenseDashboard from '@/components/defense/DefenseDashboard'
 import ProjectHeader from '@/components/project/ProjectHeader'
 import { UserProfile } from '@/types'
+import { RISK_COLORS } from '@/lib/ui'
 
 const RISK_LABEL: Record<string, string> = { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' }
-const RISK_COLORS: Record<string, string> = {
-  low: 'var(--urgency-low)', medium: 'var(--urgency-medium)',
-  high: 'var(--urgency-high)', critical: 'var(--urgency-high)',
-}
 
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -54,7 +51,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                 Risk {contract.risk_score}/10 [{RISK_LABEL[riskLevel ?? ''] ?? riskLevel}]
               </span>
             </span>
-            <Link href={`/contracts/${contract.id}`} style={{ color: 'var(--brand-amber)', textDecoration: 'none', fontWeight: 500 }}>
+            <Link href={`/contracts/${contract.id}`} style={{ color: 'var(--brand-lime)', textDecoration: 'none', fontWeight: 500 }}>
               View analysis →
             </Link>
           </>

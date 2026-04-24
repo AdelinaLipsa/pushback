@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { inputStyle } from '@/lib/ui'
 
 interface ContractUploaderProps {
   projectId?: string
@@ -50,12 +51,6 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
     }
   }
 
-  const inputStyle = {
-    width: '100%', backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)',
-    borderRadius: '0.5rem', padding: '0.75rem', color: 'var(--text-primary)',
-    fontSize: '0.9rem', outline: 'none',
-  }
-
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       {error && (
@@ -74,7 +69,7 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
           onChange={e => setTitle(e.target.value)}
           placeholder="e.g. Acme Corp Service Agreement"
           style={inputStyle}
-          onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-amber)' }}
+          onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
           onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
         />
       </div>
@@ -112,7 +107,7 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
             type="button"
             onClick={() => fileRef.current?.click()}
             style={{
-              width: '100%', border: `2px dashed ${file ? 'var(--brand-amber)' : 'var(--bg-border)'}`,
+              width: '100%', border: `2px dashed ${file ? 'var(--brand-lime)' : 'var(--bg-border)'}`,
               borderRadius: '0.75rem', padding: '2rem', backgroundColor: 'var(--bg-base)',
               cursor: 'pointer', color: file ? 'var(--text-primary)' : 'var(--text-muted)',
               fontSize: '0.9rem', transition: 'border-color 150ms ease',
@@ -121,7 +116,7 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
           >
             {file ? (
               <div>
-                <div style={{ color: 'var(--brand-amber)', marginBottom: '0.25rem' }}>📄</div>
+                <div style={{ color: 'var(--brand-lime)', marginBottom: '0.25rem' }}>📄</div>
                 {file.name}
               </div>
             ) : (
@@ -142,8 +137,8 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
             onChange={e => setText(e.target.value)}
             placeholder="Paste your contract text here..."
             rows={10}
-            style={{ ...inputStyle, resize: 'vertical' }}
-            onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-amber)' }}
+            style={{ ...inputStyle, resize: 'vertical' as const }}
+            onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
             onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
           />
         </div>
@@ -153,7 +148,7 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
         type="submit"
         disabled={loading}
         style={{
-          backgroundColor: 'var(--brand-amber)', color: '#0a0a0a', fontWeight: 700,
+          backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 700,
           padding: '0.85rem', borderRadius: '0.5rem', border: 'none',
           cursor: loading ? 'not-allowed' : 'pointer', fontSize: '1rem',
           opacity: loading ? 0.7 : 1,
