@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 
 ## Current Position
 
-Phase: 2 of 7 (Infrastructure & Security) — Executing
-Plan: 2 of 3 in Phase 2 (3 plans planned, Wave 1 — all parallel)
-Status: 02-02 complete — 1 remaining plan ready for execution (02-03)
-Last activity: 2026-04-24 — 02-02 complete: proxy.ts created with export proxy and /settings in isDashboardRoute; middleware.ts deleted.
+Phase: 2 of 7 (Infrastructure & Security) — Complete
+Plan: 3 of 3 in Phase 2 (all plans complete)
+Status: Phase 2 complete — all 3 plans done (02-01, 02-02, 02-03); Phase 3 (Legal & Email) is next
+Last activity: 2026-04-24 — 02-03 complete: security headers (CSP, HSTS, X-Frame-Options, Referrer-Policy) added to next.config.ts; poweredByHeader: false set.
 
-Progress: [██████░░░░] 67% (2/3 plans complete in Phase 2)
+Progress: [██████████] 100% (3/3 plans complete in Phase 2)
 
 ## Performance Metrics
 
@@ -59,6 +59,10 @@ Recent decisions affecting current work:
 - 02-01: Use createAdminSupabaseClient() for all non-request contexts (webhooks, background tasks); reserve createServiceSupabaseClient() for request-scoped server code
 - 02-02: proxy.ts replaces middleware.ts — Next.js 16 PROXY_FILENAME='proxy' breaking change; export name must be proxy (not middleware)
 - 02-02: /settings added to isDashboardRoute — unauthenticated users redirected to /login
+- D-06: CSP uses unsafe-inline in script-src and style-src — required for Next.js 16 RSC hydration and Tailwind v4; no unsafe-eval (not needed by this stack)
+- D-06: connect-src includes https://*.supabase.co and wss://*.supabase.co — covers all Supabase subdomains including realtime WebSocket
+- D-06: frame-ancestors 'none' in CSP plus X-Frame-Options: DENY — dual clickjacking defense for maximum browser compat
+- D-06: cspHeader declared at module scope as template literal; newlines stripped at runtime via .replace(/\n/g, '')
 
 ### Pending Todos
 
@@ -80,5 +84,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-04-24
-Stopped at: Completed 02-02-PLAN.md — SUMMARY written, STATE and ROADMAP updated.
-Resume signal: None — 02-03 ready to execute (Wave 1, security headers in next.config.ts)
+Stopped at: Completed 02-03-PLAN.md — SUMMARY written, STATE and ROADMAP updated. Phase 2 complete.
+Resume signal: None — Phase 3 (Legal & Email) is next

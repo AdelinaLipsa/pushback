@@ -13,7 +13,7 @@ The scaffold is complete. All pages, routes, and components exist. Phases 1–5 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Route Handler Hardening** - Atomic plan gating, try/catch error handling, Zod input validation, and robust JSON extraction for all AI routes
-- [ ] **Phase 2: Infrastructure & Security** - Service-role client fix, webhook secret guard, middleware rename to proxy.ts, settings route protection, and security headers
+- [x] **Phase 2: Infrastructure & Security** - Service-role client fix, webhook secret guard, middleware rename to proxy.ts, settings route protection, and security headers
 - [ ] **Phase 3: Legal & Email** - Privacy Policy, Terms of Service, signup page links, and transactional emails on signup and upgrade
 - [ ] **Phase 4: Missing UI** - Project edit form, project delete, contract delete, and pre-wall upgrade nudge at 2/3 usage
 - [ ] **Phase 5: Types & Observability** - Supabase type generation, Sentry error capture, and Anthropic spend alert
@@ -55,7 +55,7 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md — Add createAdminSupabaseClient() to server.ts; add secret guard + admin client to webhook handler (Wave 1)
 - [x] 02-02-PLAN.md — Create proxy.ts (rename middleware.ts, export proxy, add /settings to isDashboardRoute) (Wave 1)
-- [ ] 02-03-PLAN.md — Add security headers to next.config.ts: CSP, HSTS, X-Frame-Options, Referrer-Policy, poweredByHeader: false (Wave 1)
+- [x] 02-03-PLAN.md — Add security headers to next.config.ts: CSP, HSTS, X-Frame-Options, Referrer-Policy, poweredByHeader: false (Wave 1)
 
 ### Phase 3: Legal & Email
 **Goal**: The app is legally compliant enough for Creem to activate live payments, and users receive email confirmation of key account events
@@ -123,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Route Handler Hardening | 6/6 | Complete | 2026-04-24 |
-| 2. Infrastructure & Security | 2/3 | In progress | - |
+| 2. Infrastructure & Security | 3/3 | Complete | 2026-04-24 |
 | 3. Legal & Email | 0/? | Not started | - |
 | 4. Missing UI | 0/? | Not started | - |
 | 5. Types & Observability | 0/? | Not started | - |
