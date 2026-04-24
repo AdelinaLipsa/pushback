@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-04-23)
 
 **Core value:** A freelancer in an uncomfortable client situation gets a professional, ready-to-send response in under 30 seconds.
-**Current focus:** Phase 2 — Infrastructure & Security
+**Current focus:** Phase 3 — Legal & Email (Phase 2 complete)
 
 ## Current Position
 
