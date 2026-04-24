@@ -24,10 +24,16 @@ export async function POST(request: Request) {
     return Response.json({ error: 'Invalid signature' }, { status: 401 })
   }
 
-  const payload = JSON.parse(body)
-  const eventType = payload.eventType
-  const object = payload.object
-  const userId = object?.metadata?.user_id
+  let payload: unknown
+  try {
+    payload = JSON.parse(body)
+  } catch {
+    return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
+  const p = payload as Record<string, unknown>
+  const eventType = p.eventType
+  const object = p.object as Record<string, unknown> | undefined
+  const userId = (object?.metadata as Record<string, unknown> | undefined)?.user_id
 
   if (!userId) return Response.json({ received: true })
 
