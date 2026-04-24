@@ -134,7 +134,7 @@ Plans:
 Plans:
 - [x] 07-01-PLAN.md — Create 005_payment_tracking.sql migration, manually update database.types.ts + types/index.ts, push to live DB [BLOCKING] (Wave 1)
 - [x] 07-02-PLAN.md — Extend PATCH route allowed list; add OVERDUE badge to ProjectCard and ProjectHeader (Wave 2)
-- [ ] 07-03-PLAN.md — Add initialContextFields to SituationPanel; add initialPaymentPrefill prop + useEffect to DefenseDashboard (Wave 2)
+- [x] 07-03-PLAN.md — Add initialContextFields to SituationPanel; add initialPaymentPrefill prop + useEffect to DefenseDashboard (Wave 2)
 - [ ] 07-04-PLAN.md — Create PaymentSection and ProjectDetailClient; wire into project detail page.tsx (Wave 3)
 **UI hint**: yes
 
@@ -151,4 +151,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Missing UI | 4/4 | Complete   | 2026-04-24 |
 | 5. Types & Observability | 0/3 | Planned | - |
 | 6. Proactive Detection | 3/3 | Complete | 2026-04-24 |
-| 7. Payment Tracking | 2/4 | In progress | - |
+| 7. Payment Tracking | 3/4 | In progress | - |
