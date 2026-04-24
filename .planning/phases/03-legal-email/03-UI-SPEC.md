@@ -1,10 +1,11 @@
 ---
 phase: 3
 slug: legal-email
-status: draft
+status: approved
 shadcn_initialized: true
 preset: base-nova
 created: 2026-04-24
+reviewed_at: 2026-04-24
 ---
 
 # Phase 3 — UI Design Contract
@@ -56,7 +57,7 @@ Source: globals.css tokens + auth page pattern analysis.
 | Body | 16px (1rem) | 400 regular | 1.6 | Prose body in /privacy and /terms. Slightly higher than default 1.5 to aid readability of dense policy text. |
 | Label / Small | 13.5px (0.85rem) | 400 regular | 1.5 | Labels, secondary captions, signup legal footer text. Matches existing auth label `fontSize: '0.85rem'`. |
 | Heading (section) | 20px (1.25rem) | 700 bold | 1.2 | Policy section headings (e.g. "Data We Collect"). |
-| Display (page title) | 28px (1.75rem) | 800 extrabold | 1.1 | Page-level h1 on /privacy and /terms (e.g. "Privacy Policy"). Matches wordmark weight on auth pages. |
+| Display (page title) | 28px (1.75rem) | 700 bold | 1.1 | Page-level h1 on /privacy and /terms (e.g. "Privacy Policy"). |
 
 Font family: `var(--font-inter), system-ui, sans-serif` — matches existing `body` declaration in globals.css.
 
@@ -94,7 +95,7 @@ Components used in this phase (no new shadcn components required — all surface
 | Page header | Pushback wordmark (`<Link href="/">`) + page title below | Same wordmark pattern as auth pages: bold "Pushback" + amber dot |
 | Policy card | `<div style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)', borderRadius: '1rem', padding: '2.5rem' }}>` | Matches auth card pattern |
 | Section heading | `<h2>` at 20px / 700 weight | E.g. "1. Data We Collect" |
-| Page title | `<h1>` at 28px / 800 weight | "Privacy Policy" or "Terms of Service" |
+| Page title | `<h1>` at 28px / 700 weight | "Privacy Policy" or "Terms of Service" |
 | Metadata line | `<p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>` | "Last updated: April 2026" |
 | Prose paragraphs | `<p style={{ color: 'var(--text-primary)', lineHeight: 1.6, fontSize: '1rem' }}>` | Default body |
 | Inline link | `<a>` or `<Link>` with `color: var(--brand-amber)` | Contact email link: adelina.lipsa@gmail.com |
@@ -119,7 +120,7 @@ Email templates are inline HTML template literals with inline styles only (no Re
 | Container background | `#111111` | Matches `var(--bg-surface)` |
 | Container border | `1px solid #2a2a2a` | Matches `var(--bg-border)` |
 | Container padding | `32px` | xl token equivalent |
-| Header wordmark | "Pushback" text + amber dot `<span style="color: #f59e0b">.</span>` | Font-weight 800, font-size 24px |
+| Header wordmark | "Pushback" text + amber dot `<span style="color: #f59e0b">.</span>` | Font-weight 700, font-size 24px |
 | Body text color | `#fafafa` | Matches `var(--text-primary)` |
 | Body font | `font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif` | No custom font in email — system stack |
 | Body font-size | `16px` | Standard email body size |
@@ -127,7 +128,7 @@ Email templates are inline HTML template literals with inline styles only (no Re
 | Secondary text | `color: #a1a1aa` | Matches `var(--text-secondary)` |
 | CTA button background | `#f59e0b` | Matches `var(--brand-amber)` |
 | CTA button text | `#0a0a0a` | Dark text on amber — same as auth primary button |
-| CTA button padding | `12px 24px` | sm/lg token equivalents |
+| CTA button padding | `16px 24px` | md/lg token equivalents |
 | CTA button border-radius | `8px` | Matches `borderRadius: '0.5rem'` in auth |
 | Divider | `<hr style="border: none; border-top: 1px solid #2a2a2a">` | Matches `var(--bg-border)` |
 | Footer text | `color: #52525b`, `font-size: 13px` | Matches `var(--text-muted)` |
@@ -171,6 +172,8 @@ Destructive actions in this phase: none. No confirmation dialogs required.
 
 ### /privacy and /terms Pages
 
+**Primary visual anchor:** Page title `<h1>` (28px / 700 bold). Visual hierarchy sequence: wordmark header → h1 page title → metadata line → policy card prose. The h1 is the first element the eye lands on after the wordmark.
+
 | State | Behavior |
 |-------|----------|
 | Default | Static prose page — no loading, no interaction required |
@@ -208,11 +211,11 @@ No new shadcn components are installed in this phase. All surfaces are bespoke i
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: FLAG (non-blocking — 40px card padding and 44px touch target outside standard set but justified)
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-04-24

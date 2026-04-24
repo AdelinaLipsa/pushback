@@ -11,8 +11,8 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 
 Phase: 3 of 7 (Legal & Email) — In progress
 Plan: 0 of ? in Phase 3 (context captured, planning next)
-Status: Phase 3 context gathered — ready for /gsd-plan-phase 3
-Last activity: 2026-04-24 — Phase 3 context captured: legal pages (full content, match auth page style), welcome email (auth callback trigger, new-user detection), upgrade email (include billing details), branded dark HTML email design.
+Status: Phase 3 UI-SPEC approved — ready for /gsd-plan-phase 3
+Last activity: 2026-04-24 — Phase 3 UI-SPEC approved: shadcn base-nova, Inter font, dark palette (bg-base/bg-surface/brand-amber), 4 type sizes (13.5/16/20/28px), 2 weights (400/700), 16 copy elements defined, no third-party registries.
 
 Progress: [██████████] 100% (3/3 plans complete in Phase 2)
 
@@ -70,7 +70,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- Creem merchant checklist exact requirements for legal page URLs unknown — Phase 3 legal content may need adjustment after checking Creem docs
+- Stripe requires a privacy policy and terms of service to be linked from the checkout page — confirm exact URL requirements before going live
 
 ## Deferred Items
 
