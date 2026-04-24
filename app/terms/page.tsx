@@ -8,7 +8,7 @@ export default function TermsPage() {
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.15rem', textDecoration: 'none' }}>
             <span style={{ fontWeight: 800, fontSize: '1.5rem', color: 'var(--text-primary)' }}>Pushback</span>
-            <span style={{ color: 'var(--brand-amber)', fontWeight: 800, fontSize: '1.5rem' }}>.</span>
+            <span style={{ color: 'var(--brand-lime)', fontWeight: 800, fontSize: '1.5rem' }}>.</span>
           </Link>
           <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', fontSize: '0.85rem' }}>
             Last updated: April 2026 · Contact: adelina.lipsa@gmail.com
@@ -32,7 +32,7 @@ export default function TermsPage() {
             The Service
           </h2>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, fontSize: '1rem', marginBottom: '1rem' }}>
-            Pushback is an AI-powered tool that helps freelancers generate professional written responses to difficult client situations and analyse contract PDFs for potential risks. The free tier includes 3 AI-powered responses and 1 contract analysis. The Pro plan provides unlimited responses and contract analyses for a monthly subscription fee.
+            Pushback is an AI-powered tool that helps freelancers generate professional written responses to difficult client situations and analyse contract PDFs for potential risks. The free tier includes 1 AI-powered response and 1 contract analysis. The Pro plan provides unlimited responses and contract analyses for a monthly subscription fee.
           </p>
 
           <h2 style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '1.25rem', lineHeight: 1.2, marginTop: '2rem', marginBottom: '0.75rem' }}>
@@ -96,13 +96,13 @@ export default function TermsPage() {
           </h2>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, fontSize: '1rem', marginBottom: '1rem' }}>
             Questions about these Terms? Contact us at{' '}
-            <Link href="mailto:adelina.lipsa@gmail.com" style={{ color: 'var(--brand-amber)', fontWeight: 500, textDecoration: 'none' }}>adelina.lipsa@gmail.com</Link>.
+            <Link href="mailto:adelina.lipsa@gmail.com" style={{ color: 'var(--brand-lime)', fontWeight: 500, textDecoration: 'none' }}>adelina.lipsa@gmail.com</Link>.
           </p>
 
         </div>
 
         <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-          <Link href="/" style={{ color: 'var(--brand-amber)', fontWeight: 500, textDecoration: 'none' }}>← Back to Pushback</Link>
+          <Link href="/" style={{ color: 'var(--brand-lime)', fontWeight: 500, textDecoration: 'none' }}>← Back to Pushback</Link>
         </p>
 
       </div>

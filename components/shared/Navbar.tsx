@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { Briefcase, FileText, Settings, ArrowUpCircle, type LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { UserProfile } from '@/types'
 
@@ -9,9 +10,9 @@ interface NavbarProps {
   profile: UserProfile | null
 }
 
-const NAV_ITEMS = [
-  { href: '/projects', label: 'Projects', icon: '◈' },
-  { href: '/contracts', label: 'Contracts', icon: '⬡' },
+const NAV_ITEMS: { href: string; label: string; Icon: LucideIcon }[] = [
+  { href: '/projects', label: 'Projects', Icon: Briefcase },
+  { href: '/contracts', label: 'Contracts', Icon: FileText },
 ]
 
 export default function Navbar({ profile }: NavbarProps) {
@@ -37,13 +38,13 @@ export default function Navbar({ profile }: NavbarProps) {
         <div style={{ padding: '1.5rem 1.25rem 1rem', borderBottom: '1px solid var(--bg-border)' }}>
           <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '0.15rem', textDecoration: 'none' }}>
             <span style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--text-primary)' }}>Pushback</span>
-            <span style={{ color: 'var(--brand-amber)', fontWeight: 800, fontSize: '1.2rem' }}>.</span>
+            <span style={{ color: 'var(--brand-lime)', fontWeight: 800, fontSize: '1.2rem' }}>.</span>
           </Link>
         </div>
 
         {/* Nav items */}
         <nav style={{ padding: '1rem 0.75rem', flex: 1 }}>
-          {NAV_ITEMS.map(({ href, label, icon }) => {
+          {NAV_ITEMS.map(({ href, label, Icon }) => {
             const active = pathname.startsWith(href)
             return (
               <Link
@@ -60,7 +61,7 @@ export default function Navbar({ profile }: NavbarProps) {
                 }}
                 className="hover:bg-[#1a1a1a] hover:text-white"
               >
-                <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{icon}</span>
+                <Icon size={16} strokeWidth={active ? 2 : 1.5} style={{ opacity: 0.8, flexShrink: 0 }} />
                 {label}
               </Link>
             )
@@ -78,7 +79,7 @@ export default function Navbar({ profile }: NavbarProps) {
             }}
             className="hover:bg-[#1a1a1a] hover:text-white"
           >
-            <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>⚙</span>
+            <Settings size={16} strokeWidth={1.5} style={{ opacity: 0.7, flexShrink: 0 }} />
             Settings
           </Link>
 
@@ -88,12 +89,12 @@ export default function Navbar({ profile }: NavbarProps) {
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
                 padding: '0.65rem 0.75rem', borderRadius: '0.5rem',
-                textDecoration: 'none', color: 'var(--brand-amber)',
+                textDecoration: 'none', color: 'var(--brand-lime)',
                 fontSize: '0.9rem', fontWeight: 500, transition: 'all 150ms ease',
               }}
               className="hover:bg-[#1a1a1a]"
             >
-              <span style={{ fontSize: '0.85rem' }}>✦</span>
+              <ArrowUpCircle size={16} strokeWidth={1.5} style={{ flexShrink: 0 }} />
               Upgrade to Pro
             </Link>
           )}
@@ -104,8 +105,8 @@ export default function Navbar({ profile }: NavbarProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.75rem' }}>
             <div style={{
               width: '32px', height: '32px', borderRadius: '50%',
-              backgroundColor: 'var(--brand-amber-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'var(--brand-amber)', fontWeight: 700, fontSize: '0.8rem', flexShrink: 0,
+              backgroundColor: 'rgba(132,204,22,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--brand-lime)', fontWeight: 700, fontSize: '0.8rem', flexShrink: 0,
             }}>
               {profile?.email?.[0]?.toUpperCase() ?? '?'}
             </div>
@@ -138,7 +139,7 @@ export default function Navbar({ profile }: NavbarProps) {
         backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)',
         display: 'flex', padding: '0.5rem',
       }} className="md:hidden">
-        {NAV_ITEMS.map(({ href, label, icon }) => {
+        {NAV_ITEMS.map(({ href, label, Icon }) => {
           const active = pathname.startsWith(href)
           return (
             <Link
@@ -147,11 +148,11 @@ export default function Navbar({ profile }: NavbarProps) {
               style={{
                 flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem',
                 padding: '0.5rem', borderRadius: '0.5rem', textDecoration: 'none',
-                color: active ? 'var(--brand-amber)' : 'var(--text-muted)',
+                color: active ? 'var(--brand-lime)' : 'var(--text-muted)',
                 fontSize: '0.7rem', fontWeight: active ? 600 : 400,
               }}
             >
-              <span style={{ fontSize: '1.1rem' }}>{icon}</span>
+              <Icon size={20} strokeWidth={active ? 2 : 1.5} />
               {label}
             </Link>
           )

@@ -123,9 +123,9 @@
 }
 
 @keyframes flashGreen {
-  0%   { background-color: var(--brand-amber); color: #0a0a0a; }
+  0%   { background-color: var(--brand-lime); color: #0a0a0a; }
   30%  { background-color: var(--brand-green-dim); color: var(--brand-green); border-color: var(--brand-green); }
-  100% { background-color: var(--brand-amber); color: #0a0a0a; }
+  100% { background-color: var(--brand-lime); color: #0a0a0a; }
 }
 
 @keyframes ticker {
@@ -133,9 +133,9 @@
   100% { transform: translateX(-50%); }
 }
 
-@keyframes amberpulse {
-  0%, 100% { border-color: var(--brand-amber); opacity: 1; }
-  50% { border-color: var(--brand-amber); opacity: 0.4; }
+@keyframes limepulse {
+  0%, 100% { border-color: var(--brand-lime); opacity: 1; }
+  50% { border-color: var(--brand-lime); opacity: 0.4; }
 }
 
 .response-enter {
@@ -154,8 +154,13 @@
   animation: flashGreen 1.5s ease forwards;
 }
 
-.amber-pulse-border {
-  animation: amberpulse 1.5s ease-in-out infinite;
+.lime-pulse-border {
+  animation: limepulse 1.5s ease-in-out infinite;
+}
+
+@keyframes toolFadeIn {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 ::-webkit-scrollbar { width: 6px; }

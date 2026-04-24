@@ -43,7 +43,7 @@ export default function LoginPage() {
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.15rem', textDecoration: 'none' }}>
             <span style={{ fontWeight: 800, fontSize: '1.5rem', color: 'var(--text-primary)' }}>Pushback</span>
-            <span style={{ color: 'var(--brand-amber)', fontWeight: 800, fontSize: '1.5rem' }}>.</span>
+            <span style={{ color: 'var(--brand-lime)', fontWeight: 800, fontSize: '1.5rem' }}>.</span>
           </Link>
           <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem', fontSize: '0.9rem' }}>Sign in to your account</p>
         </div>
@@ -106,7 +106,7 @@ export default function LoginPage() {
                   borderRadius: '0.5rem', padding: '0.75rem', color: 'var(--text-primary)',
                   fontSize: '0.9rem', outline: 'none',
                 }}
-                onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-amber)' }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
                 onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
               />
             </div>
@@ -123,7 +123,7 @@ export default function LoginPage() {
                   borderRadius: '0.5rem', padding: '0.75rem', color: 'var(--text-primary)',
                   fontSize: '0.9rem', outline: 'none',
                 }}
-                onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-amber)' }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
                 onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
               />
             </div>
@@ -131,7 +131,7 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               style={{
-                backgroundColor: 'var(--brand-amber)', color: '#0a0a0a', fontWeight: 700,
+                backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 700,
                 padding: '0.8rem', borderRadius: '0.5rem', border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
                 fontSize: '0.95rem', opacity: loading ? 0.7 : 1, marginTop: '0.5rem',
               }}
@@ -143,7 +143,7 @@ export default function LoginPage() {
 
         <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
           Don&apos;t have an account?{' '}
-          <Link href="/signup" style={{ color: 'var(--brand-amber)', fontWeight: 500, textDecoration: 'none' }}>
+          <Link href="/signup" style={{ color: 'var(--brand-lime)', fontWeight: 500, textDecoration: 'none' }}>
             Sign up free
           </Link>
         </p>

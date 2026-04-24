@@ -90,7 +90,7 @@ export default function ResponseHistory({ responses, lockedCount }: ResponseHist
             onClick={handleUpgrade}
             disabled={upgradeLoading}
             style={{
-              backgroundColor: 'var(--brand-amber)',
+              backgroundColor: 'var(--brand-lime)',
               color: '#0a0a0a',
               fontWeight: 700,
               padding: '0.7rem 1.5rem',

@@ -453,14 +453,14 @@ export default function PushbackHero() {
             <a
               href="/signup"
               className="inline-block px-7 py-3 text-sm font-bold rounded-lg transition-all duration-200"
-              style={{ background: "#f59e0b", color: "#0a0a0a", letterSpacing: "-0.01em" }}
+              style={{ background: "#84cc16", color: "#0a0a0a", letterSpacing: "-0.01em" }}
               onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.04, duration: 0.25, ease: "power2.out" })}
               onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" })}
             >
               Try it free →
             </a>
             <p className="mt-3 text-xs" style={{ color: "rgba(113,113,122,0.8)" }}>
-              No card required · 3 free responses
+              No card required · 1 free response
             </p>
           </div>
         </div>

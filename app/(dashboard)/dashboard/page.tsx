@@ -57,7 +57,9 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
           borderRadius: '1rem', padding: '4rem 2rem', textAlign: 'center',
         }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '1rem', opacity: 0.4 }}>🛡</div>
+          <div style={{ marginBottom: '1rem', opacity: 0.4, display: 'flex', justifyContent: 'center' }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
           <p style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.5rem' }}>No projects yet.</p>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
             Add your first client project and get your first defense message.

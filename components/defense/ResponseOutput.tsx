@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Sparkles } from 'lucide-react'
 import CopyButton from '@/components/shared/CopyButton'
 
 interface ResponseOutputProps {
@@ -31,7 +32,7 @@ export default function ResponseOutput({ response, responseId, onRegenerate }: R
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ color: 'var(--brand-lime)', fontWeight: 700 }}>✦</span>
+          <Sparkles size={16} style={{ color: 'var(--brand-lime)', flexShrink: 0 }} />
           <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Your message is ready</span>
         </div>
         <button

@@ -49,7 +49,9 @@ export default function SignupPage() {
     return (
       <div style={{ backgroundColor: 'var(--bg-base)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
         <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>✉️</div>
+          <div style={{ marginBottom: '1.5rem', color: 'var(--brand-lime)' }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </div>
           <h1 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: '0.75rem' }}>Check your email</h1>
           <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
             We sent a confirmation link to <strong style={{ color: 'var(--text-primary)' }}>{email}</strong>. Click it to activate your account and start using Pushback.
@@ -65,7 +67,7 @@ export default function SignupPage() {
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.15rem', textDecoration: 'none' }}>
             <span style={{ fontWeight: 800, fontSize: '1.5rem', color: 'var(--text-primary)' }}>Pushback</span>
-            <span style={{ color: 'var(--brand-amber)', fontWeight: 800, fontSize: '1.5rem' }}>.</span>
+            <span style={{ color: 'var(--brand-lime)', fontWeight: 800, fontSize: '1.5rem' }}>.</span>
           </Link>
           <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem', fontSize: '0.9rem' }}>Create your free account</p>
         </div>
@@ -117,7 +119,7 @@ export default function SignupPage() {
                   borderRadius: '0.5rem', padding: '0.75rem', color: 'var(--text-primary)',
                   fontSize: '0.9rem', outline: 'none',
                 }}
-                onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-amber)' }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
                 onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
               />
             </div>
@@ -135,7 +137,7 @@ export default function SignupPage() {
                   borderRadius: '0.5rem', padding: '0.75rem', color: 'var(--text-primary)',
                   fontSize: '0.9rem', outline: 'none',
                 }}
-                onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-amber)' }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
                 onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
               />
             </div>
@@ -143,7 +145,7 @@ export default function SignupPage() {
               type="submit"
               disabled={loading}
               style={{
-                backgroundColor: 'var(--brand-amber)', color: '#0a0a0a', fontWeight: 700,
+                backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 700,
                 padding: '0.8rem', borderRadius: '0.5rem', border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
                 fontSize: '0.95rem', opacity: loading ? 0.7 : 1, marginTop: '0.5rem',
               }}
@@ -154,15 +156,15 @@ export default function SignupPage() {
 
           <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textAlign: 'center', marginTop: '1.25rem', lineHeight: 1.5 }}>
             By signing up you agree to our{' '}
-            <Link href="/terms" style={{ color: 'var(--brand-amber)', fontWeight: 500, textDecoration: 'none' }}>Terms</Link>
+            <Link href="/terms" style={{ color: 'var(--brand-lime)', fontWeight: 500, textDecoration: 'none' }}>Terms</Link>
             {' '}and{' '}
-            <Link href="/privacy" style={{ color: 'var(--brand-amber)', fontWeight: 500, textDecoration: 'none' }}>Privacy Policy</Link>.
+            <Link href="/privacy" style={{ color: 'var(--brand-lime)', fontWeight: 500, textDecoration: 'none' }}>Privacy Policy</Link>.
           </p>
         </div>
 
         <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
           Already have an account?{' '}
-          <Link href="/login" style={{ color: 'var(--brand-amber)', fontWeight: 500, textDecoration: 'none' }}>
+          <Link href="/login" style={{ color: 'var(--brand-lime)', fontWeight: 500, textDecoration: 'none' }}>
             Sign in
           </Link>
         </p>

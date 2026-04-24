@@ -1,7 +1,22 @@
 'use client'
 
+import {
+  Layers, Clock, AlertTriangle, Ban, RefreshCw, XCircle, CheckCircle2, ShieldAlert,
+  type LucideIcon,
+} from 'lucide-react'
 import { DefenseToolMeta } from '@/types'
 import { URGENCY_COLORS } from '@/lib/defenseTools'
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  Layers,
+  Clock,
+  AlertTriangle,
+  Ban,
+  RefreshCw,
+  XCircle,
+  CheckCircle2,
+  ShieldAlert,
+}
 
 interface DefenseToolCardProps {
   tool: DefenseToolMeta
@@ -12,6 +27,7 @@ interface DefenseToolCardProps {
 
 export default function DefenseToolCard({ tool, selected, loading, onSelect }: DefenseToolCardProps) {
   const colors = URGENCY_COLORS[tool.urgency]
+  const Icon = ICON_MAP[tool.icon]
 
   return (
     <button
@@ -28,7 +44,7 @@ export default function DefenseToolCard({ tool, selected, loading, onSelect }: D
         transition: 'all 150ms ease',
         transform: selected ? 'translateY(-1px)' : 'none',
         boxShadow: selected ? `0 4px 20px ${colors.glow}` : 'none',
-        animation: loading && selected ? 'amberpulse 1.5s ease-in-out infinite' : 'none',
+        animation: loading && selected ? 'limepulse 1.5s ease-in-out infinite' : 'none',
       }}
       onMouseEnter={e => {
         if (!selected) {
@@ -43,7 +59,9 @@ export default function DefenseToolCard({ tool, selected, loading, onSelect }: D
         }
       }}
     >
-      <div style={{ fontSize: '1.4rem', marginBottom: '0.6rem' }}>{tool.icon}</div>
+      <div style={{ marginBottom: '0.6rem', color: colors.border }}>
+        {Icon && <Icon size={20} strokeWidth={1.75} />}
+      </div>
       <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.3rem', color: 'var(--text-primary)' }}>
         {tool.label}
       </div>

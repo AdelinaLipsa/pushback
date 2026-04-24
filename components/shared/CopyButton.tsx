@@ -33,7 +33,7 @@ export default function CopyButton({ text, responseId }: CopyButtonProps) {
       onClick={handleCopy}
       className={flashing ? 'copy-flash' : ''}
       style={{
-        backgroundColor: flashing ? undefined : 'var(--brand-amber)',
+        backgroundColor: flashing ? undefined : 'var(--brand-lime)',
         color: flashing ? 'var(--brand-green)' : '#0a0a0a',
         fontWeight: 700, padding: '0.75rem 1.75rem',
         borderRadius: '0.5rem', border: flashing ? '1px solid var(--brand-green)' : 'none',
