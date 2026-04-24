@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Legal & Email** - Privacy Policy, Terms of Service, signup page links, and transactional emails on signup and upgrade
 - [x] **Phase 4: Missing UI** - Project edit form, project delete, contract delete, and pre-wall upgrade nudge at 2/3 usage (completed 2026-04-24)
 - [ ] **Phase 5: Types & Observability** - Supabase type generation, Sentry error capture, and Anthropic spend alert
-- [ ] **Phase 6: Proactive Detection** - Analyze a raw client message, identify the situation type, pre-fill the right defense tool
+- [x] **Phase 6: Proactive Detection** - Analyze a raw client message, identify the situation type, pre-fill the right defense tool (completed 2026-04-24)
 - [ ] **Phase 7: Payment Tracking** - Add payment due date per project, dashboard overdue badge, one-click Late Payment tool pre-fill
 
 ## Phase Details
