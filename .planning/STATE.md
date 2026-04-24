@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 ## Current Position
 
 Phase: 2 of 7 (Infrastructure & Security) — Executing
-Plan: 1 of 3 in Phase 2 (3 plans planned, Wave 1 — all parallel)
-Status: 02-01 complete — 2 remaining plans ready for execution
-Last activity: 2026-04-24 — 02-01 complete: createAdminSupabaseClient() added, webhook secret guard + admin client switch done.
+Plan: 2 of 3 in Phase 2 (3 plans planned, Wave 1 — all parallel)
+Status: 02-02 complete — 1 remaining plan ready for execution (02-03)
+Last activity: 2026-04-24 — 02-02 complete: proxy.ts created with export proxy and /settings in isDashboardRoute; middleware.ts deleted.
 
-Progress: [███░░░░░░░] 33% (1/3 plans complete in Phase 2)
+Progress: [██████░░░░] 67% (2/3 plans complete in Phase 2)
 
 ## Performance Metrics
 
@@ -57,6 +57,8 @@ Recent decisions affecting current work:
 - 02-01: createAdminSupabaseClient() is synchronous (no async) — safe for webhook/background contexts where cookies() would throw
 - 02-01: CREEM_WEBHOOK_SECRET guard returns 500 (not 401) — missing env var is server misconfiguration, loud failure ensures monitoring visibility
 - 02-01: Use createAdminSupabaseClient() for all non-request contexts (webhooks, background tasks); reserve createServiceSupabaseClient() for request-scoped server code
+- 02-02: proxy.ts replaces middleware.ts — Next.js 16 PROXY_FILENAME='proxy' breaking change; export name must be proxy (not middleware)
+- 02-02: /settings added to isDashboardRoute — unauthenticated users redirected to /login
 
 ### Pending Todos
 
@@ -78,5 +80,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-04-24
-Stopped at: Completed 02-01-PLAN.md — SUMMARY written, STATE and ROADMAP updated.
-Resume signal: None — 02-02 and 02-03 ready to execute (Wave 1, all parallel)
+Stopped at: Completed 02-02-PLAN.md — SUMMARY written, STATE and ROADMAP updated.
+Resume signal: None — 02-03 ready to execute (Wave 1, security headers in next.config.ts)
