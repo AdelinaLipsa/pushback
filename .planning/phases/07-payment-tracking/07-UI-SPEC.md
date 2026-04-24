@@ -1,7 +1,7 @@
 ---
 phase: 7
 slug: payment-tracking
-status: draft
+status: approved
 shadcn_initialized: true
 preset: base-nova
 created: 2026-04-24
@@ -55,13 +55,13 @@ Exceptions: Touch targets for "Handle Late Payment" and "Mark as Received" butto
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 16px (1rem) | 400 | 1.5 |
-| Label / Secondary text | 14px (0.85rem–0.9rem) | 400 | 1.5 |
+| Label / Secondary text | 14px (0.875rem) | 400 | 1.5 |
 | Status badge / pill | 11.2px (0.7rem) | 600 | 1 |
 | Section heading | 20px (1.25rem) | 600 | 1.2 |
 
 Notes:
 - "Body" = PaymentSection status line text, form field values (`inputStyle` fontSize: 0.9rem).
-- "Label" = field labels (`labelStyle` fontSize: 0.85rem), button text in `btnStyles.outline` and `btnStyles.ghost`.
+- "Label" = field labels (`labelStyle` fontSize: 0.875rem), button text in `btnStyles.outline` and `btnStyles.ghost`.
 - "Status badge / pill" = OVERDUE pill, existing status/risk pills in ProjectCard and ProjectHeader (0.7rem, weight 600, letterSpacing 0.05em, textTransform uppercase).
 - "Section heading" = PaymentSection card title ("Payment"), consistent with DefenseDashboard section heading convention.
 
@@ -96,6 +96,14 @@ Accent (--brand-lime) reserved for: "Handle Late Payment" button ONLY. No other 
 
 ## Component Inventory
 
+### Visual Hierarchy
+
+Focal point per screen state — the single element the eye must land on first:
+
+- Empty state focal point: "Save Payment Details" button (lime — the only colored element in the state; all other elements are neutral).
+- Overdue state focal point: "Handle Late Payment" button (lime, `btnStyles.primary`, weight 700) — secondary focal point: the OVERDUE status line rendered in `--urgency-high` red, creating urgency contrast against the neutral card surface.
+- Received state focal point: the "Received [date] · [currency] [amount]" status line in `--brand-green` — the only colored element in the state, communicating successful completion at a glance.
+
 ### New Component: PaymentSection
 
 **File:** `components/project/PaymentSection.tsx`
@@ -111,8 +119,8 @@ Elements:
 3. Inline form row with:
    - Date input: `<input type="date">` using `inputStyle` from `lib/ui.ts`; label "Due date" using `labelStyle`
    - Amount input: `<input type="number">` using `inputStyle`; label "Amount" using `labelStyle`
-   - "Save" button: `btnStyles.outline` (not primary — saving blank payment info is not the primary CTA of the page)
-4. Loading state: "Save" button disabled + text "Saving…" during PATCH request
+   - "Save Payment Details" button: `btnStyles.primary` (lime — this is the focal point CTA for the empty state, prompting the user to set payment details for the first time)
+4. Loading state: "Save Payment Details" button disabled + text "Saving…" during PATCH request
 
 #### Populated State (due date is set, payment not yet received — D-06)
 
@@ -124,7 +132,7 @@ Elements:
 3. When overdue: two action buttons on a row
    - "Handle Late Payment" — `btnStyles.primary` (lime, weight 700) — triggers scroll + pre-fill
    - "Mark as Received" — `btnStyles.outline`
-4. Edit toggle: "Edit" link/button using `btnStyles.ghost` reveals the inline form (same fields pre-filled, "Save" + "Cancel" buttons)
+4. Edit toggle: "Edit Payment" link/button using `btnStyles.ghost` reveals the inline form (same fields pre-filled, "Update Payment Details" + "Discard Changes" buttons)
 5. Edit cancel: restores read view without saving
 
 #### Received State (payment_received_at is non-null)
@@ -132,7 +140,7 @@ Elements:
 Elements:
 1. Section heading: "Payment"
 2. Status line: `"Received [formatted date] · [currency] [amount]"` in `--brand-green`
-3. Edit toggle: "Edit" in `btnStyles.ghost` to update payment details if needed
+3. Edit toggle: "Edit Payment" in `btnStyles.ghost` to update payment details if needed; reveals inline form with "Update Payment Details" + "Discard Changes" buttons
 
 #### Form Inputs
 
@@ -219,10 +227,10 @@ Behavior: initialize context field input state from `initialContextFields` value
 
 ### Inline Edit Toggle (PaymentSection)
 
-1. Read view shows "Edit" ghost button.
-2. Click "Edit": replace status line + action buttons with pre-filled form (date + amount inputs) + "Save" + "Cancel" buttons.
-3. "Cancel": restore read view without calling API.
-4. "Save": PATCH `api/projects/[id]` with `{ payment_due_date, payment_amount }`. On success: `router.refresh()`. On error: inline error below the form.
+1. Read view shows "Edit Payment" ghost button.
+2. Click "Edit Payment": replace status line + action buttons with pre-filled form (date + amount inputs) + "Update Payment Details" + "Discard Changes" buttons.
+3. "Discard Changes": restore read view without calling API.
+4. "Update Payment Details": PATCH `api/projects/[id]` with `{ payment_due_date, payment_amount }`. On success: `router.refresh()`. On error: inline error below the form.
 
 > Source: D-06, CONTEXT.md code_context (Phase 4 inline edit toggle pattern).
 
@@ -240,9 +248,10 @@ The DefenseDashboard section must have `id="defense-dashboard"` set on its outer
 | Empty state subtext | No payment details set. |
 | Primary CTA | Handle Late Payment |
 | Secondary CTA (overdue) | Mark as Received |
-| Save form CTA | Save |
-| Edit toggle | Edit |
-| Cancel edit | Cancel |
+| Save form CTA (first-time) | Save Payment Details |
+| Save form CTA (edit mode) | Update Payment Details |
+| Edit toggle | Edit Payment |
+| Cancel edit | Discard Changes |
 | OVERDUE badge | OVERDUE |
 | Status: not yet due | Due [date] · [currency] [amount] (e.g. "Due April 15 · EUR 3,000") |
 | Status: overdue | OVERDUE · [N] days · [currency] [amount] (e.g. "OVERDUE · 12 days · EUR 3,000") |
@@ -302,11 +311,11 @@ Third-party registries: none. This phase introduces no new third-party registry 
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: FLAG (non-blocking — inputStyle 0.9rem and weight 700 from pre-existing lib/ui.ts constants)
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-04-24
