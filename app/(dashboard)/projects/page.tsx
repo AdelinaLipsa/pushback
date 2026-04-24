@@ -22,7 +22,7 @@ export default async function ProjectsPage() {
         <Link
           href="/projects/new"
           style={{
-            backgroundColor: 'var(--brand-amber)', color: '#0a0a0a', fontWeight: 600,
+            backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 600,
             padding: '0.6rem 1.25rem', borderRadius: '0.5rem', textDecoration: 'none', fontSize: '0.9rem',
           }}
           className="hover:opacity-90 transition-opacity"
@@ -44,7 +44,7 @@ export default async function ProjectsPage() {
           <Link
             href="/projects/new"
             style={{
-              backgroundColor: 'var(--brand-amber)', color: '#0a0a0a', fontWeight: 600,
+              backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 600,
               padding: '0.7rem 1.5rem', borderRadius: '0.5rem', textDecoration: 'none', fontSize: '0.9rem',
             }}
           >

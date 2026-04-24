@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { DefenseTool, DefenseToolMeta, DefenseResponse } from '@/types'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import { btnStyles, inputStyle } from '@/lib/ui'
+import { startCheckout } from '@/lib/checkout'
+import { PLANS } from '@/lib/plans'
 import DefenseToolCard from './DefenseToolCard'
 import SituationPanel from './SituationPanel'
 import ResponseOutput from './ResponseOutput'
@@ -33,19 +35,10 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
   } | null>(null)
   const [analyzeError, setAnalyzeError] = useState<string | null>(null)
 
-  const FREE_LIMIT = 1
+  const FREE_LIMIT = PLANS.free.defense_responses
   const isAtLimit = plan === 'free' && responsesUsed >= FREE_LIMIT
 
-  async function handleUpgrade() {
-    setUpgradeLoading(true)
-    const res = await fetch('/api/checkout', { method: 'POST' })
-    const data = await res.json()
-    if (data.url) {
-      window.location.href = data.url
-    } else {
-      setUpgradeLoading(false)
-    }
-  }
+  async function handleUpgrade() { await startCheckout(setUpgradeLoading) }
 
   function selectTool(tool: DefenseToolMeta) {
     if (isAtLimit) {
@@ -246,7 +239,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
           {selectedTool ? (
             <>
-              <span style={{ color: 'var(--brand-amber)' }}>↑</span> Describe your situation below to generate a message
+              <span style={{ color: 'var(--brand-lime)' }}>↑</span> Describe your situation below to generate a message
             </>
           ) : (
             'Pick a situation below. Get the exact message to send.'
