@@ -128,13 +128,13 @@ const fragmentShader = `
 
     float finalShape = max(shape1 * 0.8, max(shape2 * 0.6, shape3 * 0.4));
 
-    vec3 color1 = vec3(0.96, 0.62, 0.04);
-    vec3 color2 = vec3(0.98, 0.45, 0.09);
-    vec3 color3 = vec3(0.92, 0.35, 0.05);
-    vec3 color4 = vec3(0.76, 0.25, 0.04);
-    vec3 color5 = vec3(0.98, 0.75, 0.14);
-    vec3 color6 = vec3(0.49, 0.18, 0.07);
-    vec3 color7 = vec3(0.71, 0.33, 0.04);
+    vec3 color1 = vec3(0.518, 0.80, 0.086);
+    vec3 color2 = vec3(0.42, 0.70, 0.06);
+    vec3 color3 = vec3(0.60, 0.85, 0.12);
+    vec3 color4 = vec3(0.30, 0.55, 0.04);
+    vec3 color5 = vec3(0.70, 0.90, 0.18);
+    vec3 color6 = vec3(0.18, 0.35, 0.02);
+    vec3 color7 = vec3(0.40, 0.65, 0.05);
 
     float gradient = 1.0 - uv.y;
     float colorNoise = fbm(flowField * 3.0 + time * 0.5, 4) * 0.5 + 0.5;
@@ -195,7 +195,7 @@ const fragmentShader = `
     float vignette = 1.0 - length(uv - 0.5) * 0.85;
     vignette = smoothstep(0.2, 1.0, vignette);
 
-    vec3 bgColor = vec3(0.04, 0.02, 0.0) + finalColor * 0.03;
+    vec3 bgColor = vec3(0.01, 0.04, 0.0) + finalColor * 0.03;
     result = mix(bgColor, result, smoothstep(0.0, 0.4, intensity));
     result *= vignette;
 
