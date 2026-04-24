@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import RiskReport from '@/components/contract/RiskReport'
+import ContractDeleteButton from '@/components/contract/ContractDeleteButton'
 import { ContractAnalysis } from '@/types'
 
 export default async function ContractPage({ params }: { params: Promise<{ id: string }> }) {
@@ -29,6 +30,10 @@ export default async function ContractPage({ params }: { params: Promise<{ id: s
       {contract.original_filename && (
         <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '2rem' }}>{contract.original_filename}</p>
       )}
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+        <ContractDeleteButton contractId={contract.id} />
+      </div>
 
       {contract.status === 'pending' && (
         <div style={{ color: 'var(--text-muted)', padding: '2rem', textAlign: 'center' }}>Analyzing contract…</div>
