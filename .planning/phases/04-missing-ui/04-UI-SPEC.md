@@ -1,7 +1,7 @@
 ---
 phase: 4
 slug: missing-ui
-status: draft
+status: approved
 shadcn_initialized: true
 preset: base-nova
 created: 2026-04-24
@@ -27,6 +27,8 @@ created: 2026-04-24
 
 Source: STACK.md — `components.json` confirmed present, style `base-nova`, RSC-enabled.
 
+**Focal point:** The project title (`h1`, 28px/700) is the primary visual anchor on the project detail page. When the edit form is open, the amber "Save Changes" button is the primary action focal point. On the contract detail page, the contract title (`h1`) anchors the view; the destructive "Yes, delete" confirmation state draws attention via `var(--urgency-high)` red. The nudge strip is ambient — it draws attention via amber left-border but does not compete with the tool grid.
+
 **Critical styling rule:** All layout and sizing uses inline `style` objects with CSS custom properties. Tailwind utility classes are used only for hover states (`hover:text-white transition-colors`) and responsive visibility. No Tailwind utility classes for padding, margin, font-size, border, color, or layout. Source: CONVENTIONS.md Inline Styles Pattern.
 
 ---
@@ -46,9 +48,9 @@ Declared values (must be multiples of 4):
 | 3xl | 64px | Page-level spacing (not used in this phase) |
 
 Exceptions:
-- Nudge strip vertical padding: 10px top/bottom (not on scale) — intentionally slim to avoid displacing the tool grid. Use `padding: '0.625rem 1rem'`.
+- Nudge strip vertical padding: `0.75rem 1rem` (12px vertical) — closest grid-conforming value for a slim strip.
 - Delete confirmation button row gap: `0.5rem` (8px) — matches existing action-button rows.
-- Form field gap: `1.25rem` — mirrors NewProjectForm.tsx `gap: '1.25rem'` exactly.
+- Form field gap: `1.5rem` (24px) — standard lg token; NewProjectForm.tsx uses `1.25rem` (20px, non-conforming) but the spec prescribes the grid-conforming nearest value.
 
 Source: NewProjectForm.tsx gap values, project/[id]/page.tsx padding values, CONVENTIONS.md.
 
@@ -59,13 +61,15 @@ Source: NewProjectForm.tsx gap values, project/[id]/page.tsx padding values, CON
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
 | Body | 14.4px (0.9rem) | 400 (regular) | 1.5 | Form inputs, descriptions, strip copy, secondary meta |
-| Label | 13.6px (0.85rem) | 400 (regular) | 1.4 | Field labels, back-link, confirmation question text |
+| Label | 13.6px (0.85rem) | 400 (regular) | 1.4 | Field labels, back-link, confirmation question text — differentiated from body by color (`var(--text-secondary)`) not size |
 | Heading | 28px (1.75rem) | 700 (bold) | 1.2 | Page h1 (project title) — pre-existing, do not change |
-| Sub-heading | 17.6px (1.1rem) | 600 (semibold) | 1.3 | Section h2, form section labels, confirmation prompts |
+| Sub-heading | 17.6px (1.1rem) | 700 (bold) | 1.3 | Section h2, form section labels, confirmation prompts |
 
 Font: `var(--font-inter)` — declared via CSS custom property, not Tailwind class.
 
-Source: NewProjectForm.tsx (`fontSize: '0.9rem'` body, `fontSize: '0.85rem'` labels), project/[id]/page.tsx (`fontSize: '1.75rem'` h1, `fontSize: '1.1rem'` h2).
+**Weights:** 2 only — 400 (regular) for body and labels, 700 (bold) for headings and sub-headings. No semibold (600).
+
+Source: NewProjectForm.tsx (`fontSize: '0.9rem'` body, `fontSize: '0.85rem'` labels), project/[id]/page.tsx (`fontSize: '1.75rem'` h1, `fontSize: '1.1rem'` h2). Label/body size gap is small (0.8px) — color (`var(--text-secondary)` for labels vs `var(--text-primary)` for input values) is the primary differentiator, matching the established NewProjectForm.tsx pattern.
 
 ---
 
@@ -97,6 +101,89 @@ Destructive (`var(--urgency-high)`) reserved for:
 3. "Yes, delete" confirmation button background: `var(--urgency-high-dim)`
 
 Source: globals.css `:root` block, NewProjectForm.tsx inputStyle, UpgradePrompt.tsx button, CONTEXT.md D-17.
+
+---
+
+## Button Variants
+
+All buttons use inline `style` objects. Define variant style objects as constants and reuse them — no one-off per-component styling.
+
+| Variant | When to use | Style |
+|---------|-------------|-------|
+| `primary` | Primary CTA: Save Changes, Upgrade | `backgroundColor: 'var(--brand-amber)', color: '#0a0a0a', fontWeight: 700, padding: '0.75rem 1.5rem', borderRadius: '0.5rem', border: 'none', fontSize: '0.9rem', cursor: 'pointer'` |
+| `ghost` | Secondary/cancel actions | `background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.85rem', padding: '0.5rem 0.75rem'` |
+| `outline` | Idle destructive trigger (before confirmation) | `background: 'none', border: '1px solid var(--bg-border)', borderRadius: '0.5rem', padding: '0.5rem 1rem', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer'` |
+| `destructive` | Confirmed delete action | `backgroundColor: 'var(--urgency-high-dim)', border: '1px solid var(--urgency-high)', borderRadius: '0.5rem', padding: '0.5rem 1rem', color: 'var(--urgency-high)', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer'` |
+
+**Loading state (all variants):** Add `opacity: 0.7, cursor: 'not-allowed'` and disable the button. No spinner — text changes to loading copy (see Copywriting Contract).
+
+**Implementation:** Export a `buttonVariants` constant object from the component file or a shared `lib/ui.ts`:
+```ts
+export const buttonVariants = {
+  primary: { backgroundColor: 'var(--brand-amber)', ... },
+  ghost:   { background: 'none', ... },
+  outline: { background: 'none', border: '1px solid var(--bg-border)', ... },
+  destructive: { backgroundColor: 'var(--urgency-high-dim)', ... },
+}
+```
+Apply as: `style={buttonVariants.primary}`, with loading override spread after: `style={{ ...buttonVariants.primary, ...(loading ? { opacity: 0.7, cursor: 'not-allowed' } : {}) }}`
+
+---
+
+## Modal / Dialog Contract
+
+This tool has many error-prone operations (API calls, file deletions, DB writes). All error states and destructive confirmations surface as modal dialogs — not inline banners — so users cannot miss them and cannot accidentally dismiss by navigating.
+
+**Component:** Use shadcn `Dialog` (`components/ui/dialog.tsx`). Add via `npx shadcn add dialog` if not yet installed.
+
+**Dialog overlay style (override shadcn defaults to match dark theme):**
+```
+backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(2px)'
+```
+
+**Dialog content style:**
+```ts
+{
+  backgroundColor: 'var(--bg-elevated)',
+  border: '1px solid var(--bg-border)',
+  borderRadius: '0.875rem',
+  padding: '1.5rem',
+  maxWidth: '440px',
+  width: '100%',
+}
+```
+
+### Error Modal Variant
+
+Triggered when an API call returns an error (edit save failure, delete failure, checkout failure).
+
+| Element | Style / Copy |
+|---------|-------------|
+| Title | `"Something went wrong"` — `fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem'` |
+| Body | `data.error ?? 'Could not complete the action. Please try again.'` — `fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem'` |
+| Close button | `variant: ghost`, label: "Dismiss" |
+
+### Confirmation Modal Variant (Delete)
+
+Replaces inline two-step pattern from CONTEXT.md D-06/D-09. Triggered on first click of the delete button.
+
+| Element | Style / Copy |
+|---------|-------------|
+| Title | `"Are you sure?"` — same heading style as error modal title |
+| Body | Surface-specific copy (see Copywriting Contract) — same body style as error modal body |
+| Confirm button | `variant: destructive`, with loading state |
+| Cancel button | `variant: ghost`, label: "Cancel", closes dialog |
+
+**Dialog state machine:**
+```
+IDLE → [click "Delete"] → DIALOG_OPEN
+DIALOG_OPEN → [click "Cancel"] → IDLE (dialog closes)
+DIALOG_OPEN → [click "Yes, delete"] → DELETING (confirm button loading)
+DELETING → [success] → router.push(...)
+DELETING → [error] → ERROR_MODAL (swap confirmation dialog content for error variant)
+```
+
+**Note:** This supersedes CONTEXT.md D-06 ("inline two-step, no dialog") and D-09. Using a dialog is the safer choice for a destructive-action-heavy tool where accidental clicks must be prevented.
 
 ---
 
@@ -144,13 +231,13 @@ Source: NewProjectForm.tsx `inputStyle` constant (mirror exactly).
 
 Source: NewProjectForm.tsx `labelStyle` constant (mirror exactly).
 
-**Form layout:** `display: 'flex', flexDirection: 'column', gap: '1.25rem'` — mirrors NewProjectForm exactly. Project value + currency row: `display: 'grid', gridTemplateColumns: '1fr auto', gap: '0.75rem'`.
+**Form layout:** `display: 'flex', flexDirection: 'column', gap: '1.5rem'` — 24px (grid-conforming). Project value + currency row: `display: 'grid', gridTemplateColumns: '1fr auto', gap: '0.75rem'`.
 
 **Save button:**
 ```
 {
   backgroundColor: 'var(--brand-amber)', color: '#0a0a0a', fontWeight: 700,
-  padding: '0.85rem', borderRadius: '0.5rem', border: 'none',
+  padding: '0.75rem', borderRadius: '0.5rem', border: 'none',
   cursor: loading ? 'not-allowed' : 'pointer', fontSize: '1rem',
   opacity: loading ? 0.7 : 1,
 }
@@ -161,18 +248,7 @@ Label: "Save Changes" (idle) / "Saving…" (loading)
 
 **Button row:** `display: 'flex', gap: '0.75rem', alignItems: 'center', marginTop: '0.5rem'`
 
-**Error display (inline, above first field):**
-```
-{
-  backgroundColor: 'var(--urgency-high-dim)',
-  border: '1px solid var(--urgency-high)',
-  borderRadius: '0.5rem',
-  padding: '0.75rem',
-  color: 'var(--urgency-high)',
-  fontSize: '0.875rem',
-}
-```
-Source: NewProjectForm.tsx error block (mirror exactly).
+**Error handling:** On API failure, open the Error Modal Variant (see Modal / Dialog Contract). Body: `data.error ?? 'Could not save changes. Please try again.'` Dismissing the modal returns focus to the edit form (form stays open so the user can retry). Source: user direction (modals for error states in error-prone tools).
 
 **On success:** Close form (restore read view), `router.refresh()` to reflect updated values. Fire sonner toast: "Project updated" (success, default duration). Source: CONTEXT.md D-04, CONVENTIONS.md.
 
@@ -180,77 +256,45 @@ Source: NewProjectForm.tsx error block (mirror exactly).
 
 ### UI-02: Project Delete
 
-**Trigger:** "Delete" button in project detail header, next to "Edit" button. Source: CONTEXT.md D-06, D-08.
+**Trigger:** "Delete project" button (`buttonVariants.outline`) in project detail header, next to the Edit button. Source: CONTEXT.md D-08.
 
-**Pattern:** Inline two-step replace-in-place. The delete button transforms into a confirmation pair on first click. No dialog, no new dependencies. Source: CONTEXT.md D-06.
+**Pattern:** Confirmation Modal Variant (see Modal / Dialog Contract). First click opens a Dialog — not an inline replace. Source: user direction (modal for all destructive confirmations).
 
-**Step 1 — Delete button (idle state):**
-```
-{
-  background: 'none', border: '1px solid var(--bg-border)',
-  borderRadius: '0.5rem', padding: '0.4rem 0.875rem',
-  color: 'var(--text-muted)', fontSize: '0.8rem',
-  cursor: 'pointer',
-}
-```
-Label: "Delete project"
+**Idle delete button:** Use `buttonVariants.outline`. `fontSize: '0.85rem'` (label size). Label: "Delete project".
 
-**Step 2 — Confirmation state (replaces delete button in-place):**
-Layout: `display: 'flex', alignItems: 'center', gap: '0.5rem'`
-
-Confirmation text: `"Delete this project? This will permanently delete all defense responses too."` — displayed as a small text label before the buttons.
-```
-{ color: 'var(--text-secondary)', fontSize: '0.8rem' }
-```
-
-"Yes, delete" button:
-```
-{
-  backgroundColor: 'var(--urgency-high-dim)',
-  border: '1px solid var(--urgency-high)',
-  borderRadius: '0.5rem', padding: '0.4rem 0.875rem',
-  color: 'var(--urgency-high)', fontSize: '0.8rem',
-  cursor: loading ? 'not-allowed' : 'pointer',
-  opacity: loading ? 0.7 : 1,
-}
-```
-Label: "Yes, delete" (idle) / "Deleting…" (loading)
-
-"Cancel" button:
-```
-{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.8rem' }
-```
-Label: "Cancel" — restores idle state without API call.
+**Dialog content:**
+- Title: `"Are you sure?"` — modal heading style
+- Body: `"Delete this project? This will permanently delete all defense responses too."` — modal body style (`fontSize: '0.9rem'`)
+- Confirm button: `buttonVariants.destructive`. Label: "Yes, delete" / "Deleting…"
+- Cancel button: `buttonVariants.ghost`. Label: "Cancel". Closes dialog, no API call.
 
 **On confirm:** `DELETE /api/projects/[id]`, then `router.push('/projects')`. Source: CONTEXT.md D-07.
+
+**On error:** Swap dialog content to Error Modal Variant (title: "Something went wrong", body: `data.error ?? 'Could not delete project. Please try again.'`, close button: "Dismiss").
 
 ---
 
 ### UI-03: Contract Delete
 
-**Trigger:** "Delete contract" button in contract detail page header, near the back-link. Source: CONTEXT.md D-09, D-10.
+**Trigger:** "Delete contract" button (`buttonVariants.outline`) in contract detail page header, near the back-link. Source: CONTEXT.md D-10.
 
-**Pattern:** Same inline two-step replace-in-place as UI-02. Source: CONTEXT.md D-09.
+**Pattern:** Confirmation Modal Variant (see Modal / Dialog Contract) — same as UI-02.
 
-**Step 1 — Delete button (idle state):** Same style as UI-02 idle delete button.
-Label: "Delete contract"
+**Idle delete button:** Use `buttonVariants.outline`. `fontSize: '0.85rem'`. Label: "Delete contract".
 
-**Step 2 — Confirmation state:**
-Confirmation text: `"Delete this contract? The PDF stored with Anthropic will also be removed."`
-```
-{ color: 'var(--text-secondary)', fontSize: '0.8rem' }
-```
+**Dialog content:**
+- Title: `"Are you sure?"`
+- Body: `"Delete this contract? The PDF stored with Anthropic will also be removed."` — modal body style (`fontSize: '0.9rem'`)
+- Confirm button: `buttonVariants.destructive`. Label: "Yes, delete" / "Deleting…"
+- Cancel button: `buttonVariants.ghost`. Label: "Cancel".
 
-"Yes, delete" button: Same style as UI-02 confirm button.
-Label: "Yes, delete" (idle) / "Deleting…" (loading)
-
-"Cancel" button: Same style as UI-02 cancel button.
-
-**Placement:** Rendered below the `h1` title and filename, before the status/analysis content. Layout: `display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem'`
+**Placement of idle button:** Below the `h1` title and filename, before the status/analysis content. `display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem'`.
 
 **On confirm:** Backend calls `anthropic.beta.files.delete(contract.anthropic_file_id)` (best-effort, errors logged not thrown), then Supabase delete. Frontend: `router.push('/contracts')`. Source: CONTEXT.md D-11, D-12, D-13.
 
-**Component extraction:** `contracts/[id]/page.tsx` is a Server Component — extract an inline `ContractDeleteButton` client component within the same file (or as a sibling component file) for the interactive state machine. Source: CONVENTIONS.md Server vs Client split.
+**On error:** Error Modal Variant — body: `data.error ?? 'Could not delete contract. Please try again.'`
+
+**Component extraction:** `contracts/[id]/page.tsx` is a Server Component — extract a `ContractDeleteButton` client component (`'use client'`) that owns the Dialog open/close state and delete API call. Source: CONVENTIONS.md Server vs Client split.
 
 ---
 
@@ -269,7 +313,7 @@ Label: "Yes, delete" (idle) / "Deleting…" (loading)
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: '0.75rem',
-  padding: '0.625rem 1rem',
+  padding: '0.75rem 1rem',
   marginBottom: '1rem',
   backgroundColor: 'var(--bg-surface)',
   border: '1px solid var(--bg-border)',
@@ -290,7 +334,7 @@ Text: `"2 of 3 responses used"`
 {
   background: 'none', border: 'none',
   cursor: loading ? 'not-allowed' : 'pointer',
-  color: 'var(--brand-amber)', fontWeight: 600,
+  color: 'var(--brand-amber)', fontWeight: 700,
   fontSize: '0.85rem', padding: 0,
   opacity: loading ? 0.7 : 1,
   whiteSpace: 'nowrap',
@@ -311,17 +355,23 @@ On click: calls same `handleUpgrade()` pattern as UpgradePrompt.tsx — `fetch('
 | Edit form — Save CTA (idle) | "Save Changes" |
 | Edit form — Save CTA (loading) | "Saving…" |
 | Edit form — Cancel | "Cancel" |
-| Edit form — Error | `data.error ?? 'Something went wrong'` (inline above form) |
+| Edit form — Error modal title | "Something went wrong" |
+| Edit form — Error modal body | `data.error ?? 'Could not save changes. Please try again.'` |
+| Edit form — Error modal dismiss | "Dismiss" |
 | Project delete — Button (idle) | "Delete project" |
-| Project delete — Confirmation question | "Delete this project? This will permanently delete all defense responses too." |
+| Project delete — Dialog title | "Are you sure?" |
+| Project delete — Dialog body | "Delete this project? This will permanently delete all defense responses too." |
 | Project delete — Confirm button | "Yes, delete" |
 | Project delete — Confirm button (loading) | "Deleting…" |
 | Project delete — Cancel | "Cancel" |
+| Project delete — Error modal body | `data.error ?? 'Could not delete project. Please try again.'` |
 | Contract delete — Button (idle) | "Delete contract" |
-| Contract delete — Confirmation question | "Delete this contract? The PDF stored with Anthropic will also be removed." |
+| Contract delete — Dialog title | "Are you sure?" |
+| Contract delete — Dialog body | "Delete this contract? The PDF stored with Anthropic will also be removed." |
 | Contract delete — Confirm button | "Yes, delete" |
 | Contract delete — Confirm button (loading) | "Deleting…" |
 | Contract delete — Cancel | "Cancel" |
+| Contract delete — Error modal body | `data.error ?? 'Could not delete contract. Please try again.'` |
 | Nudge strip — Usage counter | "2 of 3 responses used" |
 | Nudge strip — Upgrade CTA | "Upgrade to Pro →" |
 | Nudge strip — Upgrade CTA (loading) | "Loading…" |
@@ -335,11 +385,12 @@ Source: CONTEXT.md `<specifics>` block, CONTEXT.md D-04, established patterns fr
 
 | Component | File Path | Type | New / Modified |
 |-----------|-----------|------|----------------|
-| ProjectHeader | `components/project/ProjectHeader.tsx` | Client | New — extracted from project/[id]/page.tsx; owns edit toggle + delete confirmation |
-| ContractDeleteButton | within `app/(dashboard)/contracts/[id]/page.tsx` | Client | New — inline client component for contract delete two-step |
+| ProjectHeader | `components/project/ProjectHeader.tsx` | Client | New — extracted from project/[id]/page.tsx; owns edit toggle, delete button, and dialog open state |
+| ContractDeleteButton | `components/contract/ContractDeleteButton.tsx` | Client | New — owns dialog open state and delete API call for contract deletion |
 | NudgeStrip | within `components/defense/DefenseDashboard.tsx` | inline JSX | Modified — conditional block inserted above tool grid |
+| Dialog | `components/ui/dialog.tsx` | shadcn | New — add via `npx shadcn add dialog`; used for all confirmation and error modals |
 
-No new shadcn components needed for this phase. `components/ui/sonner.tsx` (toast) already installed — use `toast('Project updated')` from `sonner` package.
+`components/ui/sonner.tsx` (toast) already installed — use `toast('Project updated')` from `sonner` package.
 
 ---
 
@@ -350,21 +401,21 @@ No new shadcn components needed for this phase. `components/ui/sonner.tsx` (toas
 IDLE → [click "Edit"] → EDITING
 EDITING → [click "Cancel"] → IDLE
 EDITING → [submit, success] → IDLE + toast("Project updated") + router.refresh()
-EDITING → [submit, error] → EDITING + inline error message
 EDITING → [submit, loading] → LOADING (inputs disabled, button shows "Saving…")
-LOADING → [response] → IDLE or EDITING+error
+LOADING → [success] → IDLE + toast
+LOADING → [error] → EDITING + ERROR_MODAL open
+ERROR_MODAL → [click "Dismiss"] → EDITING (form stays open for retry)
 ```
 
 ### Delete Confirmation — Project (UI-02) and Contract (UI-03)
 ```
-IDLE → [click "Delete project/contract"] → CONFIRMING
-CONFIRMING → [click "Cancel"] → IDLE
-CONFIRMING → [click "Yes, delete"] → DELETING (button shows "Deleting…", disabled)
+IDLE → [click "Delete project/contract"] → CONFIRM_DIALOG open
+CONFIRM_DIALOG → [click "Cancel"] → IDLE (dialog closes)
+CONFIRM_DIALOG → [click "Yes, delete"] → DELETING (confirm button loading)
 DELETING → [success] → router.push('/projects') or router.push('/contracts')
-DELETING → [error] → CONFIRMING + inline error (optional — see error handling note)
+DELETING → [error] → ERROR_MODAL (dialog content swaps to error variant)
+ERROR_MODAL → [click "Dismiss"] → IDLE (dialog closes)
 ```
-
-Error handling for delete: On API failure, log to console and restore CONFIRMING state with an inline error message using the same error style as the edit form. Copy: `"Failed to delete. Please try again."` Source: CONVENTIONS.md client error pattern.
 
 ### Nudge Strip (UI-04)
 ```
@@ -380,11 +431,11 @@ LOADING → [no data.url] → IDLE (button restored)
 
 | Registry | Blocks Used | Safety Gate |
 |----------|-------------|-------------|
-| shadcn official (base-nova) | sonner (already installed), button (already installed) | not required |
+| shadcn official (base-nova) | sonner (already installed), button (already installed), dialog (new — `npx shadcn add dialog`) | not required |
 
-No third-party registries. No new shadcn components needed for this phase — all required UI is hand-composed from existing CSS variables and established patterns.
+No third-party registries. All components are from the shadcn official registry. The `Dialog` component is the only new addition — verify it with `npx shadcn add dialog` before use. Its default Tailwind classes are acceptable alongside the project's inline-style pattern (Dialog handles overlay/focus-trap plumbing; inner content uses project CSS variables via inline styles).
 
-Source: CONTEXT.md — no external dependencies declared. STACK.md confirms `sonner ^2.0.7` and `components/ui/button.tsx` already present.
+Source: STACK.md confirms shadcn base-nova initialized. `sonner ^2.0.7` and `components/ui/button.tsx` already present.
 
 ---
 
@@ -399,11 +450,11 @@ Source: CONTEXT.md — no external dependencies declared. STACK.md confirms `son
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: FLAG (non-blocking — "Cancel"/"Dismiss" single-word labels; D-06 modal override user-approved)
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: FLAG (non-blocking — label/body 0.8px gap, justified by color differentiation)
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-04-24
