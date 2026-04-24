@@ -70,10 +70,10 @@
 
 ### Payment Tracking
 
-- [ ] **PAY-01**: User can add a payment due date and expected amount to any project
-- [ ] **PAY-02**: Dashboard shows an overdue badge on projects where the payment due date has passed and payment status is not marked as received
-- [ ] **PAY-03**: Overdue projects show a one-click "Handle Late Payment" CTA that opens the Late Payment defense tool with payment context (amount, due date, days overdue) pre-filled
-- [ ] **PAY-04**: User can mark a payment as received on a project, clearing the overdue badge
+- [x] **PAY-01**: User can add a payment due date and expected amount to any project
+- [x] **PAY-02**: Dashboard shows an overdue badge on projects where the payment due date has passed and payment status is not marked as received
+- [x] **PAY-03**: Overdue projects show a one-click "Handle Late Payment" CTA that opens the Late Payment defense tool with payment context (amount, due date, days overdue) pre-filled
+- [x] **PAY-04**: User can mark a payment as received on a project, clearing the overdue badge
 
 ## v2 Requirements
 
@@ -142,10 +142,10 @@
 | DETECT-01 | Phase 6 | Complete (06-02) |
 | DETECT-02 | Phase 6 | Complete (06-03) |
 | DETECT-03 | Phase 6 | Complete (06-02) |
-| PAY-01 | Phase 7 | Pending |
-| PAY-02 | Phase 7 | Pending |
-| PAY-03 | Phase 7 | Pending |
-| PAY-04 | Phase 7 | Pending |
+| PAY-01 | Phase 7 | Complete |
+| PAY-02 | Phase 7 | Complete |
+| PAY-03 | Phase 7 | Complete |
+| PAY-04 | Phase 7 | Complete |
 
 **Coverage:**
 - v1 requirements: 34 total
