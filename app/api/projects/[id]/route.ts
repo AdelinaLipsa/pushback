@@ -25,7 +25,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
-  const allowed = ['title', 'client_name', 'client_email', 'project_value', 'currency', 'status', 'notes', 'contract_id']
+  const allowed = ['title', 'client_name', 'client_email', 'project_value', 'currency', 'status', 'notes', 'contract_id', 'payment_due_date', 'payment_amount', 'payment_received_at']
   const updates = Object.fromEntries(Object.entries(body).filter(([k]) => allowed.includes(k)))
 
   const { data, error } = await supabase
