@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { DefenseTool, DefenseToolMeta, DefenseResponse } from '@/types'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
@@ -16,9 +16,10 @@ interface DefenseDashboardProps {
   projectId: string
   plan: 'free' | 'pro'
   responsesUsed: number
+  initialPaymentPrefill?: { tool: DefenseTool; contextFields: Record<string, string> }
 }
 
-export default function DefenseDashboard({ projectId, plan, responsesUsed }: DefenseDashboardProps) {
+export default function DefenseDashboard({ projectId, plan, responsesUsed, initialPaymentPrefill }: DefenseDashboardProps) {
   const router = useRouter()
   const [selectedTool, setSelectedTool] = useState<DefenseToolMeta | null>(null)
   const [loading, setLoading] = useState(false)
@@ -37,6 +38,16 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
 
   const FREE_LIMIT = PLANS.free.defense_responses
   const isAtLimit = plan === 'free' && responsesUsed >= FREE_LIMIT
+
+  useEffect(() => {
+    if (initialPaymentPrefill) {
+      const matchedTool = DEFENSE_TOOLS.find(t => t.type === initialPaymentPrefill.tool)
+      if (matchedTool) {
+        setSelectedTool(matchedTool)
+        setResponse(null)
+      }
+    }
+  }, [initialPaymentPrefill])
 
   async function handleUpgrade() { await startCheckout(setUpgradeLoading) }
 
@@ -278,6 +289,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
           onClose={() => { setSelectedTool(null); setResponse(null) }}
           loading={loading}
           initialSituation={analysisResult?.situation_context}
+          initialContextFields={initialPaymentPrefill?.contextFields}
         />
       )}
 
