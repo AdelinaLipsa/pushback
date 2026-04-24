@@ -102,6 +102,7 @@
   --text-primary: #fafafa;
   --text-secondary: #a1a1aa;
   --text-muted: #52525b;
+  --brand-lime: #84cc16;
 }
 
 @layer base {
