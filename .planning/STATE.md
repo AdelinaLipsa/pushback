@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: Completed 03-02-PLAN.md — lib/email.ts created with sendWelcomeEmail and sendUpgradeEmail. EMAIL-01, EMAIL-02 prerequisites satisfied.
+last_updated: "2026-04-24T08:39:20.786Z"
+last_activity: 2026-04-24
+progress:
+  total_phases: 7
+  completed_phases: 2
+  total_plans: 14
+  completed_plans: 12
+  percent: 86
+---
+
 # Project State
 
 ## Project Reference
@@ -10,15 +26,16 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 ## Current Position
 
 Phase: 3 of 7 (Legal & Email) — In progress
-Plan: 1 of 4 in Phase 3 (03-01 complete)
-Status: Phase 3 executing — 03-01 legal pages complete; 03-02 email helper next (Wave 1)
-Last activity: 2026-04-24 — 03-01 complete: /privacy and /terms Server Component pages created, signup legal footer converted to Link components. All 3 tasks committed. LEGAL-01, LEGAL-02, LEGAL-03 satisfied.
+Plan: 2 of 4 in Phase 3 (03-01 complete)
+Status: Ready to execute
+Last activity: 2026-04-24
 
 Progress: [██░░░░░░░░] 25% (1/4 plans complete in Phase 3)
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 6 (Phase 1 complete)
 - Average duration: ~10 min (automated portion)
 - Total execution time: ~30 min
@@ -30,10 +47,12 @@ Progress: [██░░░░░░░░] 25% (1/4 plans complete in Phase 3)
 | 01-route-handler-hardening | 6 | ~30 min | ~10 min |
 
 **Recent Trend:**
+
 - Last 5 plans: 01-01, 01-02, 01-03, 01-04, 01-05, 01-06
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 03-legal-email P02 | 2min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -66,6 +85,8 @@ Recent decisions affecting current work:
 - 03-01: Legal pages placed at app/privacy and app/terms (top-level, not in route groups) to avoid inheriting auth/dashboard layouts
 - 03-01: Server Components only for legal pages — static prose, no 'use client' needed
 - 03-01: JSX HTML entities (&quot; &apos;) used in legal page prose to avoid linting issues with unescaped characters
+- [Phase 03]: lib/email.ts uses #f59e0b for amber (matches globals.css --brand-amber, ignoring #f5a623 stale value in D-10)
+- [Phase 03]: 03-02: BillingDetails interface exported from lib/email.ts; RESEND_API_KEY passed without ! to Resend constructor; billing fallback triggers when EITHER amount OR nextBillingDate is null
 
 ### Pending Todos
 
@@ -86,6 +107,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-24
-Stopped at: Completed 03-01-PLAN.md — /privacy and /terms pages created, signup Link components added. SUMMARY written, STATE and ROADMAP updated.
+Last session: 2026-04-24T08:39:20.781Z
+Stopped at: Completed 03-02-PLAN.md — lib/email.ts created with sendWelcomeEmail and sendUpgradeEmail. EMAIL-01, EMAIL-02 prerequisites satisfied.
 Resume signal: None — 03-02 (email helper lib) is next

@@ -70,7 +70,7 @@ Plans:
 **Plans**: 4 plans
 Plans:
 - [x] 03-01-PLAN.md — Create /privacy and /terms pages + convert signup legal footer to Link components (Wave 1)
-- [ ] 03-02-PLAN.md — Create lib/email.ts with Resend client + sendWelcomeEmail + sendUpgradeEmail helpers (Wave 1)
+- [x] 03-02-PLAN.md — Create lib/email.ts with Resend client + sendWelcomeEmail + sendUpgradeEmail helpers (Wave 1)
 - [ ] 03-03-PLAN.md — Wire welcome email into auth callback with new-signup detection and fire-and-forget (Wave 2)
 - [ ] 03-04-PLAN.md — Wire upgrade confirmation email into Stripe webhook checkout.session.completed block (Wave 2)
 **UI hint**: yes
@@ -129,7 +129,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Route Handler Hardening | 6/6 | Complete | 2026-04-24 |
 | 2. Infrastructure & Security | 3/3 | Complete | 2026-04-24 |
-| 3. Legal & Email | 1/4 | In progress | - |
+| 3. Legal & Email | 2/4 | In Progress|  |
 | 4. Missing UI | 0/? | Not started | - |
 | 5. Types & Observability | 0/? | Not started | - |
 | 6. Proactive Detection | 0/? | Not started | - |
