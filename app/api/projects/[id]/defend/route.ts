@@ -1,5 +1,6 @@
 import { anthropic, DEFENSE_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { checkRateLimit, defendRateLimit } from '@/lib/rate-limit'
 import { DefenseTool } from '@/types'
 import { z } from 'zod'
 
@@ -28,6 +29,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const rateLimitResponse = await checkRateLimit(defendRateLimit, user.id)
+  if (rateLimitResponse) return rateLimitResponse
 
   // Atomic plan gate — check-and-increment in a single Postgres transaction (GATE-01)
   const { data: gateResult, error: gateError } = await supabase.rpc(

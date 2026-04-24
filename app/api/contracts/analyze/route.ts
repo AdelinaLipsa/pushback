@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { anthropic, CONTRACT_ANALYSIS_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { checkRateLimit, contractRateLimit } from '@/lib/rate-limit'
 import { ContractAnalysis } from '@/types'
 
 // D-13: Inline JSON extraction helper — handles preamble-wrapped and markdown-fenced output
@@ -20,6 +21,9 @@ export async function POST(request: Request) {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const rateLimitResponse = await checkRateLimit(contractRateLimit, user.id)
+  if (rateLimitResponse) return rateLimitResponse
 
   // Atomic plan gate — check-and-increment in single Postgres transaction (GATE-02)
   const { data: gateResult, error: gateError } = await supabase.rpc(
