@@ -21,9 +21,22 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
   const [loading, setLoading] = useState(false)
   const [response, setResponse] = useState<{ text: string; id: string } | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [upgradeLoading, setUpgradeLoading] = useState(false)
 
   const FREE_LIMIT = 3
   const isAtLimit = plan === 'free' && responsesUsed >= FREE_LIMIT
+  const isNearLimit = plan === 'free' && responsesUsed >= 2 && responsesUsed < FREE_LIMIT
+
+  async function handleUpgrade() {
+    setUpgradeLoading(true)
+    const res = await fetch('/api/checkout', { method: 'POST' })
+    const data = await res.json()
+    if (data.url) {
+      window.location.href = data.url
+    } else {
+      setUpgradeLoading(false)
+    }
+  }
 
   function selectTool(tool: DefenseToolMeta) {
     if (isAtLimit) {
@@ -100,6 +113,41 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
           </p>
         )}
       </div>
+
+      {isNearLimit && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '0.75rem',
+          padding: '0.75rem 1rem',
+          marginBottom: '1rem',
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--bg-border)',
+          borderLeft: '3px solid var(--brand-lime)',
+          borderRadius: '0.5rem',
+          fontSize: '0.85rem',
+        }}>
+          <span style={{ color: 'var(--text-secondary)' }}>2 of 3 responses used</span>
+          <button
+            onClick={handleUpgrade}
+            disabled={upgradeLoading}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: upgradeLoading ? 'not-allowed' : 'pointer',
+              color: 'var(--brand-lime)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              padding: 0,
+              opacity: upgradeLoading ? 0.7 : 1,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {upgradeLoading ? 'Loading…' : 'Upgrade to Pro →'}
+          </button>
+        </div>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
         {DEFENSE_TOOLS.map(tool => (
