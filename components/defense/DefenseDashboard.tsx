@@ -143,6 +143,105 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
 
   return (
     <div>
+      {/* Analyze section card (D-01, D-11) */}
+      <div style={{
+        backgroundColor: 'var(--bg-surface)',
+        border: '1px solid var(--bg-border)',
+        borderRadius: '0.875rem',
+        padding: '1.5rem',
+        marginBottom: '1rem',
+      }}>
+        <label style={{
+          display: 'block',
+          color: 'var(--text-secondary)',
+          fontSize: '0.8rem',
+          marginBottom: '0.4rem',
+        }}>
+          Paste a client message
+        </label>
+        <textarea
+          rows={4}
+          maxLength={3000}
+          value={messageInput}
+          onChange={e => setMessageInput(e.target.value)}
+          placeholder="Paste what your client said..."
+          style={{ ...inputStyle, resize: 'vertical' as const }}
+          onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
+          onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
+        />
+        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'right', marginTop: '0.25rem' }}>
+          {messageInput.length} / 3000
+        </p>
+        {analyzeError && (
+          <p style={{ color: 'var(--urgency-high)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+            {analyzeError}
+          </p>
+        )}
+        <button
+          onClick={handleAnalyze}
+          disabled={!messageInput.trim() || analyzeLoading}
+          style={{
+            ...btnStyles.primary,
+            width: '100%',
+            marginTop: '0.75rem',
+            opacity: !messageInput.trim() || analyzeLoading ? 0.6 : 1,
+            cursor: !messageInput.trim() || analyzeLoading ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {analyzeLoading ? 'Analyzing...' : 'Analyze Message'}
+        </button>
+      </div>
+
+      {/* Result banner — conditional on analysisResult */}
+      {analysisResult && (
+        <div
+          className="response-enter"
+          style={{
+            borderLeft: '3px solid var(--brand-lime)',
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--bg-border)',
+            borderRadius: '0.875rem',
+            padding: '1rem 1.25rem',
+            marginBottom: '0.5rem',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '0.5rem',
+            flexWrap: 'wrap',
+          }}
+        >
+          <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--brand-lime)' }}>
+            {DEFENSE_TOOLS.find(t => t.type === analysisResult.tool_type)?.label ?? analysisResult.tool_type}
+          </span>
+          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+            — {analysisResult.explanation}
+          </span>
+        </div>
+      )}
+
+      {/* Start over button — conditional on analysisResult */}
+      {analysisResult && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.75rem' }}>
+          <button
+            onClick={() => {
+              setAnalysisResult(null)
+              setMessageInput('')
+              setSelectedTool(null)
+              setResponse(null)
+            }}
+            style={btnStyles.ghost}
+          >
+            Start over
+          </button>
+        </div>
+      )}
+
+      {/* Divider + "Or pick manually:" label — always visible */}
+      <div style={{ height: '1px', backgroundColor: 'var(--bg-border)', marginBottom: '1rem' }} />
+      <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+        Or pick manually:
+      </p>
+
+      {/* Instruction paragraph */}
       <div style={{ marginBottom: '1.5rem' }}>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
           {selectedTool ? (
@@ -160,7 +259,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
         )}
       </div>
 
-
+      {/* Tool grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
         {DEFENSE_TOOLS.map(tool => (
           <DefenseToolCard
@@ -185,6 +284,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
           onGenerate={handleGenerate}
           onClose={() => { setSelectedTool(null); setResponse(null) }}
           loading={loading}
+          initialSituation={analysisResult?.situation_context}
         />
       )}
 
