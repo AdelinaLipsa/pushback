@@ -93,6 +93,7 @@ export default function LandingPage() {
               gap: '1rem',
               overflowX: 'auto',
               scrollSnapType: 'x mandatory',
+              overscrollBehaviorX: 'contain',
               scrollbarWidth: 'none',
               paddingLeft: 'calc((100vw - 80rem) / 2 + 1.5rem)',
               paddingRight: 'calc((100vw - 80rem) / 2 + 1.5rem)',
