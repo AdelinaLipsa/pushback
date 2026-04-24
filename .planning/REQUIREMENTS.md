@@ -46,8 +46,8 @@
 
 ### Email
 
-- [ ] **EMAIL-01**: User receives a welcome email after signup that sets free-tier expectations and links to the dashboard
-- [ ] **EMAIL-02**: User receives an upgrade confirmation email after a Creem subscription activates — confirms billing, states what changed, includes a back-to-dashboard CTA
+- [x] **EMAIL-01**: User receives a welcome email after signup that sets free-tier expectations and links to the dashboard
+- [x] **EMAIL-02**: User receives an upgrade confirmation email after a Creem subscription activates — confirms billing, states what changed, includes a back-to-dashboard CTA
 
 ### UI — Missing Surfaces
 
@@ -130,8 +130,8 @@
 | LEGAL-01 | Phase 3 | Pending |
 | LEGAL-02 | Phase 3 | Pending |
 | LEGAL-03 | Phase 3 | Pending |
-| EMAIL-01 | Phase 3 | Pending |
-| EMAIL-02 | Phase 3 | Pending |
+| EMAIL-01 | Phase 3 | Complete |
+| EMAIL-02 | Phase 3 | Complete |
 | UI-01 | Phase 4 | Pending |
 | UI-02 | Phase 4 | Pending |
 | UI-03 | Phase 4 | Pending |

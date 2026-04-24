@@ -58,7 +58,7 @@ The Anthropic Files API integration uses beta endpoints with `as any` casts — 
 
 ## Constraints
 
-- **Tech stack**: Next.js 15, TypeScript, Supabase, Anthropic Claude, Creem, Resend — locked
+- **Tech stack**: Next.js 16, TypeScript, Supabase, Anthropic Claude, Stripe, Resend — locked
 - **Hosting**: Vercel (assumed from Next.js + Supabase stack)
 - **Pricing model**: Free tier (3 responses, 1 contract) + Pro subscription — decided
 - **Target user**: All freelancers broadly — no specific niche for v1

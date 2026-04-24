@@ -74,10 +74,11 @@
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase anon key (public)
   - `SUPABASE_SERVICE_ROLE_KEY` — Supabase service role key (server only, secret)
   - `ANTHROPIC_API_KEY` — Anthropic API key (server only, secret)
-  - `CREEM_API_KEY` — Creem payment API key (server only, secret)
-  - `CREEM_WEBHOOK_SECRET` — Creem webhook HMAC secret (server only, secret)
-  - `NEXT_PUBLIC_CREEM_PRODUCT_ID` — Creem product ID for Pro plan (public)
+  - `STRIPE_SECRET_KEY` — Stripe secret key (server only, secret)
+  - `STRIPE_WEBHOOK_SECRET` — Stripe webhook signing secret (server only, secret)
+  - `STRIPE_PRICE_ID` — Stripe Price ID for Pro plan (server only, secret)
   - `RESEND_API_KEY` — Resend email API key (server only, secret)
+  - `RESEND_FROM_EMAIL` — Sender address for transactional emails (server only)
   - `NEXT_PUBLIC_APP_URL` — Base app URL, e.g. `http://localhost:3000` (public)
 
 **TypeScript:**

@@ -6,10 +6,10 @@
 <domain>
 ## Phase Boundary
 
-Two parallel tracks to make Pushback legally compliant and communicative enough for Creem to activate live payments:
+Two parallel tracks to make Pushback legally compliant and communicative enough for Stripe to activate live payments:
 
 1. **Legal pages** — Create /privacy (Privacy Policy) and /terms (Terms of Service) pages. Update the signup page to link to both.
-2. **Transactional emails** — Wire up the installed-but-unused `resend` package to send a welcome email on new signup and an upgrade confirmation email when a Creem subscription activates.
+2. **Transactional emails** — Wire up the installed-but-unused `resend` package to send a welcome email on new signup and an upgrade confirmation email when a Stripe subscription activates.
 
 No new features. No new data models. No changes to the AI tools or plan gating.
 
@@ -32,9 +32,9 @@ No new features. No new data models. No changes to the AI tools or plan gating.
 
 ### Upgrade Confirmation Email (EMAIL-02)
 
-- **D-07:** Trigger point: inside the Creem webhook handler (`app/api/webhooks/creem/route.ts`), after the successful `user_profiles` update on `subscription.active` / `subscription.updated`. Use `createAdminSupabaseClient()` to fetch the user's email from `user_profiles` (userId is already extracted from `object.metadata.user_id`).
-- **D-08:** Content: include billing details — amount and next billing date — from the Creem webhook payload. Planner MUST verify available fields on the `object` payload for `subscription.active` events against Creem's webhook documentation before hardcoding field paths. If a field is absent in the payload, fall back to "billing details available in your Creem dashboard" rather than throwing.
-- **D-09:** Fire-and-forget — same pattern as D-06. Email failure must not cause the webhook to return a non-2xx (that would trigger Creem retries and cause duplicate DB updates).
+- **D-07:** Trigger point: inside the Stripe webhook handler (`app/api/webhooks/stripe/route.ts`), inside the `checkout.session.completed` block, after the successful `user_profiles` update. The `userId` is in `session.metadata.user_id`. Use `createAdminSupabaseClient()` to fetch the user's email from `user_profiles` by `userId`.
+- **D-08:** Content: include billing details from the Stripe `checkout.session.completed` payload. The session object has `amount_total` (in cents) and `currency`. For the next billing date, retrieve the subscription via `stripe.subscriptions.retrieve(session.subscription as string)` and read `current_period_end` (Unix timestamp). If any field is absent or the retrieve call fails, fall back to "billing details available in your Stripe dashboard" rather than throwing.
+- **D-09:** Fire-and-forget — same pattern as D-06. Email failure must not cause the webhook to return a non-2xx (that would trigger Stripe retries and cause duplicate DB updates).
 
 ### Email Design (applies to both EMAIL-01 and EMAIL-02)
 
@@ -45,8 +45,8 @@ No new features. No new data models. No changes to the AI tools or plan gating.
 
 - Exact HTML/CSS structure of the email templates (inline styles, table vs div layout, etc.) — Claude decides based on email client compatibility best practices.
 - Exact wording of Privacy Policy and Terms of Service body text — Claude writes complete prose from the locked parameters in D-01.
-- Whether to add a `RESEND_FROM_EMAIL` env var or hardcode the sender address — Claude decides (env var preferred for configurability).
-- Precise Creem payload field paths for billing amount and next billing date — planner must check Creem docs and verify before writing the email template.
+- Whether to add a `RESEND_FROM_EMAIL` env var or hardcode the sender address — Claude decides (env var preferred; already added to `.env.local.example`).
+- Precise Stripe payload field paths for billing amount and next billing date — planner must verify against Stripe's `checkout.session.completed` and `Subscription` object docs before writing the email template.
 
 </decisions>
 
@@ -58,7 +58,7 @@ No new features. No new data models. No changes to the AI tools or plan gating.
 ### Files to Modify
 - `app/(auth)/signup/page.tsx` — Add Link components to /terms and /privacy (LEGAL-03)
 - `app/auth/callback/route.ts` — Add new-signup detection + welcome email trigger (EMAIL-01)
-- `app/api/webhooks/creem/route.ts` — Add upgrade email trigger after successful plan update (EMAIL-02)
+- `app/api/webhooks/stripe/route.ts` — Add upgrade email trigger inside `checkout.session.completed` block after successful plan update (EMAIL-02)
 
 ### Files to Create
 - `app/privacy/page.tsx` — Full Privacy Policy page (LEGAL-01)
@@ -70,12 +70,13 @@ No new features. No new data models. No changes to the AI tools or plan gating.
 - `.planning/codebase/CONVENTIONS.md` — Error response format, import patterns, CSS variable naming
 - `.planning/phases/02-infrastructure-security/02-CONTEXT.md` — Established patterns: `createAdminSupabaseClient()`, fire-and-forget error pattern, `Response.json()` format
 - `app/(auth)/signup/page.tsx` — Existing signup page layout to match for /privacy and /terms styling
-- `app/api/webhooks/creem/route.ts` — Current webhook structure; email must be added after the existing DB update block
+- `app/api/webhooks/stripe/route.ts` — Current webhook structure; email must be added inside the `checkout.session.completed` block after the existing DB update
+- `lib/stripe.ts` — Stripe client singleton; use `stripe.subscriptions.retrieve()` for next billing date
 - `supabase/migrations/001_initial.sql` — `user_profiles` table schema (has `email` column)
 - `node_modules/next/dist/docs/` — Next.js 16 specifics before any route/layout changes
 
 ### External Docs to Check
-- Creem webhook payload documentation — verify field names for billing amount and next billing date on `subscription.active` events (required for D-08)
+- Stripe `checkout.session.completed` webhook event docs — verify `amount_total`, `currency`, `subscription` fields and `Subscription.current_period_end` for D-08
 - Resend SDK v6 docs — `resend@^6.12.2` may have API differences from v2/v3 training data; check before writing send calls
 
 </canonical_refs>
@@ -86,6 +87,7 @@ No new features. No new data models. No changes to the AI tools or plan gating.
 ### Reusable Assets
 - `createAdminSupabaseClient()` in `lib/supabase/server.ts` — synchronous, no cookies; use in webhook to fetch user email by userId
 - `resend@^6.12.2` — installed in package.json, zero existing usage; just needs `new Resend(process.env.RESEND_API_KEY)` to initialize
+- `stripe` (v22) — installed in package.json; singleton exported from `lib/stripe.ts` as `stripe`
 - `app/(auth)/signup/page.tsx` — existing dark-themed auth page; /privacy and /terms should match its layout pattern (`--bg-base` background, centered container, `var(--bg-surface)` card)
 
 ### Established Patterns
@@ -96,8 +98,9 @@ No new features. No new data models. No changes to the AI tools or plan gating.
 
 ### Integration Points
 - Auth callback (`app/auth/callback/route.ts`): currently redirects to `/dashboard` after code exchange — welcome email fires before the redirect
-- Creem webhook: currently ends with `return Response.json({ received: true })` after all event handling — email call goes inside the `subscription.active` block before that return
+- Stripe webhook (`app/api/webhooks/stripe/route.ts`): `checkout.session.completed` block currently ends with the DB update and falls through to `return Response.json({ received: true })` — email call goes inside that block after the DB update
 - `user_profiles.email` column exists and is populated by `on_auth_user_created` trigger — reliable source for user email in webhook context
+- `stripe_customer_id` and `stripe_subscription_id` columns exist in `user_profiles` (renamed from creem_ via migration 003)
 
 </code_context>
 
@@ -122,4 +125,4 @@ None — discussion stayed within phase scope.
 ---
 
 *Phase: 03-legal-email*
-*Context gathered: 2026-04-24*
+*Context gathered: 2026-04-24 — updated 2026-04-24 for Stripe migration (Creem replaced)*
