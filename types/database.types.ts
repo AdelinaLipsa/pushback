@@ -157,35 +157,35 @@ export type Database = {
         Row: {
           contracts_used: number
           created_at: string | null
-          creem_customer_id: string | null
-          creem_subscription_id: string | null
           defense_responses_used: number
           email: string
           full_name: string | null
           id: string
           plan: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
         }
         Insert: {
           contracts_used?: number
           created_at?: string | null
-          creem_customer_id?: string | null
-          creem_subscription_id?: string | null
           defense_responses_used?: number
           email: string
           full_name?: string | null
           id: string
           plan?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
         }
         Update: {
           contracts_used?: number
           created_at?: string | null
-          creem_customer_id?: string | null
-          creem_subscription_id?: string | null
           defense_responses_used?: number
           email?: string
           full_name?: string | null
           id?: string
           plan?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
         }
         Relationships: []
       }
