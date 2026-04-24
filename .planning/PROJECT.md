@@ -16,9 +16,13 @@ A freelancer in an uncomfortable client situation gets a professional, ready-to-
 - ✓ Supabase auth (email/password + Google OAuth) — existing
 - ✓ 8 AI defense tools (scope creep, late payment, cancellation, ghosting, revision abuse, undervaluing, rush jobs, contract disputes) — existing
 - ✓ Contract PDF/text upload and risk analysis via Anthropic Files API — existing
-- ✓ Free tier (3 AI responses, 1 contract analysis) + Pro subscription via Creem — existing
+- ✓ Free tier (3 AI responses, 1 contract analysis) + Pro subscription via Stripe — existing (migrated from Creem)
 - ✓ Response history per project — existing
 - ✓ Multi-table Supabase schema with RLS — existing
+- ✓ Atomic plan gating via Supabase RPC — Validated in Phase 1
+- ✓ Security hardening (CSP, HSTS, X-Frame-Options, webhook guards, proxy.ts) — Validated in Phase 2
+- ✓ /privacy and /terms legal pages with Anthropic-as-processor clause — Validated in Phase 3
+- ✓ Transactional emails: welcome on signup, upgrade confirmation on Stripe checkout — Validated in Phase 3
 
 ### Active
 
@@ -26,10 +30,8 @@ A freelancer in an uncomfortable client situation gets a professional, ready-to-
 - [ ] Input validation with Zod on all POST API routes
 - [ ] Atomic plan gating (Supabase RPC to eliminate race condition on free-tier limit)
 - [ ] Security hardening (security headers in next.config.ts, webhook secret null check, service-role client cleanup)
-- [ ] Privacy and Terms pages (required for legal compliance and payment processor)
 - [ ] Project and contract delete UI (API routes exist, buttons missing)
 - [ ] Project edit UI (API route exists, no form)
-- [ ] Transactional emails on signup and upgrade (Resend installed, unimplemented)
 - [ ] Supabase type generation to eliminate `any` casts on joined queries
 - [ ] /settings route added to middleware matcher
 
@@ -92,4 +94,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-23 after initialization*
+*Last updated: 2026-04-24 after Phase 3 completion*

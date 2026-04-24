@@ -40,9 +40,9 @@
 
 ### Legal
 
-- [ ] **LEGAL-01**: `/privacy` page exists with full Privacy Policy — names Anthropic as data processor for contract PDFs, includes data retention and deletion rights
-- [ ] **LEGAL-02**: `/terms` page exists with Terms of Service — includes AI output disclaimer (outputs are not legal advice), subscription terms, cancellation policy
-- [ ] **LEGAL-03**: Signup page links to `/privacy` and `/terms` with working hyperlinks
+- [x] **LEGAL-01**: `/privacy` page exists with full Privacy Policy — names Anthropic as data processor for contract PDFs, includes data retention and deletion rights
+- [x] **LEGAL-02**: `/terms` page exists with Terms of Service — includes AI output disclaimer (outputs are not legal advice), subscription terms, cancellation policy
+- [x] **LEGAL-03**: Signup page links to `/privacy` and `/terms` with working hyperlinks
 
 ### Email
 
@@ -127,9 +127,9 @@
 | INFRA-03 | Phase 2 | Complete (02-02) |
 | INFRA-04 | Phase 2 | Complete (02-02) |
 | INFRA-05 | Phase 2 | Complete (02-03) |
-| LEGAL-01 | Phase 3 | Pending |
-| LEGAL-02 | Phase 3 | Pending |
-| LEGAL-03 | Phase 3 | Pending |
+| LEGAL-01 | Phase 3 | Complete (03-01) |
+| LEGAL-02 | Phase 3 | Complete (03-01) |
+| LEGAL-03 | Phase 3 | Complete (03-01) |
 | EMAIL-01 | Phase 3 | Complete |
 | EMAIL-02 | Phase 3 | Complete |
 | UI-01 | Phase 4 | Pending |
