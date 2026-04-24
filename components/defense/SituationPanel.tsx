@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { DefenseToolMeta } from '@/types'
 import { inputStyle } from '@/lib/ui'
 
@@ -10,11 +10,16 @@ interface SituationPanelProps {
   onClose: () => void
   loading: boolean
   initialSituation?: string
+  initialContextFields?: Record<string, string>
 }
 
-export default function SituationPanel({ tool, onGenerate, onClose, loading, initialSituation }: SituationPanelProps) {
+export default function SituationPanel({ tool, onGenerate, onClose, loading, initialSituation, initialContextFields }: SituationPanelProps) {
   const [situation, setSituation] = useState(initialSituation ?? '')
-  const [extra, setExtra] = useState<Record<string, string>>({})
+  const [extra, setExtra] = useState<Record<string, string>>(initialContextFields ?? {})
+
+  useEffect(() => {
+    if (initialContextFields) setExtra(initialContextFields)
+  }, [initialContextFields])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
