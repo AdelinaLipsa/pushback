@@ -1,7 +1,8 @@
 ---
 phase: 6
 slug: proactive-detection
-status: draft
+status: approved
+reviewed_at: 2026-04-24
 shadcn_initialized: true
 preset: base-nova
 created: 2026-04-24
@@ -57,18 +58,22 @@ All sizes in rem matching existing component patterns in `SituationPanel.tsx`, `
 | Body | 15.2px (0.95rem) | 400 | 1.5 | var(--text-secondary) or var(--text-primary) |
 | Label | 12.8px (0.8rem) | 400 | 1.4 | var(--text-secondary) |
 | Action / Button | 14.4px (0.9rem) | 700 | — | var(--text-primary) on lime |
-| UI annotation | 12.8px (0.8rem) | 400 | 1.4 | var(--text-muted) |
+| Character count | 12px (0.75rem) | 400 | 1.4 | var(--text-muted) |
 
 New-element specifics for this phase:
 
 - Analyze section heading label (e.g. "Paste a client message"): 0.8rem, 400, var(--text-secondary) — matches `labelStyle` from `lib/ui.ts`
-- Textarea placeholder text: 0.875rem, 400, var(--text-muted) — matches `SituationPanel` textarea style
+- Textarea placeholder text: 0.9rem, 400, var(--text-muted) — matches SituationPanel textarea style
 - Result banner tool name: 0.9rem, 700, var(--brand-lime)
 - Result banner explanation: 0.9rem, 400, var(--text-secondary)
 - "Or pick manually:" divider label: 0.8rem, 400, var(--text-muted)
 - Analyze button label: 0.9rem, 700, #0a0a0a on var(--brand-lime) — matches `btnStyles.primary`
 - Loading state copy: "Analyzing..." — 0.9rem, 700, #0a0a0a (same button, disabled state)
 - Character count (discretion): 0.75rem, 400, var(--text-muted), right-aligned below textarea
+- "Start over" link: 0.9rem, 400, var(--text-muted)
+- Error state copy: 0.9rem, 400, var(--urgency-high)
+
+Permitted sizes: `0.75rem`, `0.8rem`, `0.9rem`, `0.95rem` — no other sizes may be introduced.
 
 ---
 
@@ -141,7 +146,7 @@ Lime is NOT used for: the "Or pick manually:" label, the divider line, the expla
 
 **"Start over" link (Claude's discretion)**
 - Appears below result banner, right-aligned or inline after banner
-- Style: `btnStyles.ghost` from `lib/ui.ts` — `background: 'none'`, `border: 'none'`, `cursor: 'pointer'`, `color: 'var(--text-muted)'`, `fontSize: '0.85rem'`
+- Style: `btnStyles.ghost` from `lib/ui.ts` — `background: 'none'`, `border: 'none'`, `cursor: 'pointer'`, `color: 'var(--text-muted)'`, `fontSize: '0.9rem'`
 - Label: "Start over"
 - Action: clears `analysisResult`, `messageInput`, `selectedTool`, `response` — returns to fresh analyze section
 
@@ -197,7 +202,7 @@ Interaction sequence:
 
 ### Analyze Section — Error
 - Error message renders below the Analyze button
-- Style: `color: 'var(--urgency-high)'`, `fontSize: '0.85rem'`, `marginTop: '0.5rem'`
+- Style: `color: 'var(--urgency-high)'`, `fontSize: '0.9rem'`, `marginTop: '0.5rem'`
 - Matches `generateError` display pattern in existing DefenseDashboard (lines 134–136)
 
 ### Plan-Gated State (isAtLimit)
