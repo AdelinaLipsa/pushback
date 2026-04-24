@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: context exhaustion at 90% (2026-04-24)
-last_updated: "2026-04-24T16:46:06.084Z"
+status: executing
+stopped_at: Completed 06-02-PLAN.md (analyze-message route)
+last_updated: "2026-04-24T17:06:00Z"
 last_activity: 2026-04-24
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 24
-  completed_plans: 22
-  percent: 92
+  completed_plans: 23
+  percent: 96
 ---
 
 # Project State
@@ -21,12 +21,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-23)
 
 **Core value:** A freelancer in an uncomfortable client situation gets a professional, ready-to-send response in under 30 seconds.
-**Current focus:** Phase 5 — Types & Observability (Phase 4 complete)
+**Current focus:** Phase 6 — Proactive Detection (Wave 2 complete)
 
 ## Current Position
 
 Phase: 6 of 7 (Proactive Detection) — Executing (3 plans planned)
-Current Plan: 06-01 complete — 06-02 (analyze-message route), 06-03 (dashboard UI) remaining
+Current Plan: 06-02 complete — 06-03 (DefenseDashboard UI + handleAnalyze) remaining
 Last activity: 2026-04-24
 
 ## Performance Metrics
@@ -97,6 +97,10 @@ Recent decisions affecting current work:
 - [Phase ?]: 04-04: isNearLimit = plan === 'free' && responsesUsed >= 2 && responsesUsed < FREE_LIMIT — exclusive of 3/3 (isAtLimit takes over at limit)
 - [Phase ?]: 04-04: handleUpgrade placed directly in DefenseDashboard component (not extracted) — keeps it co-located with the nudge strip; mirrors UpgradePrompt pattern verbatim
 - [Phase ?]: 04-04: Nudge strip is not dismissible — persists as long as isNearLimit is true; by design (not an oversight)
+- [Phase 06]: 06-02: analyze-message route uses same defendRateLimit as defend route — analysis and generation share one rate limit bucket per user
+- [Phase 06]: 06-02: No DB row saved for analysis calls — classification result is ephemeral; RPC credit is still counted (D-06)
+- [Phase 06]: 06-02: max_tokens: 256 for classify call — physically constrains response size alongside Zod max() on explanation/situation_context
+- [Phase 06]: 06-02: Compensating decrement fires on 4 distinct failure paths after RPC gate: input validation, extractJson, Zod response, catch-all
 
 ### Pending Todos
 
@@ -117,6 +121,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-24T16:51:00Z
-Stopped at: Completed 06-01-PLAN.md (MessageAnalysis type, CLASSIFY_SYSTEM_PROMPT, initialSituation prop)
+Last session: 2026-04-24T17:06:00Z
+Stopped at: Completed 06-02-PLAN.md (analyze-message route: auth, RPC gate, Anthropic classify, Zod enum, compensating decrement)
 Resume signal: None

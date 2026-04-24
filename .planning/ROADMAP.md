@@ -117,7 +117,7 @@ Plans:
 **Plans**: 3 plans
 Plans:
 - [x] 06-01-PLAN.md — Add MessageAnalysis type to types/index.ts, CLASSIFY_SYSTEM_PROMPT to lib/anthropic.ts, initialSituation prop to SituationPanel.tsx (Wave 1)
-- [ ] 06-02-PLAN.md — Create POST /api/projects/[id]/analyze-message route: auth, RPC gate, Anthropic call, Zod validation, compensating decrement (Wave 2)
+- [x] 06-02-PLAN.md — Create POST /api/projects/[id]/analyze-message route: auth, RPC gate, Anthropic call, Zod validation, compensating decrement (Wave 2)
 - [ ] 06-03-PLAN.md — Update DefenseDashboard.tsx: analyze section card, result banner, Start over, divider, handleAnalyze, SituationPanel pre-fill (Wave 3)
 **UI hint**: yes
 
@@ -145,5 +145,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Legal & Email | 4/4 | Complete | 2026-04-24 |
 | 4. Missing UI | 4/4 | Complete   | 2026-04-24 |
 | 5. Types & Observability | 0/3 | Planned | - |
-| 6. Proactive Detection | 1/3 | In Progress | - |
+| 6. Proactive Detection | 2/3 | In Progress | - |
 | 7. Payment Tracking | 0/? | Not started | - |

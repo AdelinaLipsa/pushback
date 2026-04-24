@@ -64,9 +64,9 @@
 
 ### Proactive Detection
 
-- [ ] **DETECT-01**: User can paste a raw client message into a project and receive an AI-identified situation type (e.g. "scope creep", "late payment") with a brief explanation of why the message was flagged
+- [x] **DETECT-01**: User can paste a raw client message into a project and receive an AI-identified situation type (e.g. "scope creep", "late payment") with a brief explanation of why the message was flagged
 - [ ] **DETECT-02**: After analysis, the identified defense tool is pre-selected and the situation context is pre-filled from the analyzed message — user can generate a response in one click without re-describing the situation
-- [ ] **DETECT-03**: The analyze-message feature is plan-gated — each analysis counts toward the free-tier usage limit alongside defense responses
+- [x] **DETECT-03**: The analyze-message feature is plan-gated — each analysis counts toward the free-tier usage limit alongside defense responses
 
 ### Payment Tracking
 
@@ -139,9 +139,9 @@
 | TYPES-01 | Phase 5 | Pending |
 | OBS-01 | Phase 5 | Pending |
 | OBS-02 | Phase 5 | Pending |
-| DETECT-01 | Phase 6 | Pending |
+| DETECT-01 | Phase 6 | Complete (06-02) |
 | DETECT-02 | Phase 6 | Pending |
-| DETECT-03 | Phase 6 | Pending |
+| DETECT-03 | Phase 6 | Complete (06-02) |
 | PAY-01 | Phase 7 | Pending |
 | PAY-02 | Phase 7 | Pending |
 | PAY-03 | Phase 7 | Pending |
