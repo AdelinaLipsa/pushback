@@ -51,8 +51,8 @@
 
 ### UI — Missing Surfaces
 
-- [ ] **UI-01**: User can edit an existing project (title, client name, project value, situation context)
-- [ ] **UI-02**: User can delete a project with a confirmation dialog — deletes project and all associated defense responses
+- [x] **UI-01**: User can edit an existing project (title, client name, project value, situation context)
+- [x] **UI-02**: User can delete a project with a confirmation dialog — deletes project and all associated defense responses
 - [x] **UI-03**: User can delete a contract with a confirmation dialog — also deletes the stored Anthropic Files API PDF
 - [x] **UI-04**: Upgrade nudge appears when a free user has used 2 of 3 defense responses (pre-wall, before the hard block)
 
@@ -132,8 +132,8 @@
 | LEGAL-03 | Phase 3 | Complete (03-01) |
 | EMAIL-01 | Phase 3 | Complete |
 | EMAIL-02 | Phase 3 | Complete |
-| UI-01 | Phase 4 | Pending |
-| UI-02 | Phase 4 | Pending |
+| UI-01 | Phase 4 | Complete (04-03) |
+| UI-02 | Phase 4 | Complete (04-03) |
 | UI-03 | Phase 4 | Complete (04-02) |
 | UI-04 | Phase 4 | Complete |
 | TYPES-01 | Phase 5 | Pending |

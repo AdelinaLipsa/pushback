@@ -1,5 +1,5 @@
 ---
-status: partial
+status: approved
 phase: 04-missing-ui
 source: [04-VERIFICATION.md]
 started: 2026-04-24T12:30:00Z

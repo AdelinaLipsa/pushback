@@ -23,17 +23,15 @@ A freelancer in an uncomfortable client situation gets a professional, ready-to-
 - ✓ Security hardening (CSP, HSTS, X-Frame-Options, webhook guards, proxy.ts) — Validated in Phase 2
 - ✓ /privacy and /terms legal pages with Anthropic-as-processor clause — Validated in Phase 3
 - ✓ Transactional emails: welcome on signup, upgrade confirmation on Stripe checkout — Validated in Phase 3
+- ✓ Project edit form (inline, all 7 fields, lime focus rings, PATCH + toast) — Validated in Phase 4
+- ✓ Project and contract delete with Dialog confirmation — Validated in Phase 4
+- ✓ Pre-wall upgrade nudge strip at 2/3 free-tier usage (lime accent, checkout CTA) — Validated in Phase 4
 
 ### Active
 
-- [ ] Critical bug fixes (defend route try/catch, usage counter race condition, auth callback error handling)
-- [ ] Input validation with Zod on all POST API routes
-- [ ] Atomic plan gating (Supabase RPC to eliminate race condition on free-tier limit)
-- [ ] Security hardening (security headers in next.config.ts, webhook secret null check, service-role client cleanup)
-- [ ] Project and contract delete UI (API routes exist, buttons missing)
-- [ ] Project edit UI (API route exists, no form)
-- [ ] Supabase type generation to eliminate `any` casts on joined queries
-- [ ] /settings route added to middleware matcher
+- [ ] Supabase type generation to eliminate `as any` casts on joined queries (TYPES-01)
+- [ ] Sentry error capture on Route Handlers (OBS-01)
+- [ ] Anthropic billing threshold alert (OBS-02)
 
 ### Out of Scope
 
