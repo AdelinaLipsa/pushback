@@ -26,6 +26,7 @@ A freelancer in an uncomfortable client situation gets a professional, ready-to-
 - ✓ Project edit form (inline, all 7 fields, lime focus rings, PATCH + toast) — Validated in Phase 4
 - ✓ Project and contract delete with Dialog confirmation — Validated in Phase 4
 - ✓ Pre-wall upgrade nudge strip at 2/3 free-tier usage (lime accent, checkout CTA) — Validated in Phase 4
+- ✓ Proactive message analysis: MessageAnalysis type, CLASSIFY_SYSTEM_PROMPT, analyze-message route with RPC gate + compensating decrement, DefenseDashboard analyze UX with result banner and SituationPanel pre-fill — Validated in Phase 6
 
 ### Active
 
@@ -92,4 +93,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-24 after Phase 3 completion*
+*Last updated: 2026-04-24 after Phase 6 completion*
