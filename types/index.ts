@@ -78,6 +78,9 @@ export type Project = {
   currency: string
   status: string
   notes: string | null
+  payment_due_date: string | null
+  payment_amount: number | null
+  payment_received_at: string | null
   created_at: string
   contracts?: { risk_score: number | null; risk_level: RiskLevel | null; analysis: ContractAnalysis | null } | null
   defense_responses?: DefenseResponse[]

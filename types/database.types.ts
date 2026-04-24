@@ -112,6 +112,9 @@ export type Database = {
           currency: string | null
           id: string
           notes: string | null
+          payment_amount: number | null
+          payment_due_date: string | null
+          payment_received_at: string | null
           project_value: number | null
           status: string | null
           title: string
@@ -125,6 +128,9 @@ export type Database = {
           currency?: string | null
           id?: string
           notes?: string | null
+          payment_amount?: number | null
+          payment_due_date?: string | null
+          payment_received_at?: string | null
           project_value?: number | null
           status?: string | null
           title: string
@@ -138,6 +144,9 @@ export type Database = {
           currency?: string | null
           id?: string
           notes?: string | null
+          payment_amount?: number | null
+          payment_due_date?: string | null
+          payment_received_at?: string | null
           project_value?: number | null
           status?: string | null
           title?: string
