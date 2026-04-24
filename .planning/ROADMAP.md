@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Route Handler Hardening** - Atomic plan gating, try/catch error handling, Zod input validation, and robust JSON extraction for all AI routes
 - [x] **Phase 2: Infrastructure & Security** - Service-role client fix, webhook secret guard, middleware rename to proxy.ts, settings route protection, and security headers
 - [x] **Phase 3: Legal & Email** - Privacy Policy, Terms of Service, signup page links, and transactional emails on signup and upgrade
-- [ ] **Phase 4: Missing UI** - Project edit form, project delete, contract delete, and pre-wall upgrade nudge at 2/3 usage
+- [x] **Phase 4: Missing UI** - Project edit form, project delete, contract delete, and pre-wall upgrade nudge at 2/3 usage (completed 2026-04-24)
 - [ ] **Phase 5: Types & Observability** - Supabase type generation, Sentry error capture, and Anthropic spend alert
 - [ ] **Phase 6: Proactive Detection** - Analyze a raw client message, identify the situation type, pre-fill the right defense tool
 - [ ] **Phase 7: Payment Tracking** - Add payment due date per project, dashboard overdue badge, one-click Late Payment tool pre-fill
@@ -89,7 +89,7 @@ Plans:
 - [x] 04-01-PLAN.md — Install shadcn Dialog, create lib/ui.ts shared style constants, add --brand-lime to globals.css (Wave 0)
 - [x] 04-02-PLAN.md — Update contracts DELETE route with Anthropic file cleanup; create ContractDeleteButton component; wire into contract detail page (Wave 1)
 - [x] 04-03-PLAN.md — Create ProjectHeader client component with inline edit form + delete Dialog; wire into project detail page (Wave 1)
-- [ ] 04-04-PLAN.md — Add isNearLimit nudge strip to DefenseDashboard with lime accent and handleUpgrade CTA (Wave 1)
+- [x] 04-04-PLAN.md — Add isNearLimit nudge strip to DefenseDashboard with lime accent and handleUpgrade CTA (Wave 1)
 **UI hint**: yes
 
 ### Phase 5: Types & Observability
@@ -135,7 +135,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Route Handler Hardening | 6/6 | Complete | 2026-04-24 |
 | 2. Infrastructure & Security | 3/3 | Complete | 2026-04-24 |
 | 3. Legal & Email | 4/4 | Complete | 2026-04-24 |
-| 4. Missing UI | 3/4 | In progress | - |
+| 4. Missing UI | 4/4 | Complete   | 2026-04-24 |
 | 5. Types & Observability | 0/? | Not started | - |
 | 6. Proactive Detection | 0/? | Not started | - |
 | 7. Payment Tracking | 0/? | Not started | - |

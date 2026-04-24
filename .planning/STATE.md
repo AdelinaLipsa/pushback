@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 04-03-PLAN.md — ProjectHeader component with inline edit form (7 fields, lime focus rings) and delete confirmation dialog. Wave 1 plan 04-04 remaining.
-last_updated: "2026-04-24T11:57:51.145Z"
+status: completed
+stopped_at: Completed 04-04-PLAN.md — DefenseDashboard isNearLimit nudge strip. Phase 4 complete.
+last_updated: "2026-04-24T12:08:21.954Z"
 last_activity: 2026-04-24
 progress:
   total_phases: 7
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 18
-  completed_plans: 17
-  percent: 94
+  completed_plans: 18
+  percent: 100
 ---
 
 # Project State
@@ -50,6 +50,7 @@ Last activity: 2026-04-24
 
 *Updated after each plan completion*
 | Phase 03-legal-email P02 | 2min | 1 tasks | 1 files |
+| Phase 04-missing-ui P04 | 7min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,9 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-03: showCloseButton={false} on delete and error dialogs in ProjectHeader — custom action buttons replace X close button (consistent with 04-02 pattern)
 - [Phase 04]: 04-03: Contract strip stays in Server Component page (not ProjectHeader) — reads joined contract data display-only in this phase
 - [Phase 04]: 04-03: form.project_value stored as string for controlled number input, converted with Number() on submit to match PATCH route type
+- [Phase ?]: 04-04: isNearLimit = plan === 'free' && responsesUsed >= 2 && responsesUsed < FREE_LIMIT — exclusive of 3/3 (isAtLimit takes over at limit)
+- [Phase ?]: 04-04: handleUpgrade placed directly in DefenseDashboard component (not extracted) — keeps it co-located with the nudge strip; mirrors UpgradePrompt pattern verbatim
+- [Phase ?]: 04-04: Nudge strip is not dismissible — persists as long as isNearLimit is true; by design (not an oversight)
 
 ### Pending Todos
 
@@ -113,6 +117,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-24T11:57:30Z
-Stopped at: Completed 04-03-PLAN.md — ProjectHeader component with inline edit form (7 fields, lime focus rings) and delete confirmation dialog. Wave 1 plan 04-04 remaining.
+Last session: 2026-04-24T12:08:15.318Z
+Stopped at: Completed 04-04-PLAN.md — DefenseDashboard isNearLimit nudge strip. Phase 4 complete.
 Resume signal: None

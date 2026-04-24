@@ -54,7 +54,7 @@
 - [ ] **UI-01**: User can edit an existing project (title, client name, project value, situation context)
 - [ ] **UI-02**: User can delete a project with a confirmation dialog — deletes project and all associated defense responses
 - [x] **UI-03**: User can delete a contract with a confirmation dialog — also deletes the stored Anthropic Files API PDF
-- [ ] **UI-04**: Upgrade nudge appears when a free user has used 2 of 3 defense responses (pre-wall, before the hard block)
+- [x] **UI-04**: Upgrade nudge appears when a free user has used 2 of 3 defense responses (pre-wall, before the hard block)
 
 ### Types & Observability
 
@@ -135,7 +135,7 @@
 | UI-01 | Phase 4 | Pending |
 | UI-02 | Phase 4 | Pending |
 | UI-03 | Phase 4 | Complete (04-02) |
-| UI-04 | Phase 4 | Pending |
+| UI-04 | Phase 4 | Complete |
 | TYPES-01 | Phase 5 | Pending |
 | OBS-01 | Phase 5 | Pending |
 | OBS-02 | Phase 5 | Pending |
