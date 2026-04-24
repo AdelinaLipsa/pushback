@@ -40,21 +40,31 @@ export async function POST(request: Request) {
   const supabase = createAdminSupabaseClient()
 
   if (eventType === 'subscription.active' || eventType === 'subscription.updated') {
-    await supabase
+    const { error } = await supabase
       .from('user_profiles')
       .update({
         plan: 'pro',
-        creem_customer_id: object.customer?.id,
-        creem_subscription_id: object.id,
+        creem_customer_id: (object?.customer as Record<string, unknown> | undefined)?.id,
+        creem_subscription_id: object?.id,
       })
       .eq('id', userId)
+
+    if (error) {
+      console.error('Failed to update user plan:', error.message)
+      return Response.json({ error: 'Database update failed' }, { status: 500 })
+    }
   }
 
   if (eventType === 'subscription.canceled' || eventType === 'subscription.expired') {
-    await supabase
+    const { error } = await supabase
       .from('user_profiles')
       .update({ plan: 'free' })
-      .eq('creem_subscription_id', object.id)
+      .eq('creem_subscription_id', object?.id)
+
+    if (error) {
+      console.error('Failed to update user plan:', error.message)
+      return Response.json({ error: 'Database update failed' }, { status: 500 })
+    }
   }
 
   return Response.json({ received: true })
