@@ -145,7 +145,10 @@ export default function SignupPage() {
           </form>
 
           <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textAlign: 'center', marginTop: '1.25rem', lineHeight: 1.5 }}>
-            By signing up you agree to our Terms and Privacy Policy.
+            By signing up you agree to our{' '}
+            <Link href="/terms" style={{ color: 'var(--brand-amber)', fontWeight: 500, textDecoration: 'none' }}>Terms</Link>
+            {' '}and{' '}
+            <Link href="/privacy" style={{ color: 'var(--brand-amber)', fontWeight: 500, textDecoration: 'none' }}>Privacy Policy</Link>.
           </p>
         </div>
 
