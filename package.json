@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "gen:types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_REF > types/database.types.ts",
+    "types:check": "tsc --noEmit"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.90.0",

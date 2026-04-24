@@ -27,13 +27,10 @@ export async function POST(request: Request) {
     if (!userId) return Response.json({ received: true })
     if (!session.subscription) return Response.json({ received: true })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await supabase
       .from('user_profiles')
-      .update({
-        plan: 'pro',
-        stripe_customer_id: session.customer as string,
-        stripe_subscription_id: session.subscription as string,
-      })
+      .update({ plan: 'pro', stripe_customer_id: session.customer, stripe_subscription_id: session.subscription } as any)
       .eq('id', userId)
 
     if (error) {
@@ -86,10 +83,11 @@ export async function POST(request: Request) {
 
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await supabase
       .from('user_profiles')
       .update({ plan: 'free' })
-      .eq('stripe_subscription_id', subscription.id)
+      .eq('stripe_subscription_id' as any, subscription.id)
 
     if (error) {
       console.error('Failed to downgrade user plan:', error.message)

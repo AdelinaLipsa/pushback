@@ -54,8 +54,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           <>
             <span style={{ color: 'var(--text-secondary)' }}>
               Contract linked: {contract.title} ·{' '}
-              <span style={{ color: RISK_COLORS[riskLevel] ?? 'var(--text-muted)', fontWeight: 600 }}>
-                Risk {contract.risk_score}/10 [{RISK_LABEL[riskLevel] ?? riskLevel}]
+              <span style={{ color: RISK_COLORS[riskLevel ?? ''] ?? 'var(--text-muted)', fontWeight: 600 }}>
+                Risk {contract.risk_score}/10 [{RISK_LABEL[riskLevel ?? ''] ?? riskLevel}]
               </span>
             </span>
             <Link href={`/contracts/${contract.id}`} style={{ color: 'var(--brand-amber)', textDecoration: 'none', fontWeight: 500 }}>

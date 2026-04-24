@@ -30,11 +30,12 @@ export async function POST(request: Request) {
     'check_and_increment_contracts',
     { uid: user.id }
   )
-  if (gateError || !gateResult?.allowed) {
+  const gate = gateResult as { allowed: boolean; current_count: number } | null
+  if (gateError || !gate?.allowed) {
     return Response.json({ error: 'UPGRADE_REQUIRED' }, { status: 403 })
   }
   // Store pre-increment count for compensating decrement on failure (D-03 credit-safe)
-  const preIncrementCount = gateResult.current_count as number
+  const preIncrementCount = gate.current_count
 
   const formData = await request.formData()
   const file = formData.get('file') as File | null

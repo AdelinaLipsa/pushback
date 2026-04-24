@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import type { Database } from '@/types/database.types'
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -29,7 +30,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
   const { data, error } = await supabase
     .from('projects')
-    .update(updates)
+    .update(updates as Database['public']['Tables']['projects']['Update'])
     .eq('id', id)
     .eq('user_id', user.id)
     .select()
