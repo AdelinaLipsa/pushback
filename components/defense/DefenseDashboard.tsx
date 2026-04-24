@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DefenseTool, DefenseToolMeta, DefenseResponse } from '@/types'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
+import { btnStyles, inputStyle } from '@/lib/ui'
 import DefenseToolCard from './DefenseToolCard'
 import SituationPanel from './SituationPanel'
 import ResponseOutput from './ResponseOutput'
@@ -23,10 +24,17 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [upgradeLoading, setUpgradeLoading] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
+  const [messageInput, setMessageInput] = useState('')
+  const [analyzeLoading, setAnalyzeLoading] = useState(false)
+  const [analysisResult, setAnalysisResult] = useState<{
+    tool_type: DefenseTool
+    explanation: string
+    situation_context: string
+  } | null>(null)
+  const [analyzeError, setAnalyzeError] = useState<string | null>(null)
 
-  const FREE_LIMIT = 3
+  const FREE_LIMIT = 1
   const isAtLimit = plan === 'free' && responsesUsed >= FREE_LIMIT
-  const isNearLimit = plan === 'free' && responsesUsed >= 2 && responsesUsed < FREE_LIMIT
 
   async function handleUpgrade() {
     setUpgradeLoading(true)
@@ -86,6 +94,39 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
     setResponse(null)
   }
 
+  async function handleAnalyze() {
+    if (!messageInput.trim()) return
+    if (isAtLimit) { setShowUpgrade(true); return }
+    setAnalyzeLoading(true)
+    setAnalyzeError(null)
+    setAnalysisResult(null)
+
+    const res = await fetch(`/api/projects/${projectId}/analyze-message`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: messageInput }),
+    })
+
+    const data = await res.json()
+    setAnalyzeLoading(false)
+
+    if (res.status === 403 && data.error === 'UPGRADE_REQUIRED') {
+      setShowUpgrade(true)
+      return
+    }
+
+    if (!res.ok) {
+      setAnalyzeError(data?.error ?? 'Something went wrong. Please try again.')
+      return
+    }
+
+    setAnalysisResult(data)
+    const matchedTool = DEFENSE_TOOLS.find(t => t.type === data.tool_type)
+    if (matchedTool) {
+      selectTool(matchedTool)
+    }
+  }
+
   if (showUpgrade) {
     return (
       <div style={{ maxWidth: '560px' }}>
@@ -119,40 +160,6 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed }: Def
         )}
       </div>
 
-      {isNearLimit && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '0.75rem',
-          padding: '0.75rem 1rem',
-          marginBottom: '1rem',
-          backgroundColor: 'var(--bg-surface)',
-          border: '1px solid var(--bg-border)',
-          borderLeft: '3px solid var(--brand-lime)',
-          borderRadius: '0.5rem',
-          fontSize: '0.85rem',
-        }}>
-          <span style={{ color: 'var(--text-secondary)' }}>{responsesUsed} of {FREE_LIMIT} responses used</span>
-          <button
-            onClick={handleUpgrade}
-            disabled={upgradeLoading}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: upgradeLoading ? 'not-allowed' : 'pointer',
-              color: 'var(--brand-lime)',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              padding: 0,
-              opacity: upgradeLoading ? 0.7 : 1,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {upgradeLoading ? 'Loading…' : 'Upgrade to Pro →'}
-          </button>
-        </div>
-      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
         {DEFENSE_TOOLS.map(tool => (
