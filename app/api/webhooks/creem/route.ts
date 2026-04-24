@@ -1,10 +1,17 @@
 import crypto from 'crypto'
-import { createServiceSupabaseClient } from '@/lib/supabase/server'
+import { createAdminSupabaseClient } from '@/lib/supabase/server'
 
 export async function POST(request: Request) {
+  if (!process.env.CREEM_WEBHOOK_SECRET) {
+    return Response.json(
+      { error: 'CREEM_WEBHOOK_SECRET is not configured' },
+      { status: 500 }
+    )
+  }
+
   const body = await request.text()
   const signature = request.headers.get('creem-signature') ?? ''
-  const secret = process.env.CREEM_WEBHOOK_SECRET!
+  const secret = process.env.CREEM_WEBHOOK_SECRET
 
   const expected = crypto.createHmac('sha256', secret).update(body).digest('hex')
   if (expected !== signature) {
@@ -18,7 +25,7 @@ export async function POST(request: Request) {
 
   if (!userId) return Response.json({ received: true })
 
-  const supabase = await createServiceSupabaseClient()
+  const supabase = createAdminSupabaseClient()
 
   if (eventType === 'subscription.active' || eventType === 'subscription.updated') {
     await supabase
