@@ -53,5 +53,7 @@ export default withSentryConfig(nextConfig, {
   project: 'pushback',
   silent: !process.env.CI,
   widenClientFileUpload: true,
+  hideSourceMaps: true,
   disableLogger: true,
+  automaticVercelMonitors: false,
 })
