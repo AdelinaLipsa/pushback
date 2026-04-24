@@ -5,8 +5,8 @@ create table public.user_profiles (
   plan text not null default 'free',
   defense_responses_used int not null default 0,
   contracts_used int not null default 0,
-  creem_customer_id text,
-  creem_subscription_id text,
+  stripe_customer_id text,
+  stripe_subscription_id text,
   created_at timestamptz default now()
 );
 
