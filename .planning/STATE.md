@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 4 executing — 04-02 done (contract delete flow complete); Wave 1 plans 04-03, 04-04 ready to run
-last_updated: "2026-04-24T11:49:29Z"
+stopped_at: Completed 04-03-PLAN.md — ProjectHeader component with inline edit form (7 fields, lime focus rings) and delete confirmation dialog. Wave 1 plan 04-04 remaining.
+last_updated: "2026-04-24T11:57:51.145Z"
 last_activity: 2026-04-24
 progress:
   total_phases: 7
   completed_phases: 3
   total_plans: 18
-  completed_plans: 18
-  percent: 50
+  completed_plans: 17
+  percent: 94
 ---
 
 # Project State
@@ -25,8 +25,8 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 
 ## Current Position
 
-Phase: 4 of 7 (Missing UI) — In progress (Plan 2 of 4 complete)
-Status: 04-02 complete — contract delete flow (DELETE route + ContractDeleteButton + page wire-up); Wave 1 plans 04-03, 04-04 remaining
+Phase: 4 of 7 (Missing UI) — In progress (Plan 3 of 4 complete)
+Status: 04-03 complete — ProjectHeader client component with inline edit form and delete dialog; Wave 1 plan 04-04 remaining
 Last activity: 2026-04-24
 
 ## Performance Metrics
@@ -90,6 +90,9 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-02: showCloseButton={false} on DialogContent — custom action buttons replace default X close button for delete confirmation UX
 - [Phase 04]: 04-02: SELECT before DELETE with eq('user_id', user.id) on both queries — prevents IDOR; file ID read before row deletion
 - [Phase 04]: 04-02: Best-effort Anthropic delete (D-12): try/catch logs error but Supabase delete always proceeds
+- [Phase 04]: 04-03: showCloseButton={false} on delete and error dialogs in ProjectHeader — custom action buttons replace X close button (consistent with 04-02 pattern)
+- [Phase 04]: 04-03: Contract strip stays in Server Component page (not ProjectHeader) — reads joined contract data display-only in this phase
+- [Phase 04]: 04-03: form.project_value stored as string for controlled number input, converted with Number() on submit to match PATCH route type
 
 ### Pending Todos
 
@@ -110,6 +113,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-24T11:49:29Z
-Stopped at: Completed 04-02-PLAN.md — contract delete flow: DELETE route with Anthropic cleanup, ContractDeleteButton component, page wire-up. Wave 1 plans 04-03, 04-04 remaining.
+Last session: 2026-04-24T11:57:30Z
+Stopped at: Completed 04-03-PLAN.md — ProjectHeader component with inline edit form (7 fields, lime focus rings) and delete confirmation dialog. Wave 1 plan 04-04 remaining.
 Resume signal: None
