@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 
 ## Current Position
 
-Phase: 1 of 5 (Route Handler Hardening) — COMPLETE
-Plan: 7 of 7 in Phase 1 (01-07 gap closure complete — GATE-03 enforced at data layer)
-Status: Phase 1 complete — advancing to Phase 2 (Infrastructure & Security)
-Last activity: 2026-04-24 — 01-07 complete: server-side response slicing replaces CSS blur; lockedCount placeholder card; GATE-03 fully closed.
+Phase: 2 of 7 (Infrastructure & Security) — Executing
+Plan: 1 of 3 in Phase 2 (3 plans planned, Wave 1 — all parallel)
+Status: 02-01 complete — 2 remaining plans ready for execution
+Last activity: 2026-04-24 — 02-01 complete: createAdminSupabaseClient() added, webhook secret guard + admin client switch done.
 
-Progress: [██████████] 100% (7/7 plans complete in Phase 1)
+Progress: [███░░░░░░░] 33% (1/3 plans complete in Phase 2)
 
 ## Performance Metrics
 
@@ -54,6 +54,9 @@ Recent decisions affecting current work:
 - D-13 extractJson is inline in analyze/route.ts (not a separate lib module) — keeps extraction logic co-located with the route that owns it
 - preIncrementCount compensating decrement in analyze route: applied on all failure paths after RPC gate (contract insert failure, file type/size validation, no-file/text, DB update failure, catch-all)
 - extractJson regex /\{[\s\S]*\}/ is greedy — matches outermost {…} which is always the top-level contract analysis object
+- 02-01: createAdminSupabaseClient() is synchronous (no async) — safe for webhook/background contexts where cookies() would throw
+- 02-01: CREEM_WEBHOOK_SECRET guard returns 500 (not 401) — missing env var is server misconfiguration, loud failure ensures monitoring visibility
+- 02-01: Use createAdminSupabaseClient() for all non-request contexts (webhooks, background tasks); reserve createServiceSupabaseClient() for request-scoped server code
 
 ### Pending Todos
 
@@ -74,6 +77,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-23
-Stopped at: Completed 01-05-PLAN.md — SUMMARY written, STATE and ROADMAP updated.
-Resume signal: None — Phase 1 fully complete (all 6 plans done)
+Last session: 2026-04-24
+Stopped at: Completed 02-01-PLAN.md — SUMMARY written, STATE and ROADMAP updated.
+Resume signal: None — 02-02 and 02-03 ready to execute (Wave 1, all parallel)

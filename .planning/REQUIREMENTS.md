@@ -32,8 +32,8 @@
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: Webhook service-role Supabase client uses cookie-free transport — no session refresh hooks in webhook context
-- [ ] **INFRA-02**: Missing `CREEM_WEBHOOK_SECRET` env var fails loudly at the webhook handler (explicit error, not silent HMAC mismatch)
+- [x] **INFRA-01**: Webhook service-role Supabase client uses cookie-free transport — no session refresh hooks in webhook context
+- [x] **INFRA-02**: Missing `CREEM_WEBHOOK_SECRET` env var fails loudly at the webhook handler (explicit error, not silent HMAC mismatch)
 - [ ] **INFRA-03**: `middleware.ts` renamed to `proxy.ts` with `proxy` export (Next.js 16 breaking change)
 - [ ] **INFRA-04**: `/settings` route is included in the protected-routes matcher in `proxy.ts`
 - [ ] **INFRA-05**: App sets security headers (Content-Security-Policy, HSTS, X-Frame-Options, Referrer-Policy, `poweredByHeader: false`) via `next.config.ts`
@@ -122,8 +122,8 @@
 | VALID-01 | Phase 1 | Complete (01-03) |
 | VALID-02 | Phase 1 | Complete (01-05) |
 | VALID-03 | Phase 1 | Complete (01-04) |
-| INFRA-01 | Phase 2 | Pending |
-| INFRA-02 | Phase 2 | Pending |
+| INFRA-01 | Phase 2 | Complete (02-01) |
+| INFRA-02 | Phase 2 | Complete (02-01) |
 | INFRA-03 | Phase 2 | Pending |
 | INFRA-04 | Phase 2 | Pending |
 | INFRA-05 | Phase 2 | Pending |

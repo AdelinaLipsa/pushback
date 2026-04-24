@@ -51,7 +51,11 @@ Plans:
   2. The app sets Content-Security-Policy, HSTS, X-Frame-Options, Referrer-Policy, and poweredByHeader: false on all responses
   3. The /settings page requires authentication — unauthenticated access redirects to login
   4. The middleware file is proxy.ts with a proxy export, compatible with Next.js 16
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [x] 02-01-PLAN.md — Add createAdminSupabaseClient() to server.ts; add secret guard + admin client to webhook handler (Wave 1)
+- [ ] 02-02-PLAN.md — Create proxy.ts (rename middleware.ts, export proxy, add /settings to isDashboardRoute) (Wave 1)
+- [ ] 02-03-PLAN.md — Add security headers to next.config.ts: CSP, HSTS, X-Frame-Options, Referrer-Policy, poweredByHeader: false (Wave 1)
 
 ### Phase 3: Legal & Email
 **Goal**: The app is legally compliant enough for Creem to activate live payments, and users receive email confirmation of key account events
@@ -119,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Route Handler Hardening | 6/6 | Complete | 2026-04-24 |
-| 2. Infrastructure & Security | 0/? | Not started | - |
+| 2. Infrastructure & Security | 1/3 | In progress | - |
 | 3. Legal & Email | 0/? | Not started | - |
 | 4. Missing UI | 0/? | Not started | - |
 | 5. Types & Observability | 0/? | Not started | - |
