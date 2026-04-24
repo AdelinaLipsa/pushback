@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Route Handler Hardening** - Atomic plan gating, try/catch error handling, Zod input validation, and robust JSON extraction for all AI routes
 - [x] **Phase 2: Infrastructure & Security** - Service-role client fix, webhook secret guard, middleware rename to proxy.ts, settings route protection, and security headers
-- [ ] **Phase 3: Legal & Email** - Privacy Policy, Terms of Service, signup page links, and transactional emails on signup and upgrade
+- [x] **Phase 3: Legal & Email** - Privacy Policy, Terms of Service, signup page links, and transactional emails on signup and upgrade
 - [ ] **Phase 4: Missing UI** - Project edit form, project delete, contract delete, and pre-wall upgrade nudge at 2/3 usage
 - [ ] **Phase 5: Types & Observability** - Supabase type generation, Sentry error capture, and Anthropic spend alert
 - [ ] **Phase 6: Proactive Detection** - Analyze a raw client message, identify the situation type, pre-fill the right defense tool
@@ -72,7 +72,7 @@ Plans:
 - [x] 03-01-PLAN.md — Create /privacy and /terms pages + convert signup legal footer to Link components (Wave 1)
 - [x] 03-02-PLAN.md — Create lib/email.ts with Resend client + sendWelcomeEmail + sendUpgradeEmail helpers (Wave 1)
 - [x] 03-03-PLAN.md — Wire welcome email into auth callback with new-signup detection and fire-and-forget (Wave 2)
-- [ ] 03-04-PLAN.md — Wire upgrade confirmation email into Stripe webhook checkout.session.completed block (Wave 2)
+- [x] 03-04-PLAN.md — Wire upgrade confirmation email into Stripe webhook checkout.session.completed block (Wave 2)
 **UI hint**: yes
 
 ### Phase 4: Missing UI
@@ -129,7 +129,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Route Handler Hardening | 6/6 | Complete | 2026-04-24 |
 | 2. Infrastructure & Security | 3/3 | Complete | 2026-04-24 |
-| 3. Legal & Email | 3/4 | In Progress|  |
+| 3. Legal & Email | 4/4 | Complete | 2026-04-24 |
 | 4. Missing UI | 0/? | Not started | - |
 | 5. Types & Observability | 0/? | Not started | - |
 | 6. Proactive Detection | 0/? | Not started | - |
