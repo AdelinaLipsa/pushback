@@ -5,6 +5,16 @@ import DefenseDashboard from '@/components/defense/DefenseDashboard'
 import ProjectHeader from '@/components/project/ProjectHeader'
 import { UserProfile } from '@/types'
 
+const RISK_LABEL: Record<string, string> = { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' }
+const RISK_COLORS: Record<string, string> = {
+  low: 'var(--urgency-low)', medium: 'var(--urgency-medium)',
+  high: 'var(--urgency-high)', critical: 'var(--urgency-high)',
+}
+
+type ProjectWithContract = {
+  contracts: { id: string; risk_score: number; risk_level: string; title: string }[] | null
+}
+
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createServerSupabaseClient()
@@ -25,13 +35,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
   const p = profile as UserProfile | null
 
-  const RISK_LABEL: Record<string, string> = { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' }
-  const RISK_COLORS: Record<string, string> = {
-    low: 'var(--urgency-low)', medium: 'var(--urgency-medium)',
-    high: 'var(--urgency-high)', critical: 'var(--urgency-high)',
-  }
-
-  const contract = (project as any).contracts
+  const contractsRaw = (project as unknown as ProjectWithContract).contracts
+  const contract = Array.isArray(contractsRaw) ? contractsRaw[0] ?? null : contractsRaw ?? null
   const riskLevel = contract?.risk_level
 
   return (
