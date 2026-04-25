@@ -258,7 +258,7 @@ function SituationLine({ children, index }: SituationLineProps) {
         letterSpacing: "-0.03em",
         color: isHovered ? "#84cc16" : "rgba(250,250,250,0.92)",
         transition: "color 0.3s ease",
-        textShadow: isHovered ? "0 0 40px rgba(245,158,11,0.4)" : "none",
+        textShadow: isHovered ? "0 0 40px rgba(132,204,22,0.3)" : "none",
       }}
     >
       {children}
@@ -280,8 +280,11 @@ export default function PushbackHero() {
   const mouseLocationRef = useRef<WebGLUniformLocation | null>(null)
   const intensityLocationRef = useRef<WebGLUniformLocation | null>(null)
   const startTimeRef = useRef<number>(Date.now())
-  const [globalIntensity, setGlobalIntensity] = useState(1.0)
+  const globalIntensityRef = useRef(1.0)
+  const [isCanvasReady, setIsCanvasReady] = useState(false)
   const rafRef = useRef<number>(0)
+  const sectionRef = useRef<HTMLElement>(null)
+  const animateFrameFnRef = useRef<(() => void) | null>(null)
 
   const situations = [
     "SCOPE CREEP.",
@@ -336,32 +339,24 @@ export default function PushbackHero() {
     mouseLocationRef.current = gl.getUniformLocation(program, "u_mouse")
     intensityLocationRef.current = gl.getUniformLocation(program, "u_intensity")
 
+    const dpr = Math.min(window.devicePixelRatio, 1.5)
     const resizeCanvas = () => {
       const rect = canvas.getBoundingClientRect()
-      canvas.width = rect.width * window.devicePixelRatio
-      canvas.height = rect.height * window.devicePixelRatio
+      canvas.width = rect.width * dpr
+      canvas.height = rect.height * dpr
       gl.viewport(0, 0, canvas.width, canvas.height)
     }
     resizeCanvas()
+    setTimeout(() => setIsCanvasReady(true), 900)
     window.addEventListener("resize", resizeCanvas)
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect()
-      mouseRef.current.x = (e.clientX - rect.left) * window.devicePixelRatio
-      mouseRef.current.y = (rect.height - (e.clientY - rect.top)) * window.devicePixelRatio
-      gsap.to({ v: 1.0 }, {
-        v: 1.15,
-        duration: 0.3,
-        ease: "power2.out",
-        onUpdate: function () { setGlobalIntensity((this.targets()[0] as { v: number }).v) },
-      })
-      gsap.to({ v: 1.15 }, {
-        v: 1.0,
-        duration: 1.0,
-        delay: 0.1,
-        ease: "power2.out",
-        onUpdate: function () { setGlobalIntensity((this.targets()[0] as { v: number }).v) },
-      })
+      mouseRef.current.x = (e.clientX - rect.left) * dpr
+      mouseRef.current.y = (rect.height - (e.clientY - rect.top)) * dpr
+      gsap.killTweensOf(globalIntensityRef)
+      gsap.to(globalIntensityRef, { current: 1.15, duration: 0.3, ease: "power2.out" })
+      gsap.to(globalIntensityRef, { current: 1.0, duration: 1.0, delay: 0.3, ease: "power2.out" })
     }
     canvas.addEventListener("mousemove", handleMouseMove)
 
@@ -397,22 +392,81 @@ export default function PushbackHero() {
         gl.uniform1f(timeLocationRef.current, time)
         gl.uniform2f(resolutionLocationRef.current, gl.canvas.width, gl.canvas.height)
         gl.uniform2f(mouseLocationRef.current, mouseRef.current.x, mouseRef.current.y)
-        gl.uniform1f(intensityLocationRef.current, globalIntensity)
+        gl.uniform1f(intensityLocationRef.current, globalIntensityRef.current)
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
       }
       rafRef.current = requestAnimationFrame(animateFrame)
     }
+    animateFrameFnRef.current = animateFrame
     rafRef.current = requestAnimationFrame(animateFrame)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [globalIntensity])
+  }, [])
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (rafRef.current === 0 && animateFrameFnRef.current) {
+            rafRef.current = requestAnimationFrame(animateFrameFnRef.current)
+          }
+        } else {
+          cancelAnimationFrame(rafRef.current)
+          rafRef.current = 0
+        }
+      },
+      { threshold: 0 }
+    )
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [])
 
   return (
-    <section className="relative h-screen w-full overflow-hidden" style={{ background: "#0a0602" }}>
+    <section ref={sectionRef} className="relative h-screen w-full" style={{ overflow: 'clip', background: "#0a0602" }}>
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
         style={{ background: "#0a0602" }}
       />
+
+      {/* Loading overlay — fades out once WebGL is ready */}
+      <div
+        className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none"
+        style={{
+          background: "#0a0602",
+          opacity: isCanvasReady ? 0 : 1,
+          transition: "opacity 0.6s ease",
+        }}
+      >
+        <style>{`
+          @keyframes hero-spin { to { transform: rotate(360deg); } }
+          @keyframes hero-ping {
+            0%   { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(2.8); opacity: 0; }
+          }
+        `}</style>
+        <div className="relative w-10 h-10">
+          <span
+            className="absolute inset-0 rounded-full border border-[#84cc16]/25"
+            style={{ animation: "hero-ping 2s ease-out infinite" }}
+          />
+          <span
+            className="absolute inset-0 rounded-full border border-[#84cc16]/15"
+            style={{ animation: "hero-ping 2s ease-out 0.6s infinite" }}
+          />
+          <span
+            className="absolute inset-0 rounded-full border-[1.5px] border-transparent border-t-[#84cc16]"
+            style={{ animation: "hero-spin 0.9s linear infinite" }}
+          />
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#84cc16]" />
+          </span>
+        </div>
+        <span className="mt-6 text-[#3f3f46] tracking-[0.45em] text-[10px] font-medium uppercase select-none">
+          PUSHBACK
+        </span>
+      </div>
 
       <div
         className="absolute inset-x-0 bottom-0 h-2/5 pointer-events-none"
@@ -448,7 +502,7 @@ export default function PushbackHero() {
               Again.
             </p>
             <p className="mb-6 text-sm leading-relaxed" style={{ color: "rgba(161,161,170,0.8)" }}>
-              Pushback writes the professional response for you — in under a minute. No legal knowledge required.
+              Pushback writes the professional response for you — ready to send in under a minute.
             </p>
             <a
               href="/signup"

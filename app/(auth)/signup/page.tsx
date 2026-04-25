@@ -69,7 +69,7 @@ export default function SignupPage() {
             <span style={{ fontWeight: 800, fontSize: '1.5rem', color: 'var(--text-primary)' }}>Pushback</span>
             <span style={{ color: 'var(--brand-lime)', fontWeight: 800, fontSize: '1.5rem' }}>.</span>
           </Link>
-          <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem', fontSize: '0.9rem' }}>Create your free account</p>
+          <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem', fontSize: '0.9rem' }}>Your first response is free. No card needed.</p>
         </div>
 
         <div style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)', borderRadius: '1rem', padding: '2rem' }}>
@@ -150,7 +150,7 @@ export default function SignupPage() {
                 fontSize: '0.95rem', opacity: loading ? 0.7 : 1, marginTop: '0.5rem',
               }}
             >
-              {loading ? 'Creating account…' : 'Create free account'}
+              {loading ? 'Creating account…' : 'Create my account'}
             </button>
           </form>
 

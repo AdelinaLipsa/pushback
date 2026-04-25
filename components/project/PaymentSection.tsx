@@ -140,7 +140,7 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
             disabled={saving}
             style={{ ...btnStyles.primary, ...(saving ? { opacity: 0.7, cursor: 'not-allowed' } : {}) }}
           >
-            {saving ? 'Saving…' : isEditMode ? 'Update Payment Details' : 'Save Payment Details'}
+            {saving ? 'Saving…' : isEditMode ? 'Update payment details' : 'Save payment details'}
           </button>
           {isEditMode && (
             <button
@@ -153,7 +153,7 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
                 setError(null)
               }}
             >
-              Discard Changes
+              Discard changes
             </button>
           )}
         </div>
@@ -172,7 +172,7 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
       <div style={cardStyle}>
         <h2 style={{ fontWeight: 600, fontSize: '1.25rem', marginBottom: '0.5rem' }}>Payment</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '0.25rem' }}>
-          No payment details set.
+          No payment due date set. Add one so Pushback can flag late payments.
         </p>
         {renderForm(false)}
       </div>
@@ -191,7 +191,7 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
               {project.payment_amount !== null && ` · ${formatAmount(project.payment_amount, project.currency)}`}
             </p>
             <button style={btnStyles.ghost} onClick={() => setEditing(true)}>
-              Edit Payment
+              Edit payment
             </button>
             {error && (
               <p style={{ color: 'var(--urgency-high)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
@@ -230,19 +230,19 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
           {isOverdue && (
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
               <button style={btnStyles.primary} onClick={handleLatePayment}>
-                Handle Late Payment
+                Get a late payment message
               </button>
               <button
                 style={{ ...btnStyles.outline, ...(markingReceived ? { opacity: 0.7, cursor: 'not-allowed' } : {}) }}
                 onClick={handleMarkReceived}
                 disabled={markingReceived}
               >
-                {markingReceived ? 'Marking…' : 'Mark as Received'}
+                {markingReceived ? 'Marking…' : 'Mark as received'}
               </button>
             </div>
           )}
           <button style={btnStyles.ghost} onClick={() => setEditing(true)}>
-            Edit Payment
+            Edit payment
           </button>
           {error && (
             <p style={{ color: 'var(--urgency-high)', fontSize: '0.875rem', marginTop: '0.5rem' }}>

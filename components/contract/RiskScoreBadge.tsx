@@ -16,7 +16,7 @@ const LEVEL_LABEL: Record<RiskLevel, string> = {
   low: 'Low risk',
   medium: 'Medium risk',
   high: 'High risk',
-  critical: 'Critical',
+  critical: 'Critical risk',
 }
 
 export default function RiskScoreBadge({ score, level }: RiskScoreBadgeProps) {

@@ -48,7 +48,7 @@ export default async function SettingsPage() {
           <h2 style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '1rem' }}>Usage</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Defense responses</span>
+              <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Messages generated</span>
               <span style={{ color: 'var(--text-primary)', fontSize: '0.875rem' }}>
                 {p?.defense_responses_used ?? 0}{p?.plan === 'free' ? `/${PLANS.free.defense_responses}` : ' (unlimited)'}
               </span>
@@ -66,7 +66,7 @@ export default async function SettingsPage() {
           <div style={{ backgroundColor: 'rgba(163,230,53,0.05)', border: '1px solid rgba(163,230,53,0.2)', borderRadius: '0.875rem', padding: '1.5rem' }}>
             <h2 style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.5rem', color: 'var(--brand-lime)' }}>Upgrade to Pro</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '1rem' }}>
-              Unlimited defense responses and contract analyses for €12/month.
+              Unlimited messages and contract analyses. €12/month. Cancel any time.
             </p>
             <a
               href="/dashboard?upgrade=1"
@@ -76,7 +76,7 @@ export default async function SettingsPage() {
                 textDecoration: 'none', fontSize: '0.875rem',
               }}
             >
-              Upgrade to Pro
+              Get Pro
             </a>
           </div>
         )}

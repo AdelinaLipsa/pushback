@@ -67,7 +67,7 @@ export default function ContractDeleteButton({ contractId }: ContractDeleteButto
               </p>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <button onClick={handleDismiss} style={btnStyles.ghost}>
-                  Dismiss
+                  Close
                 </button>
               </div>
             </>
@@ -79,7 +79,7 @@ export default function ContractDeleteButton({ contractId }: ContractDeleteButto
                 </DialogTitle>
               </DialogHeader>
               <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-                Delete this contract? The PDF stored with Anthropic will also be removed.
+                This will permanently delete the contract and its analysis. There&apos;s no undo.
               </p>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <button
@@ -87,7 +87,7 @@ export default function ContractDeleteButton({ contractId }: ContractDeleteButto
                   disabled={deleting}
                   style={{ ...btnStyles.destructive, ...(deleting ? { opacity: 0.7, cursor: 'not-allowed' } : {}) }}
                 >
-                  {deleting ? 'Deleting…' : 'Yes, delete'}
+                  {deleting ? 'Deleting…' : 'Delete contract'}
                 </button>
                 <button
                   onClick={() => setDialogOpen(false)}

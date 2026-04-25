@@ -42,8 +42,8 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
 
     if (!res.ok) {
       setError(data.error === 'UPGRADE_REQUIRED'
-        ? 'You\'ve used your free contract analysis. Upgrade to Pro for unlimited analyses.'
-        : data.error ?? 'Analysis failed.'
+        ? 'You\'ve used your free contract analysis. Upgrade to Pro to keep going.'
+        : data.error ?? 'Analysis failed. Try again or paste the text instead.'
       )
       setLoading(false)
     } else {
@@ -126,7 +126,7 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
                 <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'center', color: 'var(--text-muted)' }}>
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
                 </div>
-                Click to upload PDF contract
+                Click to upload a PDF
               </div>
             )}
           </button>
@@ -139,7 +139,7 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
           <textarea
             value={text}
             onChange={e => setText(e.target.value)}
-            placeholder="Paste your contract text here..."
+            placeholder="Paste your contract text here. The more complete, the better the analysis."
             rows={10}
             style={{ ...inputStyle, resize: 'vertical' as const }}
             onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
@@ -163,7 +163,7 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
 
       {loading && (
         <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textAlign: 'center' }}>
-          This takes about 15–30 seconds. Reviewing every clause.
+          Takes about 15–30 seconds. Reading every clause so you don&apos;t have to.
         </p>
       )}
     </form>

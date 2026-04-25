@@ -26,7 +26,7 @@ export default async function ContractPage({ params }: { params: Promise<{ id: s
         ← Contracts
       </Link>
 
-      <h1 style={{ fontWeight: 700, fontSize: '1.5rem', letterSpacing: '-0.02em', marginBottom: '0.35rem' }}>{contract.title}</h1>
+      <h1 className="fade-up" style={{ fontWeight: 700, fontSize: '1.5rem', letterSpacing: '-0.02em', marginBottom: '0.35rem' }}>{contract.title}</h1>
       {contract.original_filename && (
         <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '2rem' }}>{contract.original_filename}</p>
       )}
@@ -36,12 +36,12 @@ export default async function ContractPage({ params }: { params: Promise<{ id: s
       </div>
 
       {contract.status === 'pending' && (
-        <div style={{ color: 'var(--text-muted)', padding: '2rem', textAlign: 'center' }}>Analyzing contract…</div>
+        <div style={{ color: 'var(--text-muted)', padding: '2rem', textAlign: 'center' }}>Analyzing — this takes about 15–30 seconds.</div>
       )}
 
       {contract.status === 'error' && (
         <div style={{ color: 'var(--urgency-high)', backgroundColor: 'var(--urgency-high-dim)', borderRadius: '0.75rem', padding: '1rem 1.25rem' }}>
-          Analysis failed. Please try again.
+          Analysis failed. Go back and try uploading again, or paste the text instead.
         </div>
       )}
 

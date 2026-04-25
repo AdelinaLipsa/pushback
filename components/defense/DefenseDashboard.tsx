@@ -139,7 +139,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
           onClick={() => setShowUpgrade(false)}
           style={{ marginTop: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.85rem' }}
         >
-          ← Back to tools
+          ← Back
         </button>
       </div>
     )
@@ -168,7 +168,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
           maxLength={3000}
           value={messageInput}
           onChange={e => setMessageInput(e.target.value)}
-          placeholder="Paste what your client said..."
+          placeholder="Paste the message they sent you. Pushback will figure out what you're dealing with."
           style={{ ...inputStyle, resize: 'vertical' as const }}
           onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
           onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
@@ -192,7 +192,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
             cursor: !messageInput.trim() || analyzeLoading ? 'not-allowed' : 'pointer',
           }}
         >
-          {analyzeLoading ? 'Analyzing...' : 'Analyze Message'}
+          {analyzeLoading ? 'Analyzing…' : 'Analyze message'}
         </button>
       </div>
 
@@ -242,7 +242,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
       {/* Divider + "Or pick manually:" label — always visible */}
       <div style={{ height: '1px', backgroundColor: 'var(--bg-border)', marginBottom: '1rem' }} />
       <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-        Or pick manually:
+        Or pick the situation manually:
       </p>
 
       {/* Instruction paragraph */}
@@ -250,10 +250,10 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
           {selectedTool ? (
             <>
-              <span style={{ color: 'var(--brand-lime)' }}>↑</span> Describe your situation below to generate a message
+              <span style={{ color: 'var(--brand-lime)' }}>↑</span> Describe what happened and we&apos;ll write the message.
             </>
           ) : (
-            'Pick a situation below. Get the exact message to send.'
+            'Pick what they did. Get the exact message to send back.'
           )}
         </p>
         {plan === 'free' && (
@@ -265,14 +265,15 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
 
       {/* Tool grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
-        {DEFENSE_TOOLS.map(tool => (
-          <DefenseToolCard
-            key={tool.type}
-            tool={tool}
-            selected={selectedTool?.type === tool.type}
-            loading={loading && selectedTool?.type === tool.type}
-            onSelect={() => selectTool(tool)}
-          />
+        {DEFENSE_TOOLS.map((tool, i) => (
+          <div key={tool.type} className="tool-fade-in" style={{ animationDelay: `${i * 0.04}s` }}>
+            <DefenseToolCard
+              tool={tool}
+              selected={selectedTool?.type === tool.type}
+              loading={loading && selectedTool?.type === tool.type}
+              onSelect={() => selectTool(tool)}
+            />
+          </div>
         ))}
       </div>
 

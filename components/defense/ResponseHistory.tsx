@@ -19,7 +19,7 @@ export default function ResponseHistory({ responses, lockedCount }: ResponseHist
 
   if (responses.length === 0 && lockedCount === 0) {
     return (
-      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No messages generated yet.</p>
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No messages yet. Go back to the project to generate your first one.</p>
     )
   }
 
@@ -48,7 +48,7 @@ export default function ResponseHistory({ responses, lockedCount }: ResponseHist
                 {TOOL_LABELS[r.tool_type] ?? r.tool_type}
               </div>
               <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                {new Date(r.created_at).toLocaleDateString()} · {r.was_sent ? '✓ Sent' : r.was_copied ? '✓ Copied' : 'Not sent'}
+                {new Date(r.created_at).toLocaleDateString()} · {r.was_sent ? 'Sent' : r.was_copied ? 'Copied' : 'Not sent'}
               </div>
             </div>
             <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{expanded === r.id ? '▲' : '▼'}</span>
@@ -84,7 +84,7 @@ export default function ResponseHistory({ responses, lockedCount }: ResponseHist
           }}
         >
           <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-            {lockedCount} response{lockedCount === 1 ? '' : 's'} hidden — Upgrade to Pro
+            {lockedCount} older message{lockedCount === 1 ? '' : 's'} locked — upgrade to see them all
           </span>
           <button
             onClick={handleUpgrade}

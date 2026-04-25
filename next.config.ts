@@ -19,6 +19,14 @@ const cspHeader = `
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  serverExternalPackages: [
+    'require-in-the-middle',
+    'import-in-the-middle',
+    '@opentelemetry/instrumentation',
+  ],
+  turbopack: {
+    root: import.meta.dirname,
+  },
   async headers() {
     return [
       {
@@ -55,7 +63,9 @@ export default withSentryConfig(nextConfig, {
   project: 'pushback',
   silent: !process.env.CI,
   widenClientFileUpload: true,
-  hideSourceMaps: true,
-  disableLogger: true,
-  automaticVercelMonitors: false,
+  sourcemaps: { disable: true },
+  webpack: {
+    treeshake: { removeDebugLogging: true },
+    automaticVercelMonitors: false,
+  },
 })

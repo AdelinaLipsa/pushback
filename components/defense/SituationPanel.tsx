@@ -57,13 +57,13 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <div>
           <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '0.4rem' }}>
-            Describe what&apos;s happening
+            What happened?
           </label>
           <textarea
             required
             value={situation}
             onChange={e => setSituation(e.target.value)}
-            placeholder="e.g. Client just emailed asking to add a mobile app to the website project, same budget..."
+            placeholder="e.g. Client just emailed asking to add a mobile app to the website project, same budget…"
             rows={4}
             style={{ ...inputStyle, resize: 'vertical' as const }}
             onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
@@ -100,7 +100,7 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
             marginTop: '0.25rem',
           }}
         >
-          {loading ? 'Writing your message…' : 'Generate Message →'}
+          {loading ? 'Writing your message…' : 'Write my message →'}
         </button>
       </form>
     </div>

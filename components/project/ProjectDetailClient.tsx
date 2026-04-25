@@ -35,7 +35,8 @@ export default function ProjectDetailClient({ project, plan, responsesUsed }: Pr
       <ProjectHeader project={project} />
 
       {/* Contract strip */}
-      <div style={{
+      <div className="fade-up" style={{
+        animationDelay: '0.1s',
         marginBottom: '2rem', padding: '0.75rem 1rem',
         backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
         borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -55,9 +56,9 @@ export default function ProjectDetailClient({ project, plan, responsesUsed }: Pr
           </>
         ) : (
           <>
-            <span style={{ color: 'var(--text-muted)' }}>No contract linked</span>
+            <span style={{ color: 'var(--text-muted)' }}>No contract linked — flying blind.</span>
             <Link href={`/contracts/new?project_id=${project.id}`} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.8rem' }} className="hover:text-white transition-colors">
-              Add contract
+              Analyze a contract →
             </Link>
           </>
         )}
@@ -65,8 +66,8 @@ export default function ProjectDetailClient({ project, plan, responsesUsed }: Pr
 
       <div style={{ height: '1px', backgroundColor: 'var(--bg-border)', marginBottom: '2rem' }} />
 
-      <h2 style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
-        What&apos;s happening?
+      <h2 className="fade-up" style={{ animationDelay: '0.18s', fontWeight: 600, fontSize: '1.1rem', marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
+        What did they do this time?
       </h2>
 
       <div id="defense-dashboard">
@@ -85,7 +86,7 @@ export default function ProjectDetailClient({ project, plan, responsesUsed }: Pr
 
       <div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'flex-end' }}>
         <Link href={`/projects/${project.id}/history`} style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textDecoration: 'none' }} className="hover:text-white transition-colors">
-          View message history →
+          All messages for this project →
         </Link>
       </div>
     </>

@@ -33,7 +33,7 @@ export default function ResponseOutput({ response, responseId, onRegenerate }: R
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Sparkles size={16} style={{ color: 'var(--brand-lime)', flexShrink: 0 }} />
-          <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Your message is ready</span>
+          <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Ready to send</span>
         </div>
         <button
           onClick={onRegenerate}
@@ -70,7 +70,7 @@ export default function ResponseOutput({ response, responseId, onRegenerate }: R
             fontSize: '0.875rem', fontWeight: 500, transition: 'all 150ms ease',
           }}
         >
-          {sent ? 'Marked as sent ✓' : 'Mark as Sent'}
+          {sent ? 'Marked as sent' : 'Mark as sent'}
         </button>
       </div>
     </div>

@@ -138,10 +138,10 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
                 </span>
               )}
               <button onClick={() => setEditing(true)} style={btnStyles.outline}>
-                Edit
+                Edit project
               </button>
               <button onClick={() => setDeleteDialogOpen(true)} style={btnStyles.outline}>
-                Delete project
+                Delete
               </button>
             </div>
           </div>
@@ -256,7 +256,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
                 disabled={loading}
                 style={{ ...btnStyles.primary, padding: '0.75rem', fontSize: '1rem', ...(loading ? { opacity: 0.7, cursor: 'not-allowed' } : {}) }}
               >
-                {loading ? 'Saving…' : 'Save Changes'}
+                {loading ? 'Saving…' : 'Save changes'}
               </button>
               <button type="button" onClick={() => setEditing(false)} style={btnStyles.ghost}>
                 Cancel
@@ -275,7 +275,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
             </DialogTitle>
           </DialogHeader>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-            Delete this project? This will permanently delete all defense responses too.
+            This will permanently delete the project and all its messages. There&apos;s no undo.
           </p>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <button
@@ -283,7 +283,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
               disabled={deleting}
               style={{ ...btnStyles.destructive, ...(deleting ? { opacity: 0.7, cursor: 'not-allowed' } : {}) }}
             >
-              {deleting ? 'Deleting…' : 'Yes, delete'}
+              {deleting ? 'Deleting…' : 'Delete project'}
             </button>
             <button onClick={() => setDeleteDialogOpen(false)} style={btnStyles.ghost}>
               Cancel
@@ -305,7 +305,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
           </p>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <button onClick={() => setErrorDialogOpen(false)} style={btnStyles.ghost}>
-              Dismiss
+              Close
             </button>
           </div>
         </DialogContent>

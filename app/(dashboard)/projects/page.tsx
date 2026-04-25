@@ -17,7 +17,7 @@ export default async function ProjectsPage() {
 
   return (
     <div style={{ padding: '2rem', maxWidth: '900px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+      <div className="fade-up" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <h1 style={{ fontWeight: 700, fontSize: '1.75rem', letterSpacing: '-0.02em' }}>Your projects</h1>
         <Link
           href="/projects/new"
@@ -41,7 +41,7 @@ export default async function ProjectsPage() {
           </div>
           <p style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.5rem' }}>No projects yet.</p>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
-            Add your first client project and get your first defense message.
+            Add a client project to start generating defense messages.
           </p>
           <Link
             href="/projects/new"
@@ -50,13 +50,15 @@ export default async function ProjectsPage() {
               padding: '0.7rem 1.5rem', borderRadius: '0.5rem', textDecoration: 'none', fontSize: '0.9rem',
             }}
           >
-            New Project →
+            Add your first project →
           </Link>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          {(projects as Project[]).map(project => (
-            <ProjectCard key={project.id} project={project} />
+          {(projects as Project[]).map((project, i) => (
+            <div key={project.id} className="fade-up" style={{ animationDelay: `${0.08 + i * 0.06}s` }}>
+              <ProjectCard project={project} />
+            </div>
           ))}
         </div>
       )}

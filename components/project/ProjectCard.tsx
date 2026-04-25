@@ -84,7 +84,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       )}
 
       {!riskLevel && (
-        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>No contract linked</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>No contract analyzed</div>
       )}
     </Link>
   )

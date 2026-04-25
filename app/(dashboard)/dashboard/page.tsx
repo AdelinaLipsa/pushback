@@ -33,11 +33,11 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
       {params.upgraded === 'true' && profile?.plan === 'pro' && (
         <div style={{ backgroundColor: 'var(--brand-green-dim)', border: '1px solid var(--brand-green)', borderRadius: '0.75rem', padding: '1rem 1.25rem', marginBottom: '2rem', color: 'var(--brand-green)', fontWeight: 500 }}>
-          ✓ You&apos;re now on Pro. Unlimited responses, unlimited contract analyses.
+          You&apos;re on Pro. Unlimited responses, unlimited contract analyses.
         </div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+      <div className="fade-up" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <h1 style={{ fontWeight: 700, fontSize: '1.75rem', letterSpacing: '-0.02em' }}>Your projects</h1>
         <Link
           href="/projects/new"
@@ -62,7 +62,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           </div>
           <p style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.5rem' }}>No projects yet.</p>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
-            Add your first client project and get your first defense message.
+            Add a client project to start generating defense messages.
           </p>
           <Link
             href="/projects/new"
@@ -71,13 +71,15 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               padding: '0.7rem 1.5rem', borderRadius: '0.5rem', textDecoration: 'none', fontSize: '0.9rem',
             }}
           >
-            New Project →
+            Add your first project →
           </Link>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          {(projects as Project[]).map(project => (
-            <ProjectCard key={project.id} project={project} />
+          {(projects as Project[]).map((project, i) => (
+            <div key={project.id} className="fade-up" style={{ animationDelay: `${0.08 + i * 0.06}s` }}>
+              <ProjectCard project={project} />
+            </div>
           ))}
         </div>
       )}

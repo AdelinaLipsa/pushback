@@ -129,7 +129,7 @@ export default function NewProjectForm() {
         <textarea
           value={form.notes}
           onChange={e => set('notes', e.target.value)}
-          placeholder="Any context about this project, client quirks, etc."
+          placeholder="Client quirks, red flags, context you'll want when things go sideways."
           rows={3}
           style={{ ...inputStyle, resize: 'vertical' as const }}
           onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
@@ -147,7 +147,7 @@ export default function NewProjectForm() {
           opacity: loading ? 0.7 : 1, marginTop: '0.5rem',
         }}
       >
-        {loading ? 'Creating…' : 'Create Project →'}
+        {loading ? 'Creating…' : 'Create project →'}
       </button>
     </form>
   )

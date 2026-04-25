@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 10: Smart Escalation** - Show next-step guidance after every generated message and surface project alerts proactively on the dashboard
 - [ ] **Phase 11: Document Generation** - Generate structured documents (SOW amendments, dispute packages, kill fee invoices) for Pro users — one-click, not just an email
 - [ ] **Phase 12: Client Risk Intelligence** - Surface client behavioral risk scores from existing DB data (defense responses, overdue payments, conflict history) on the dashboard
-- [ ] **Phase 13: How-To & In-App Guidance** - First-time user onboarding: /how-it-works page, tool directory, inline tooltips, and FAQ so the app is self-teaching
+- [ ] **Phase 13: How-To & In-App Guidance** - Marketing page animated product demo (CSS-only, no video) + /how-it-works page, tool directory, inline tooltips, and FAQ so the app is self-teaching
 
 ## Phase Details
 
