@@ -194,6 +194,11 @@ Plans:
   1. Pro users can generate SOW amendments, dispute packages, and kill fee invoices from a project
   2. Free users see a Pro-only gate (403 with upgrade prompt) when attempting document generation
   3. Generated documents are formatted for copy/save/attach — structured sections, not a wall of text
+**Plans**: 3 plans
+Plans:
+- [ ] 11-01-PLAN.md — Add DocumentType union, DOCUMENT_SYSTEM_PROMPT, generateDocument client function, and CopyButton label prop (Wave 1)
+- [ ] 11-02-PLAN.md — Create POST /api/projects/[id]/document with auth, Pro gate, IDOR-safe project fetch, Zod validation, Anthropic call (Wave 1)
+- [ ] 11-03-PLAN.md — Build DocumentOutput component, add document button row to ResponseOutput, wire DefenseDashboard state + render switch (Wave 2)
 **UI hint**: yes
 
 ### Phase 12: Client Risk Intelligence
@@ -233,6 +238,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Expanded Defense Tools | 0/2 | Planned | - |
 | 9. Contract-Aware Intelligence | 0/4 | Planned | - |
 | 10. Smart Escalation | 0/? | Not planned | - |
-| 11. Document Generation | 0/? | Not planned | - |
+| 11. Document Generation | 0/3 | Planned | - |
 | 12. Client Risk Intelligence | 0/? | Not planned | - |
 | 13. How-To & In-App Guidance | 0/? | Not planned | - |
