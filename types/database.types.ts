@@ -208,6 +208,7 @@ export type Database = {
         Args: { uid: string }
         Returns: Json
       }
+      decrement_defense_responses: { Args: { uid: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

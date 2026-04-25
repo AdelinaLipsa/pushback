@@ -1,10 +1,12 @@
 import { anthropic, DEFENSE_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { checkRateLimit, defendRateLimit } from '@/lib/rate-limit'
+import { DEFENSE_TOOLS, DEFENSE_TOOL_VALUES } from '@/lib/defenseTools'
 import { DefenseTool } from '@/types'
 import { z } from 'zod'
 
-const TOOL_LABELS: Record<DefenseTool, string> = {
+// IN-02: renamed from TOOL_LABELS to avoid collision with lib/defenseTools display labels
+const PROMPT_TOOL_LABELS: Record<DefenseTool, string> = {
   scope_change: 'SCOPE CHANGE REQUEST',
   payment_first: 'PAYMENT REMINDER — FIRST (0–7 days late)',
   payment_second: 'PAYMENT FOLLOW-UP — SECOND (8–14 days late)',
@@ -27,13 +29,30 @@ const TOOL_LABELS: Record<DefenseTool, string> = {
   review_threat: 'REVIEW / REPUTATION THREAT',
 }
 
+// WR-01: use shared DEFENSE_TOOL_VALUES for properly-typed enum (no `as DefenseTool` cast needed downstream)
+// CR-01 + IN-01: superRefine validates key allowlist per tool and caps key count at 10
 const defendSchema = z.object({
-  tool_type: z.enum(Object.keys(TOOL_LABELS) as [string, ...string[]]),
+  tool_type: z.enum(DEFENSE_TOOL_VALUES),
   situation: z.string().min(10).max(2000),
   extra_context: z.record(
-    z.string(),
+    z.string().regex(/^[a-z][a-z0-9_]{0,49}$/, 'key must be snake_case'),
     z.union([z.string().max(500), z.number()])
   ).optional(),
+}).superRefine((data, ctx) => {
+  if (!data.extra_context) return
+  const keys = Object.keys(data.extra_context)
+  if (keys.length > 10) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'extra_context: too many keys (max 10)' })
+    return
+  }
+  const tool = DEFENSE_TOOLS.find(t => t.type === data.tool_type)
+  if (!tool || tool.contextFields.length === 0) return
+  const validKeys = new Set(tool.contextFields.map(f => f.key))
+  for (const k of keys) {
+    if (!validKeys.has(k)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: `extra_context: unknown key '${k}' for tool '${data.tool_type}'` })
+    }
+  }
 })
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -50,12 +69,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     'check_and_increment_defense_responses',
     { uid: user.id }
   )
-  const gate = gateResult as { allowed: boolean; current_count: number } | null
+  const gate = gateResult as { allowed: boolean } | null
   if (gateError || !gate?.allowed) {
     return Response.json({ error: 'UPGRADE_REQUIRED' }, { status: 403 })
   }
-  // Store pre-increment count for compensating decrement on failure (RELY-04)
-  const preIncrementCount = gate.current_count
 
   try {
     // Validate request body (VALID-01)
@@ -63,11 +80,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const parsed = defendSchema.safeParse(body)
     if (!parsed.success) {
       const issue = parsed.error.issues[0]
-      // Undo the RPC increment — user did not consume a credit
-      await supabase
-        .from('user_profiles')
-        .update({ defense_responses_used: preIncrementCount })
-        .eq('id', user.id)
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
       return Response.json({ error: `${String(issue.path[0])}: ${issue.message}` }, { status: 400 })
     }
     const { tool_type, situation, extra_context } = parsed.data
@@ -80,10 +93,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       .single()
 
     if (!project) {
-      await supabase
-        .from('user_profiles')
-        .update({ defense_responses_used: preIncrementCount })
-        .eq('id', user.id)
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
       return Response.json({ error: 'Not found' }, { status: 404 })
     }
 
@@ -107,7 +117,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     const userMessage = [
       contextLines, contractContext, extraBlock,
-      `\nTOOL: ${TOOL_LABELS[tool_type as DefenseTool]}`,
+      `\nTOOL: ${PROMPT_TOOL_LABELS[tool_type as DefenseTool]}`,
       `\nSITUATION:\n${situation}`,
       '\nWrite the message now.'
     ].join('')
@@ -129,22 +139,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       .single()
 
     if (saveError || !saved) {
-      // Compensating decrement — RPC already incremented, undo it
-      await supabase
-        .from('user_profiles')
-        .update({ defense_responses_used: preIncrementCount })
-        .eq('id', user.id)
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
       return Response.json({ error: 'Failed to save response — your credit was not used. Please try again.' }, { status: 500 })
     }
 
     return Response.json({ response, id: saved.id })
   } catch (err) {
     console.error('Defend route error:', err)
-    // Compensating decrement — RPC already incremented, undo it on any unhandled error (RELY-01, RELY-04)
-    await supabase
-      .from('user_profiles')
-      .update({ defense_responses_used: preIncrementCount })
-      .eq('id', user.id)
+    await supabase.rpc('decrement_defense_responses', { uid: user.id })
     return Response.json({ error: 'AI generation failed — please try again' }, { status: 500 })
   }
 }

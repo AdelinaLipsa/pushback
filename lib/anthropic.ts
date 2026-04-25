@@ -240,7 +240,7 @@ RULES:
 
 Return this exact shape:
 {
-  "tool_type": "<one of the 8 values above>",
+  "tool_type": "<one of the 20 values above>",
   "explanation": "<one sentence explaining the classification>",
   "situation_context": "<clean first-person situation summary for the freelancer>"
 }
