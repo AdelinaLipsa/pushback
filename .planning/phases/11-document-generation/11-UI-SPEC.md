@@ -1,7 +1,8 @@
 ---
 phase: 11
 slug: document-generation
-status: draft
+status: approved
+reviewed_at: 2026-04-25
 shadcn_initialized: true
 preset: base-nova / neutral / cssVariables
 created: 2026-04-25
@@ -41,9 +42,7 @@ Declared values (must be multiples of 4):
 | 2xl | 48px | Major section breaks |
 | 3xl | 64px | Page-level spacing |
 
-Exceptions:
-- Document button row in ResponseOutput: `mt-4 pt-4` top border separator from primary action row (16px margin-top + 16px padding-top)
-- `<pre>` monospace block inside DocumentOutput: `p-5` (20px) — matches existing ResponseOutput message block pattern
+Exceptions: none
 
 ---
 
@@ -89,15 +88,15 @@ Source: `app/globals.css` CSS variables + CONTEXT.md D-06 (ghost/outline style f
 Layout: card (`bg-bg-surface border border-bg-border rounded-2xl p-6`) with `response-enter` animation class on mount.
 
 Internal structure (top to bottom):
-1. **Header row** — `flex items-center justify-between mb-5`
+1. **Header row** — `flex items-center justify-between mb-4`
    - Left: document type label (e.g. "SOW Amendment") at `font-semibold text-sm`
    - Right: Back button — `← Back to message` as ghost-style button, calls `onBack()` prop
-2. **Pre block** — `bg-bg-base border border-bg-border rounded-lg p-5 mb-4`
+2. **Pre block** — `bg-bg-base border border-bg-border rounded-lg p-4 mb-4` — primary focal point; occupies majority of card height and contains the generated document text
    - `<pre className="font-mono text-sm leading-relaxed text-text-primary whitespace-pre-wrap break-words m-0">`
 3. **Edit note** — always visible below pre block, above copy button:
    - `text-text-secondary text-xs leading-relaxed`
    - See Copywriting Contract for exact text
-4. **Copy button row** — `flex items-center gap-3 mt-4`
+4. **Copy button row** — `flex items-center gap-2 mt-4`
    - Reuse `CopyButton` component with `text={document}` prop — no `responseId` (documents are ephemeral, no DB row)
 
 Props interface:
@@ -111,7 +110,7 @@ interface DocumentOutputProps {
 
 #### Document Button Row (modification to `ResponseOutput.tsx`)
 
-Add a secondary row below the existing `flex items-center gap-3 mt-5` action row. The new row is:
+Add a secondary row below the existing primary action row (Copy + Mark as sent). The new row is:
 - `mt-4 pt-4 border-t border-bg-border` — visually separates from primary Copy + Mark as sent row
 - Contains 1 button (type-specific, see Copywriting Contract)
 - Button style: `btnCls.outline` from `lib/ui.ts` — `bg-transparent border border-bg-border text-text-muted text-sm rounded-lg`
@@ -219,11 +218,11 @@ No new registry components. All new UI is hand-authored using established `var()
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-04-25
