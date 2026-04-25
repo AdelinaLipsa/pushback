@@ -1,6 +1,6 @@
 import { anthropic, CLASSIFY_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { checkRateLimit, defendRateLimit } from '@/lib/rate-limit'
+import { checkRateLimit, defendRateLimit, acquireAnthropicSlot, releaseAnthropicSlot } from '@/lib/rate-limit'
 import { DEFENSE_TOOL_VALUES } from '@/lib/defenseTools'
 import { z } from 'zod'
 
@@ -58,14 +58,24 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
     const { message: clientMessage } = parsed.data
 
-    const aiMessage = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 256,
-      system: CLASSIFY_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: clientMessage }],
-    })
+    const slotResponse = await acquireAnthropicSlot()
+    if (slotResponse) {
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
+      return slotResponse
+    }
 
-    const rawText = aiMessage.content[0].type === 'text' ? aiMessage.content[0].text : ''
+    let rawText: string
+    try {
+      const aiMessage = await anthropic.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 256,
+        system: CLASSIFY_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: clientMessage }],
+      })
+      rawText = aiMessage.content[0].type === 'text' ? aiMessage.content[0].text : ''
+    } finally {
+      await releaseAnthropicSlot()
+    }
 
     let parsed2: unknown
     try {

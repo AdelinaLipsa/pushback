@@ -1,6 +1,6 @@
 import { anthropic, DEFENSE_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { checkRateLimit, defendRateLimit } from '@/lib/rate-limit'
+import { checkRateLimit, defendRateLimit, acquireAnthropicSlot, releaseAnthropicSlot } from '@/lib/rate-limit'
 import { DEFENSE_TOOLS, DEFENSE_TOOL_VALUES } from '@/lib/defenseTools'
 import { DefenseTool } from '@/types'
 import { z } from 'zod'
@@ -122,14 +122,24 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       '\nWrite the message now.'
     ].join('')
 
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1024,
-      system: DEFENSE_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userMessage }]
-    })
+    const slotResponse = await acquireAnthropicSlot()
+    if (slotResponse) {
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
+      return slotResponse
+    }
 
-    const response = message.content[0].type === 'text' ? message.content[0].text : ''
+    let response: string
+    try {
+      const message = await anthropic.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1024,
+        system: DEFENSE_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userMessage }]
+      })
+      response = message.content[0].type === 'text' ? message.content[0].text : ''
+    } finally {
+      await releaseAnthropicSlot()
+    }
 
     // Credit-safe insert — only proceed if save succeeds (RELY-04)
     const { data: saved, error: saveError } = await supabase

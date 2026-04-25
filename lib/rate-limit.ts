@@ -39,3 +39,29 @@ export async function checkRateLimit(
     },
   )
 }
+
+// Global Anthropic concurrency semaphore — prevents thundering-herd 529s under load.
+// Ceiling defaults to 50; override with ANTHROPIC_MAX_CONCURRENCY env var.
+// Gracefully skips when Redis is unavailable (same pattern as rate limiter).
+const MAX_CONCURRENCY = parseInt(process.env.ANTHROPIC_MAX_CONCURRENCY ?? '50', 10)
+const CONCURRENCY_KEY = 'pb:anthropic:concurrent'
+const SLOT_TTL_SECONDS = 30 // safety expiry — covers max expected request duration
+
+export async function acquireAnthropicSlot(): Promise<Response | null> {
+  if (!redis) return null
+  const count = await redis.incr(CONCURRENCY_KEY)
+  await redis.expire(CONCURRENCY_KEY, SLOT_TTL_SECONDS)
+  if (count > MAX_CONCURRENCY) {
+    await redis.decr(CONCURRENCY_KEY)
+    return Response.json(
+      { error: 'Server is busy — please try again in a moment.' },
+      { status: 503, headers: { 'Retry-After': '5' } },
+    )
+  }
+  return null
+}
+
+export async function releaseAnthropicSlot(): Promise<void> {
+  if (!redis) return
+  await redis.decr(CONCURRENCY_KEY)
+}
