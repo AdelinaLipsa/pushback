@@ -2,8 +2,90 @@ import { anthropic, DEFENSE_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { checkRateLimit, defendRateLimit, acquireAnthropicSlot, releaseAnthropicSlot } from '@/lib/rate-limit'
 import { DEFENSE_TOOLS, DEFENSE_TOOL_VALUES } from '@/lib/defenseTools'
-import { DefenseTool } from '@/types'
+import { DefenseTool, ContractAnalysis } from '@/types'
 import { z } from 'zod'
+
+// Tool-type-to-clause keyword groupings (Phase 9 — D-05 through D-10)
+const TOOL_CLAUSE_KEYWORDS: Record<string, string[]> = {
+  scope: ['scope', 'revision', 'deliverable', 'change', 'amendment'],
+  payment: ['payment', 'invoice', 'fee', 'net-30', 'late', 'interest'],
+  kill_fee: ['cancel', 'termination', 'kill'],
+  revision: ['revision', 'change', 'rounds', 'unlimited'],
+  ip: ['ip', 'intellectual property', 'source', 'ownership', 'license'],
+  dispute: [],
+}
+
+const TOOL_GROUP_MAP: Record<DefenseTool, keyof typeof TOOL_CLAUSE_KEYWORDS> = {
+  scope_change: 'scope',
+  moving_goalposts: 'scope',
+  post_handoff_request: 'scope',
+  payment_first: 'payment',
+  payment_second: 'payment',
+  payment_final: 'payment',
+  retroactive_discount: 'payment',
+  chargeback_threat: 'payment',
+  kill_fee: 'kill_fee',
+  revision_limit: 'revision',
+  ip_dispute: 'ip',
+  dispute_response: 'dispute',
+  review_threat: 'dispute',
+  delivery_signoff: 'dispute',
+  ghost_client: 'dispute',
+  feedback_stall: 'dispute',
+  discount_pressure: 'dispute',
+  rate_increase_pushback: 'dispute',
+  rush_fee_demand: 'dispute',
+  spec_work_pressure: 'dispute',
+}
+
+function buildContractContext(
+  analysis: ContractAnalysis | null,
+  toolType: DefenseTool
+): { contextBlock: string; clauseTitlesUsed: string[] } {
+  if (!analysis) return { contextBlock: '', clauseTitlesUsed: [] }
+
+  const group = TOOL_GROUP_MAP[toolType] ?? 'dispute'
+  const keywords = TOOL_CLAUSE_KEYWORDS[group] ?? []
+
+  const header = `Risk level: ${analysis.risk_level.charAt(0).toUpperCase() + analysis.risk_level.slice(1)} (${analysis.risk_score}/10) — ${analysis.verdict}`
+
+  const matchedClauses = keywords.length > 0
+    ? analysis.flagged_clauses.filter(c =>
+        keywords.some(kw => c.title.toLowerCase().includes(kw))
+      )
+    : analysis.flagged_clauses
+
+  const topClauses = matchedClauses.slice(0, 3).length > 0
+    ? matchedClauses.slice(0, 3)
+    : analysis.flagged_clauses.slice(0, 3)
+
+  const clauseLines = topClauses.map(c =>
+    `• ${c.title}\n  → "${c.pushback_language}"`
+  )
+  const clauseTitlesUsed = topClauses.map(c => c.title)
+
+  const matchedMissing = keywords.length > 0
+    ? analysis.missing_protections.filter(mp =>
+        keywords.some(kw =>
+          mp.title.toLowerCase().includes(kw) ||
+          mp.why_you_need_it.toLowerCase().includes(kw)
+        )
+      )
+    : analysis.missing_protections
+  const topMissing = matchedMissing.slice(0, 2)
+
+  const missingLines = topMissing.map(mp =>
+    `• ${mp.title} — Suggested: "${mp.suggested_clause}"`
+  )
+
+  const parts = [
+    header,
+    ...(clauseLines.length > 0 ? ['\nRELEVANT CLAUSES:', ...clauseLines] : []),
+    ...(missingLines.length > 0 ? ['\nMISSING PROTECTIONS:', ...missingLines] : []),
+  ]
+
+  return { contextBlock: parts.join('\n'), clauseTitlesUsed }
+}
 
 // IN-02: renamed from TOOL_LABELS to avoid collision with lib/defenseTools display labels
 const PROMPT_TOOL_LABELS: Record<DefenseTool, string> = {
@@ -107,8 +189,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const contractAnalysis = Array.isArray(project.contracts)
       ? project.contracts[0]?.analysis
       : project.contracts?.analysis
-    const contractContext = contractAnalysis
-      ? `\n\nCONTRACT DATA:\n${JSON.stringify(contractAnalysis, null, 2)}`
+    const { contextBlock, clauseTitlesUsed } = buildContractContext(contractAnalysis ?? null, tool_type as DefenseTool)
+    const contractContext = contextBlock
+      ? `\n\nCONTRACT CONTEXT:\n${contextBlock}`
       : '\n\n(No contract — do not reference or invent contract terms)'
 
     const extraBlock = extra_context && Object.keys(extra_context).length > 0
@@ -153,7 +236,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return Response.json({ error: 'Failed to save response — your credit was not used. Please try again.' }, { status: 500 })
     }
 
-    return Response.json({ response, id: saved.id })
+    return Response.json({ response, id: saved.id, contract_clauses_used: clauseTitlesUsed })
   } catch (err) {
     console.error('Defend route error:', err)
     await supabase.rpc('decrement_defense_responses', { uid: user.id })
