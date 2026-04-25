@@ -13,6 +13,18 @@ const TOOL_LABELS: Record<DefenseTool, string> = {
   kill_fee: 'KILL FEE ENFORCEMENT',
   delivery_signoff: 'DELIVERY SIGN-OFF REQUEST',
   dispute_response: 'DISPUTE RESPONSE',
+  ghost_client: 'GHOST CLIENT — RADIO SILENCE',
+  feedback_stall: 'FEEDBACK DELAY — TIMELINE RECALIBRATION',
+  moving_goalposts: 'APPROVED THEN REJECTED — GOALPOST SHIFT',
+  discount_pressure: 'RATE NEGOTIATION — HOLD YOUR RATE',
+  retroactive_discount: 'POST-DELIVERY DISCOUNT DEMAND',
+  rate_increase_pushback: 'RATE INCREASE — HOLD THE NEW RATE',
+  rush_fee_demand: 'RUSH DEMAND WITHOUT RUSH FEE',
+  ip_dispute: 'IP / SOURCE FILE OWNERSHIP DISPUTE',
+  chargeback_threat: 'CHARGEBACK / PAYMENT REVERSAL THREAT',
+  spec_work_pressure: 'EXPOSURE / SPEC WORK DEMAND',
+  post_handoff_request: 'POST-HANDOFF REQUEST — CLOSED PROJECT',
+  review_threat: 'REVIEW / REPUTATION THREAT',
 }
 
 const defendSchema = z.object({

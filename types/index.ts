@@ -9,6 +9,18 @@ export type DefenseTool =
   | 'kill_fee'
   | 'delivery_signoff'
   | 'dispute_response'
+  | 'ghost_client'
+  | 'feedback_stall'
+  | 'moving_goalposts'
+  | 'discount_pressure'
+  | 'retroactive_discount'
+  | 'rate_increase_pushback'
+  | 'rush_fee_demand'
+  | 'ip_dispute'
+  | 'chargeback_threat'
+  | 'spec_work_pressure'
+  | 'post_handoff_request'
+  | 'review_threat'
 
 export type ContextField = {
   key: string

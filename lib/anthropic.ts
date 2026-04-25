@@ -127,6 +127,75 @@ dispute_response:
 Acknowledge concern without admitting fault → reference relevant clause if available →
 propose one specific resolution path → zero emotion → one or two paragraphs maximum.
 
+ghost_client:
+No accusation — assume life got busy. Open warmly, state what you have been waiting on
+and for how long. Set a specific response deadline (e.g. 5 business days). Note calmly:
+if no response by that date, you will need to pause the project slot and a restart may
+require a re-scheduling fee. Leave the door open.
+
+feedback_stall:
+Professional and factual. State what you are waiting on and the number of days elapsed.
+Recalibrate the delivery deadline clearly: the new deadline is X business days from when
+feedback is received. This is not a threat — it is a timeline update based on actual work
+start date.
+
+moving_goalposts:
+Do not argue. Acknowledge the new direction positively. Then make the situation clear in
+neutral, factual terms: the direction that was approved on [date] has been delivered per
+the brief. A new creative direction constitutes new scope — include a revised quote and
+timeline offer. Professional, no blame.
+
+discount_pressure:
+Hold the rate. No apology. Briefly acknowledge their budget constraint, then state your
+rate is set based on the work required. Option: offer a reduced scope at their budget —
+never the same scope for less. One paragraph. Final.
+
+retroactive_discount:
+Zero negotiation on delivered work. State clearly that the work was delivered per the
+agreed brief and the invoice reflects the agreed price. If there is a genuine quality
+concern, you are open to discussing it — but the price is not negotiable after delivery.
+Professional, firm, short.
+
+rate_increase_pushback:
+Hold the new rate without apology or excessive justification. Briefly acknowledge the
+change, then state the rate reflects your current expertise and market positioning. Offer
+one concession if appropriate: a short transition period at the old rate (e.g. one more
+project). No guilt.
+
+rush_fee_demand:
+Acknowledge the urgency without assuming blame. State clearly: rush delivery is available
+at a rush fee (suggest 25–50% of project value or a specific rate). Give them the binary:
+rush delivery at the rush rate, or original timeline at the current rate. No hedging.
+
+ip_dispute:
+State clearly and factually: IP ownership under the agreement covers the specific
+deliverables created for this project — not pre-existing tools, templates, frameworks, or
+source files unless explicitly included in the contract. Reference the contract if
+available. Offer to clarify in a short call. Matter-of-fact, no hostility.
+
+chargeback_threat:
+Do not panic. State calmly that you have complete documentation of all work delivered,
+approved, and communicated. Chargebacks for received and accepted services may be
+considered fraudulent disputes. You are happy to resolve genuine concerns directly —
+but a chargeback would require you to respond through the formal dispute process with
+full documentation. One paragraph, professional.
+
+spec_work_pressure:
+No apology for valuing your work. Briefly acknowledge their situation, then decline the
+exposure offer. If you are interested in the project, state your standard rate. One to two
+sentences. No hostility — just clarity.
+
+post_handoff_request:
+Friendly and unambiguous. Project is complete and closed — what they are describing is
+new work. Quote a rate for the new work (hourly or fixed). No guilt, no apology — just a
+clear path forward if they want to continue.
+
+review_threat:
+Zero emotion. Do not threaten back. State calmly: your work was delivered per the agreed
+brief, you maintain full records of communications and deliverables, and you are happy to
+address any genuine concerns through proper channels. Threats of negative reviews do not
+change contractual obligations. One paragraph. Professional.
+
 OFF-TOPIC GUARD:
 If the submitted situation is clearly not a freelancer-client professional dispute
 (e.g., personal relationships, homework, test answers, unrelated business topics),
@@ -138,7 +207,7 @@ Return only the message text. Start with the salutation.
 
 export const CLASSIFY_SYSTEM_PROMPT = `
 You are a freelancer situation classifier. A freelancer will paste a raw message from their client.
-Your job: identify which of the 8 defense tool categories best matches the situation, write a
+Your job: identify which of the 20 defense tool categories best matches the situation, write a
 one-sentence explanation of why, and extract a clean first-person situation summary the freelancer
 can use directly (not the raw client message verbatim).
 
@@ -151,6 +220,18 @@ TOOL TYPES (choose exactly one):
 - kill_fee: Client wants to cancel mid-project — enforce your kill fee
 - delivery_signoff: Project complete — get written acceptance before transferring files
 - dispute_response: Client unhappy, making unfair claims, or threatening a dispute
+- ghost_client: Client has stopped responding entirely, blocking project progress
+- feedback_stall: Client is not providing feedback on time, threatening the delivery deadline
+- moving_goalposts: Client approved work then rejected the final deliverable as not what they wanted
+- discount_pressure: Client is pushing back on the quoted price before work begins
+- retroactive_discount: Client is demanding a price reduction after the work has been delivered
+- rate_increase_pushback: Existing client is resisting or guilt-tripping about a rate increase
+- rush_fee_demand: Client needs faster delivery but is not offering a rush fee
+- ip_dispute: Client is claiming ownership of source files or assets beyond the agreed deliverables
+- chargeback_threat: Client is threatening to dispute the payment with their bank or card provider
+- spec_work_pressure: Client is requesting free or heavily discounted work in exchange for exposure
+- post_handoff_request: Client is requesting changes or additions after the project was delivered and closed
+- review_threat: Client is threatening to leave a negative review to pressure free work or a refund
 
 RULES:
 - situation_context must be written in the first person from the freelancer's perspective (e.g. "Client asked to add e-commerce to the project at the same budget")

@@ -2,6 +2,8 @@
 
 import {
   Layers, Clock, AlertTriangle, Ban, RefreshCw, XCircle, CheckCircle2, ShieldAlert,
+  EyeOff, Hourglass, Shuffle, TrendingDown, TrendingUp, Zap, Copyright, CreditCard,
+  Eye, PackageOpen, Star, Receipt,
   type LucideIcon,
 } from 'lucide-react'
 import { DefenseToolMeta } from '@/types'
@@ -16,6 +18,18 @@ const ICON_MAP: Record<string, LucideIcon> = {
   XCircle,
   CheckCircle2,
   ShieldAlert,
+  EyeOff,
+  Hourglass,
+  Shuffle,
+  TrendingDown,
+  TrendingUp,
+  Zap,
+  Copyright,
+  CreditCard,
+  Eye,
+  PackageOpen,
+  Star,
+  Receipt,
 }
 
 interface DefenseToolCardProps {
@@ -70,7 +84,7 @@ export default function DefenseToolCard({ tool, selected, loading, onSelect }: D
       </div>
       {loading && selected && (
         <div style={{ marginTop: '0.75rem', color: 'var(--brand-lime)', fontSize: '0.78rem', fontWeight: 500 }}>
-          Writing your message<span className="animate-pulse">...</span>
+          Writing your message<span className="animate-pulse">…</span>
         </div>
       )}
     </button>
