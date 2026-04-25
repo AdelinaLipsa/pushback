@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { DefenseTool, Project } from '@/types'
+import { DefenseTool, Project, RiskLevel } from '@/types'
 import { RISK_COLORS } from '@/lib/ui'
 import ProjectHeader from '@/components/project/ProjectHeader'
 import PaymentSection from '@/components/project/PaymentSection'
@@ -29,6 +29,8 @@ export default function ProjectDetailClient({ project, plan, responsesUsed }: Pr
   const contractsRaw = project.contracts
   const contract = Array.isArray(contractsRaw) ? (contractsRaw as Array<typeof contractsRaw>)[0] ?? null : contractsRaw ?? null
   const riskLevel = contract?.risk_level
+  const hasContract = contract !== null
+  const contractRiskLevel = contract?.risk_level as RiskLevel | undefined
 
   return (
     <>
@@ -76,6 +78,8 @@ export default function ProjectDetailClient({ project, plan, responsesUsed }: Pr
           plan={plan}
           responsesUsed={responsesUsed}
           initialPaymentPrefill={paymentPrefill ?? undefined}
+          hasContract={hasContract}
+          contractRiskLevel={contractRiskLevel}
         />
       </div>
 
