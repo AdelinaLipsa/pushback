@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { DefenseTool, DefenseToolMeta, DefenseResponse } from '@/types'
+import { DefenseTool, DefenseToolMeta, DefenseResponse, RiskLevel } from '@/types'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import { btnStyles, inputStyle } from '@/lib/ui'
 import { startCheckout } from '@/lib/checkout'
@@ -17,13 +17,15 @@ interface DefenseDashboardProps {
   plan: 'free' | 'pro'
   responsesUsed: number
   initialPaymentPrefill?: { tool: DefenseTool; contextFields: Record<string, string> }
+  hasContract?: boolean
+  contractRiskLevel?: RiskLevel
 }
 
-export default function DefenseDashboard({ projectId, plan, responsesUsed, initialPaymentPrefill }: DefenseDashboardProps) {
+export default function DefenseDashboard({ projectId, plan, responsesUsed, initialPaymentPrefill, hasContract, contractRiskLevel }: DefenseDashboardProps) {
   const router = useRouter()
   const [selectedTool, setSelectedTool] = useState<DefenseToolMeta | null>(null)
   const [loading, setLoading] = useState(false)
-  const [response, setResponse] = useState<{ text: string; id: string } | null>(null)
+  const [response, setResponse] = useState<{ text: string; id: string; contractClausesUsed?: string[] } | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [upgradeLoading, setUpgradeLoading] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
@@ -90,7 +92,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
     }
 
     setGenerateError(null)
-    setResponse({ text: data.response, id: data.id })
+    setResponse({ text: data.response, id: data.id, contractClausesUsed: data.contract_clauses_used ?? [] })
     router.refresh()
   }
 
@@ -291,6 +293,8 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
           loading={loading}
           initialSituation={analysisResult?.situation_context}
           initialContextFields={initialPaymentPrefill?.contextFields}
+          hasContract={hasContract}
+          contractRiskLevel={contractRiskLevel}
         />
       )}
 
@@ -299,6 +303,7 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
           response={response.text}
           responseId={response.id}
           onRegenerate={handleRegenerate}
+          contractClausesUsed={response.contractClausesUsed}
         />
       )}
     </div>

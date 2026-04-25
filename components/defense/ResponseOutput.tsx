@@ -8,6 +8,7 @@ interface ResponseOutputProps {
   response: string
   responseId: string
   onRegenerate: () => void
+  contractClausesUsed?: string[]
 }
 
 export default function ResponseOutput({ response, responseId, onRegenerate }: ResponseOutputProps) {

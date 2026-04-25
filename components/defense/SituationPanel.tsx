@@ -11,6 +11,8 @@ interface SituationPanelProps {
   loading: boolean
   initialSituation?: string
   initialContextFields?: Record<string, string>
+  hasContract?: boolean
+  contractRiskLevel?: string
 }
 
 export default function SituationPanel({ tool, onGenerate, onClose, loading, initialSituation, initialContextFields }: SituationPanelProps) {
