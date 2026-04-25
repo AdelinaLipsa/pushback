@@ -20,6 +20,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Proactive Detection** - Analyze a raw client message, identify the situation type, pre-fill the right defense tool (completed 2026-04-24)
 - [x] **Phase 7: Payment Tracking** - Add payment due date per project, dashboard overdue badge, one-click Late Payment tool pre-fill (completed 2026-04-24)
 - [ ] **Phase 8: Expanded Defense Tools** - Add 12 new defense tool types covering the most common freelancer conflict scenarios not currently handled
+- [ ] **Phase 9: Contract-Aware Intelligence** - Deeply integrate contract analysis data into generated responses so every message references the freelancer's actual contract terms
+- [ ] **Phase 10: Smart Escalation** - Show next-step guidance after every generated message and surface project alerts proactively on the dashboard
+- [ ] **Phase 11: Document Generation** - Generate structured documents (SOW amendments, dispute packages, kill fee invoices) for Pro users — one-click, not just an email
+- [ ] **Phase 12: Client Risk Intelligence** - Surface client behavioral risk scores from existing DB data (defense responses, overdue payments, conflict history) on the dashboard
+- [ ] **Phase 13: How-To & In-App Guidance** - First-time user onboarding: /how-it-works page, tool directory, inline tooltips, and FAQ so the app is self-teaching
 
 ## Phase Details
 
@@ -151,10 +156,60 @@ Plans:
   5. All icon names used in DefenseToolCard resolve in lucide-react — no missing icon errors at runtime
 **UI hint**: yes
 
+### Phase 9: Contract-Aware Intelligence
+**Goal**: Every generated message is demonstrably smarter than a generic Claude prompt — it references the freelancer's actual contract clauses, missing protections, and negotiation priorities by extracting relevant data per tool type
+**Depends on**: Phase 8
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. The defend route builds a structured contract context block per tool type (scope tools get scope clauses, payment tools get payment clauses) instead of raw JSON.stringify
+  2. Generated messages reference specific contract language when a contract is attached — not generic advice
+  3. The ResponseOutput component shows a "Based on your contract:" section when contract data was used
+**UI hint**: yes
+
+### Phase 10: Smart Escalation
+**Goal**: Pushback is proactive — after generating a message it tells the freelancer exactly what to do if the client ignores it, and the dashboard surfaces projects needing attention without manual checking
+**Depends on**: Phase 8
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. Every generated response shows a tool-type-aware "What to do if they don't respond" card below the action buttons
+  2. The dashboard surfaces a Projects Needing Attention section for overdue payments, ghost clients, and stalled projects
+  3. Next-step guidance is specific to the tool type (payment tools show escalation ladder, ghost client shows pause-project guidance)
+**UI hint**: yes
+
+### Phase 11: Document Generation
+**Goal**: For situations requiring more than an email, Pro users can generate a structured document (SOW amendment, dispute timeline, kill fee invoice) in one click — something no generic Claude prompt produces
+**Depends on**: Phase 9
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. Pro users can generate SOW amendments, dispute packages, and kill fee invoices from a project
+  2. Free users see a Pro-only gate (403 with upgrade prompt) when attempting document generation
+  3. Generated documents are formatted for copy/save/attach — structured sections, not a wall of text
+**UI hint**: yes
+
+### Phase 12: Client Risk Intelligence
+**Goal**: Freelancers see which clients are behaviorally risky at a glance — computed from existing DB data (defense responses, overdue payments, conflict patterns) — before a situation escalates
+**Depends on**: Phase 10
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. Each project card shows a client risk score (0–100) with color coding (green/yellow/red) and 1-2 signal labels
+  2. Risk score is computed from defense_responses count, overdue payment history, and conflict tool types used
+  3. A risk breakdown is visible on the project detail page
+**UI hint**: yes
+
+### Phase 13: How-To & In-App Guidance
+**Goal**: First-time users understand what Pushback does and how to use it without reading docs — a /how-it-works page, tool directory, and inline tooltips make the app self-teaching
+**Depends on**: Phase 8
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. /how-it-works page exists with the 3 use modes, full tool directory (pulled from DEFENSE_TOOLS), contract analysis explanation, and FAQ
+  2. Each defense tool card has a tooltip/hover state showing "when to use this" guidance
+  3. Empty states on the dashboard and project page include guidance copy pointing to /how-it-works
+**UI hint**: yes
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -165,4 +220,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 5. Types & Observability | 0/3 | Planned | - |
 | 6. Proactive Detection | 3/3 | Complete | 2026-04-24 |
 | 7. Payment Tracking | 4/4 | Complete   | 2026-04-24 |
-| 8. Expanded Defense Tools | 0/? | Not planned | - |
+| 8. Expanded Defense Tools | 0/? | Context captured | - |
+| 9. Contract-Aware Intelligence | 0/? | Not planned | - |
+| 10. Smart Escalation | 0/? | Not planned | - |
+| 11. Document Generation | 0/? | Not planned | - |
+| 12. Client Risk Intelligence | 0/? | Not planned | - |
+| 13. How-To & In-App Guidance | 0/? | Not planned | - |
