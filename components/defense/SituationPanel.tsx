@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { DefenseToolMeta } from '@/types'
+import { DefenseToolMeta, RiskLevel } from '@/types'
 import { inputStyle } from '@/lib/ui'
 
 interface SituationPanelProps {
@@ -12,10 +12,17 @@ interface SituationPanelProps {
   initialSituation?: string
   initialContextFields?: Record<string, string>
   hasContract?: boolean
-  contractRiskLevel?: string
+  contractRiskLevel?: RiskLevel
 }
 
-export default function SituationPanel({ tool, onGenerate, onClose, loading, initialSituation, initialContextFields }: SituationPanelProps) {
+export default function SituationPanel({ tool, onGenerate, onClose, loading, initialSituation, initialContextFields, hasContract, contractRiskLevel }: SituationPanelProps) {
+  const riskDotColor: Record<RiskLevel, string> = {
+    low: '#84cc16',
+    medium: '#84cc16',
+    high: '#f59e0b',
+    critical: '#ef4444',
+  }
+
   const [situation, setSituation] = useState(initialSituation ?? '')
   const [extra, setExtra] = useState<Record<string, string>>(initialContextFields ?? {})
 
@@ -55,6 +62,15 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
           ✕
         </button>
       </div>
+
+      {hasContract && contractRiskLevel && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem', marginBottom: '-0.5rem' }}>
+          <span style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', display: 'inline-block', flexShrink: 0, backgroundColor: riskDotColor[contractRiskLevel] ?? '#84cc16' }} />
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+            {contractRiskLevel.charAt(0).toUpperCase() + contractRiskLevel.slice(1)} risk contract loaded
+          </span>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <div>

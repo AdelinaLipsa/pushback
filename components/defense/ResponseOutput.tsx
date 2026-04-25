@@ -11,7 +11,7 @@ interface ResponseOutputProps {
   contractClausesUsed?: string[]
 }
 
-export default function ResponseOutput({ response, responseId, onRegenerate }: ResponseOutputProps) {
+export default function ResponseOutput({ response, responseId, onRegenerate, contractClausesUsed }: ResponseOutputProps) {
   const [sent, setSent] = useState(false)
 
   async function handleMarkSent() {
@@ -58,7 +58,18 @@ export default function ResponseOutput({ response, responseId, onRegenerate }: R
         </pre>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+      {contractClausesUsed && contractClausesUsed.length > 0 && (
+        <div style={{ marginTop: '0.75rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 0.25rem 0' }}>
+            Based on your contract:
+          </p>
+          <p style={{ color: '#52525b', fontSize: '0.8rem', lineHeight: 1.5, margin: 0 }}>
+            {contractClausesUsed.join(', ')}
+          </p>
+        </div>
+      )}
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '1.25rem' }}>
         <CopyButton text={response} responseId={responseId} />
         <button
           onClick={handleMarkSent}
