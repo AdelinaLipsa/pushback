@@ -64,7 +64,7 @@ Source: existing ClauseCard.tsx, SituationPanel.tsx, ResponseOutput.tsx spacing 
 Phase-specific typography rules:
 - "Based on your contract:" label: 13px (0.8rem), weight 400, color var(--text-muted) (#52525b), uppercase, letter-spacing 0.07em — matches the existing "What to say back" label pattern in ClauseCard
 - Clause titles in attribution list: 14px (0.875rem), weight 400, color #52525b (text-[#52525b]) — comma-separated inline, no bullets
-- Risk indicator text ("{RiskLevel} risk contract loaded"): 13px (0.8rem), weight 400, color var(--text-secondary) (#a1a1aa) — never changes color based on risk level (D-13)
+- Risk indicator text ("{RiskLevel} risk contract loaded"): 13px (0.8rem), weight 400, color var(--text-muted) (#52525b) — never changes color based on risk level (D-13)
 
 Source: ClauseCard.tsx, SituationPanel.tsx, ResponseOutput.tsx type patterns.
 
@@ -92,7 +92,7 @@ Risk indicator dot color mapping (D-13):
 - `high` → #f59e0b (raw hex, matches --brand-amber in CONTEXT.md; NOTE: --brand-amber in globals.css is mapped to lime #84cc16 — use raw hex #f59e0b for high-risk dots, not the CSS variable)
 - `critical` → #ef4444 (var(--urgency-high))
 
-Risk indicator text color: always var(--text-secondary) (#a1a1aa), never changes with risk level (D-13).
+Risk indicator text color: always var(--text-muted) (#52525b), never changes with risk level (D-13).
 
 Source: globals.css CSS variables, 09-CONTEXT.md D-13, lib/ui.ts RISK_COLORS_RICH.
 
@@ -136,7 +136,7 @@ Source: 09-CONTEXT.md D-01 through D-04; discretion note on exact formatting app
 ```
 - Dot: 8px × 8px circle (borderRadius '50%', display 'inline-block'), flexShrink 0
 - Text: "{RiskLevel} risk contract loaded" where RiskLevel is capitalized (e.g. "High risk contract loaded", "Low risk contract loaded")
-- Layout: flex row, alignItems center, gap 6px (0.375rem)
+- Layout: flex row, alignItems center, gap 8px (0.5rem)
 
 **Dot color by risk level (D-13):**
 - low → backgroundColor: '#84cc16' (var(--brand-lime))
@@ -144,7 +144,7 @@ Source: 09-CONTEXT.md D-01 through D-04; discretion note on exact formatting app
 - high → backgroundColor: '#f59e0b'
 - critical → backgroundColor: '#ef4444' (var(--urgency-high))
 
-**Text color:** always var(--text-secondary) (#a1a1aa), fontSize 13px (0.8rem), weight 400
+**Text color:** always var(--text-muted) (#52525b), fontSize 13px (0.8rem), weight 400
 
 **New props added to SituationPanel:**
 - `hasContract?: boolean`
@@ -166,7 +166,7 @@ Source: 09-CONTEXT.md D-11 through D-14.
 
 **Label row layout:**
 ```jsx
-<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
   <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: 0 }}>What to say back</p>
   <button ...> {/* Lucide Copy icon, 14px, ghost */ }
   </button>
