@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import ProjectCard from '@/components/project/ProjectCard'
+import ProjectsTable from '@/components/project/ProjectsTable'
 import { Project } from '@/types'
 
 export default async function ProjectsPage() {
@@ -16,7 +16,7 @@ export default async function ProjectsPage() {
     .order('created_at', { ascending: false })
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '900px' }}>
+    <div style={{ padding: '2rem' }}>
       <div className="fade-up" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <h1 style={{ fontWeight: 700, fontSize: '1.75rem', letterSpacing: '-0.02em' }}>Your projects</h1>
         <Link
@@ -54,12 +54,8 @@ export default async function ProjectsPage() {
           </Link>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          {(projects as Project[]).map((project, i) => (
-            <div key={project.id} className="fade-up" style={{ animationDelay: `${0.08 + i * 0.06}s` }}>
-              <ProjectCard project={project} />
-            </div>
-          ))}
+        <div className="fade-up" style={{ animationDelay: '0.08s' }}>
+          <ProjectsTable projects={projects as Project[]} />
         </div>
       )}
     </div>

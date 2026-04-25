@@ -151,9 +151,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     'check_and_increment_defense_responses',
     { uid: user.id }
   )
-  const gate = gateResult as { allowed: boolean } | null
+  const gate = gateResult as { allowed: boolean; reason?: string; period_count?: number } | null
   if (gateError || !gate?.allowed) {
-    return Response.json({ error: 'UPGRADE_REQUIRED' }, { status: 403 })
+    return Response.json({ error: gate?.reason ?? 'UPGRADE_REQUIRED' }, { status: 403 })
   }
 
   try {
@@ -236,7 +236,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return Response.json({ error: 'Failed to save response — your credit was not used. Please try again.' }, { status: 500 })
     }
 
-    return Response.json({ response, id: saved.id, contract_clauses_used: clauseTitlesUsed })
+    const newPeriodCount = (gate?.period_count ?? 0) + 1
+    const usageWarning = newPeriodCount >= 120 ? `${newPeriodCount} of 150 responses used this period` : undefined
+    return Response.json({ response, id: saved.id, contract_clauses_used: clauseTitlesUsed, usage_warning: usageWarning })
   } catch (err) {
     console.error('Defend route error:', err)
     await supabase.rpc('decrement_defense_responses', { uid: user.id })

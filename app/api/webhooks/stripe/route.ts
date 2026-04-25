@@ -80,6 +80,21 @@ export async function POST(request: Request) {
     }
   }
 
+  if (event.type === 'invoice.paid') {
+    const invoice = event.data.object
+    const subscriptionId = typeof invoice.subscription === 'string' ? invoice.subscription : invoice.subscription?.id
+    if (subscriptionId) {
+      const { data: profileData } = await supabase
+        .from('user_profiles')
+        .select('id')
+        .eq('stripe_subscription_id', subscriptionId)
+        .single()
+      if (profileData?.id) {
+        await supabase.rpc('reset_period_usage', { uid: profileData.id })
+      }
+    }
+  }
+
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object
     const { error } = await supabase

@@ -24,7 +24,7 @@ export default function ContractDeleteButton({ contractId }: { contractId: strin
 
   return (
     <>
-      <Button variant="outline" size="sm" icon={<Trash2 size={13} />} onClick={() => setDialogOpen(true)}>
+      <Button variant="destructive" size="sm" icon={<Trash2 size={13} />} onClick={() => setDialogOpen(true)}>
         Delete contract
       </Button>
 

@@ -74,6 +74,8 @@ export type UserProfile = {
   plan: Plan
   defense_responses_used: number
   contracts_used: number
+  period_responses_used: number
+  period_contracts_used: number
   stripe_customer_id: string | null
   stripe_subscription_id: string | null
   created_at: string

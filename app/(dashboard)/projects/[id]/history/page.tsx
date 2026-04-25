@@ -24,7 +24,7 @@ export default async function ProjectHistoryPage({ params }: { params: Promise<{
   const lockedCount = plan === 'free' ? Math.max(0, allResponses.length - 3) : 0
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '760px' }}>
+    <div style={{ padding: '2rem' }}>
       <Link href={`/projects/${id}`} style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginBottom: '1.5rem' }} className="hover:text-white transition-colors">
         ← {project.title}
       </Link>

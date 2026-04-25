@@ -13,14 +13,14 @@ export const PLANS = {
   },
   pro: {
     name: 'Pro',
-    price: 12,
+    price: 20,
     currency: 'EUR' as const,
-    priceDisplay: '€12/month',
-    defense_responses: -1,
-    contracts: -1,
+    priceDisplay: '€20/month',
+    defense_responses: 150,
+    contracts: 50,
     features: [
-      'Unlimited defense responses',
-      'Unlimited contract analyses',
+      '150 defense responses/month',
+      '50 contract analyses/month',
       'Full response history',
       'All 8 defense tools',
       'Client notes per project'

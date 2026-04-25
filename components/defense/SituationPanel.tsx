@@ -1,8 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import {
+  Layers, Clock, AlertTriangle, Ban, RefreshCw, XCircle, CheckCircle2, ShieldAlert,
+  EyeOff, Hourglass, Shuffle, TrendingDown, TrendingUp, Zap, Copyright, CreditCard,
+  Eye, PackageOpen, Star, Receipt, type LucideIcon,
+} from 'lucide-react'
 import { DefenseToolMeta, RiskLevel } from '@/types'
 import { inputStyle } from '@/lib/ui'
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  Layers, Clock, AlertTriangle, Ban, RefreshCw, XCircle, CheckCircle2, ShieldAlert,
+  EyeOff, Hourglass, Shuffle, TrendingDown, TrendingUp, Zap, Copyright, CreditCard,
+  Eye, PackageOpen, Star, Receipt,
+}
 
 interface SituationPanelProps {
   tool: DefenseToolMeta
@@ -46,12 +57,12 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
       className="response-enter"
       style={{
         backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-        borderRadius: '0.875rem', padding: '1.5rem', marginTop: '1rem',
+        borderRadius: '0.875rem', padding: '1.5rem',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontSize: '1.2rem' }}>{tool.icon}</span>
+          {(() => { const Icon = ICON_MAP[tool.icon]; return Icon ? <Icon size={16} strokeWidth={1.75} style={{ color: 'var(--text-secondary)' }} /> : null })()}
           <span style={{ fontWeight: 600, fontSize: '1rem' }}>{tool.label}</span>
         </div>
         <button
@@ -64,7 +75,7 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
       </div>
 
       {hasContract && contractRiskLevel && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem', marginBottom: '-0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem', marginBottom: '0.75rem' }}>
           <span style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', display: 'inline-block', flexShrink: 0, backgroundColor: riskDotColor[contractRiskLevel] ?? '#84cc16' }} />
           <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
             {contractRiskLevel.charAt(0).toUpperCase() + contractRiskLevel.slice(1)} risk contract loaded

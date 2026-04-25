@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { btnStyles, inputStyle, labelStyle } from '@/lib/ui'
+import { updateProject } from '@/lib/api'
 import { Project, DefenseTool } from '@/types'
 
 interface PaymentSectionProps {
@@ -12,11 +13,11 @@ interface PaymentSectionProps {
 }
 
 function formatDate(isoDate: string) {
-  return new Date(isoDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  return new Date(isoDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
 function formatAmount(amount: number | null, currency: string) {
-  return amount !== null ? `${currency} ${Number(amount).toLocaleString()}` : ''
+  return amount !== null ? `${currency} ${Number(amount).toLocaleString()}` : null
 }
 
 function buildPaymentPrefill(paymentDueDate: string, paymentAmount: number | null) {
@@ -33,6 +34,15 @@ function buildPaymentPrefill(paymentDueDate: string, paymentAmount: number | nul
   return { tool, contextFields }
 }
 
+const stripStyle: React.CSSProperties = {
+  marginBottom: '1.5rem',
+  padding: '0.75rem 1rem',
+  backgroundColor: 'var(--bg-surface)',
+  border: '1px solid var(--bg-border)',
+  borderRadius: '0.5rem',
+  fontSize: '0.85rem',
+}
+
 export default function PaymentSection({ project, onHandleLatePayment }: PaymentSectionProps) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
@@ -40,7 +50,6 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
   const [markingReceived, setMarkingReceived] = useState(false)
   const [dueDate, setDueDate] = useState(project.payment_due_date ?? '')
   const [amount, setAmount] = useState(project.payment_amount !== null ? String(project.payment_amount) : '')
-  const [error, setError] = useState<string | null>(null)
 
   const isOverdue =
     project.payment_due_date !== null &&
@@ -49,24 +58,19 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
 
   const isReceived = project.payment_received_at !== null
 
+  const daysOverdueCount = isOverdue
+    ? Math.floor((Date.now() - new Date(project.payment_due_date!).getTime()) / 86400000)
+    : 0
+
   async function handleSavePayment(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
-    setError(null)
-    const res = await fetch(`/api/projects/${project.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        payment_due_date: dueDate || null,
-        payment_amount: amount ? Number(amount) : null,
-      }),
+    const result = await updateProject(project.id, {
+      payment_due_date: dueDate || null,
+      payment_amount: amount ? Number(amount) : null,
     })
-    const data = await res.json()
     setSaving(false)
-    if (!res.ok) {
-      setError(data.error ?? 'Failed to save payment details. Please try again.')
-      return
-    }
+    if (!result) return
     setEditing(false)
     router.refresh()
     toast('Payment details saved')
@@ -74,184 +78,135 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
 
   async function handleMarkReceived() {
     setMarkingReceived(true)
-    setError(null)
-    const res = await fetch(`/api/projects/${project.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ payment_received_at: new Date().toISOString() }),
-    })
-    const data = await res.json()
+    const result = await updateProject(project.id, { payment_received_at: new Date().toISOString() })
     setMarkingReceived(false)
-    if (!res.ok) {
-      setError(data.error ?? 'Failed to mark as received. Please try again.')
-      return
-    }
+    if (!result) return
     router.refresh()
     toast('Payment marked as received')
   }
 
   function handleLatePayment() {
     if (!project.payment_due_date) return
-    const prefill = buildPaymentPrefill(project.payment_due_date, project.payment_amount)
-    onHandleLatePayment(prefill)
+    onHandleLatePayment(buildPaymentPrefill(project.payment_due_date, project.payment_amount))
     document.getElementById('defense-dashboard')?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  const cardStyle: React.CSSProperties = {
-    backgroundColor: 'var(--bg-surface)',
-    border: '1px solid var(--bg-border)',
-    borderRadius: '0.875rem',
-    padding: '1.5rem',
-    marginBottom: '2rem',
-  }
-
-  // Shared inline form — used for both empty state (no due date) and edit mode
-  function renderForm(isEditMode: boolean) {
+  function InlineForm() {
     return (
-      <form onSubmit={handleSavePayment} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
-        <div>
-          <label style={labelStyle}>Due date</label>
-          <input
-            type="date"
-            value={dueDate}
-            onChange={e => setDueDate(e.target.value)}
-            style={inputStyle}
-            onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
-            onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
-          />
+      <form onSubmit={handleSavePayment} style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', marginTop: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+          <div>
+            <label style={labelStyle}>Due date</label>
+            <input
+              type="date" value={dueDate} onChange={e => setDueDate(e.target.value)}
+              style={inputStyle}
+              onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
+            />
+          </div>
+          <div>
+            <label style={labelStyle}>Amount ({project.currency})</label>
+            <input
+              type="number" min="0" step="0.01" value={amount}
+              onChange={e => setAmount(e.target.value)} placeholder="e.g. 1500"
+              style={inputStyle}
+              onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
+            />
+          </div>
         </div>
-        <div>
-          <label style={labelStyle}>Amount ({project.currency})</label>
-          <input
-            type="number"
-            min="0"
-            step="0.01"
-            value={amount}
-            onChange={e => setAmount(e.target.value)}
-            placeholder="e.g. 1500"
-            style={inputStyle}
-            onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
-            onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
-          />
-        </div>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <button
-            type="submit"
-            disabled={saving}
-            style={{ ...btnStyles.primary, ...(saving ? { opacity: 0.7, cursor: 'not-allowed' } : {}) }}
-          >
-            {saving ? 'Saving…' : isEditMode ? 'Update payment details' : 'Save payment details'}
+        <div style={{ display: 'flex', gap: '0.625rem', alignItems: 'center' }}>
+          <button type="submit" disabled={saving} style={{ ...btnStyles.primary, ...(saving ? { opacity: 0.7, cursor: 'not-allowed' } : {}) }}>
+            {saving ? 'Saving…' : 'Save'}
           </button>
-          {isEditMode && (
-            <button
-              type="button"
-              style={btnStyles.ghost}
-              onClick={() => {
-                setEditing(false)
-                setDueDate(project.payment_due_date ?? '')
-                setAmount(project.payment_amount !== null ? String(project.payment_amount) : '')
-                setError(null)
-              }}
-            >
-              Discard changes
-            </button>
-          )}
+          <button
+            type="button" style={btnStyles.ghost}
+            onClick={() => {
+              setEditing(false)
+              setDueDate(project.payment_due_date ?? '')
+              setAmount(project.payment_amount !== null ? String(project.payment_amount) : '')
+            }}
+          >
+            Cancel
+          </button>
         </div>
-        {error && (
-          <p style={{ color: 'var(--urgency-high)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-            {error}
-          </p>
-        )}
       </form>
     )
   }
 
-  // CASE 1: No payment_due_date set (empty state)
+  // No due date set
   if (!project.payment_due_date) {
     return (
-      <div style={cardStyle}>
-        <h2 style={{ fontWeight: 600, fontSize: '1.25rem', marginBottom: '0.5rem' }}>Payment</h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '0.25rem' }}>
-          No payment due date set. Add one so Pushback can flag late payments.
-        </p>
-        {renderForm(false)}
-      </div>
-    )
-  }
-
-  // CASE 3: payment_received_at non-null (received)
-  if (isReceived) {
-    return (
-      <div style={cardStyle}>
-        <h2 style={{ fontWeight: 600, fontSize: '1.25rem', marginBottom: '1rem' }}>Payment</h2>
+      <div style={stripStyle}>
         {!editing ? (
-          <>
-            <p style={{ color: 'var(--brand-green)', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-              Received {formatDate(project.payment_received_at!)}
-              {project.payment_amount !== null && ` · ${formatAmount(project.payment_amount, project.currency)}`}
-            </p>
-            <button style={btnStyles.ghost} onClick={() => setEditing(true)}>
-              Edit payment
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ color: 'var(--text-muted)' }}>No payment due date set</span>
+            <button onClick={() => setEditing(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.8rem' }} className="hover:text-white transition-colors">
+              Add payment details
             </button>
-            {error && (
-              <p style={{ color: 'var(--urgency-high)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
-                {error}
-              </p>
-            )}
-          </>
+          </div>
         ) : (
-          renderForm(true)
+          <InlineForm />
         )}
       </div>
     )
   }
 
-  // CASE 2: payment_due_date set, payment_received_at null (populated, not received)
-  const daysOverdueCount = isOverdue
-    ? Math.floor((Date.now() - new Date(project.payment_due_date!).getTime()) / 86400000)
-    : 0
+  // Payment received
+  if (isReceived) {
+    const amtStr = formatAmount(project.payment_amount, project.currency)
+    return (
+      <div style={stripStyle}>
+        {!editing ? (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+            <span style={{ color: 'var(--brand-green)' }}>
+              Received {formatDate(project.payment_received_at!)}{amtStr && ` · ${amtStr}`}
+            </span>
+            <button onClick={() => setEditing(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.8rem' }} className="hover:text-white transition-colors">
+              Edit
+            </button>
+          </div>
+        ) : (
+          <InlineForm />
+        )}
+        {error && <p style={{ color: 'var(--urgency-high)', fontSize: '0.8rem', marginTop: '0.5rem' }}>{error}</p>}
+      </div>
+    )
+  }
 
+  // Due date set, not received
+  const amtStr = formatAmount(project.payment_amount, project.currency)
   return (
-    <div style={cardStyle}>
-      <h2 style={{ fontWeight: 600, fontSize: '1.25rem', marginBottom: '1rem' }}>Payment</h2>
+    <div style={{ ...stripStyle, borderColor: isOverdue ? 'rgba(239,68,68,0.3)' : 'var(--bg-border)' }}>
       {!editing ? (
         <>
-          {isOverdue ? (
-            <p style={{ color: 'var(--urgency-high)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.75rem' }}>
-              OVERDUE · {daysOverdueCount} {daysOverdueCount === 1 ? 'day' : 'days'}
-              {project.payment_amount !== null && ` · ${formatAmount(project.payment_amount, project.currency)}`}
-            </p>
-          ) : (
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-              Due {formatDate(project.payment_due_date!)}
-              {project.payment_amount !== null && ` · ${formatAmount(project.payment_amount, project.currency)}`}
-            </p>
-          )}
-          {isOverdue && (
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
-              <button style={btnStyles.primary} onClick={handleLatePayment}>
-                Get a late payment message
-              </button>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+            <span style={{ color: isOverdue ? 'var(--urgency-high)' : 'var(--text-secondary)', fontWeight: isOverdue ? 600 : 400 }}>
+              {isOverdue
+                ? `Overdue · ${daysOverdueCount} day${daysOverdueCount !== 1 ? 's' : ''}${amtStr ? ` · ${amtStr}` : ''}`
+                : `Due ${formatDate(project.payment_due_date!)}${amtStr ? ` · ${amtStr}` : ''}`}
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              {isOverdue && (
+                <button onClick={handleLatePayment} style={{ ...btnStyles.primary, fontSize: '0.78rem', padding: '0.3rem 0.75rem' }}>
+                  Get message
+                </button>
+              )}
               <button
-                style={{ ...btnStyles.outline, ...(markingReceived ? { opacity: 0.7, cursor: 'not-allowed' } : {}) }}
-                onClick={handleMarkReceived}
-                disabled={markingReceived}
+                onClick={handleMarkReceived} disabled={markingReceived}
+                style={{ background: 'none', border: 'none', cursor: markingReceived ? 'not-allowed' : 'pointer', color: 'var(--text-muted)', fontSize: '0.8rem', opacity: markingReceived ? 0.6 : 1 }}
+                className="hover:text-white transition-colors"
               >
-                {markingReceived ? 'Marking…' : 'Mark as received'}
+                {markingReceived ? 'Marking…' : 'Mark received'}
+              </button>
+              <button onClick={() => setEditing(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.8rem' }} className="hover:text-white transition-colors">
+                Edit
               </button>
             </div>
-          )}
-          <button style={btnStyles.ghost} onClick={() => setEditing(true)}>
-            Edit payment
-          </button>
-          {error && (
-            <p style={{ color: 'var(--urgency-high)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
-              {error}
-            </p>
-          )}
+          </div>
         </>
       ) : (
-        renderForm(true)
+        <InlineForm />
       )}
     </div>
   )

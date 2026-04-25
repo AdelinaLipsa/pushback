@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { markResponseCopied } from '@/lib/api'
 
 interface CopyButtonProps {
   text: string
@@ -16,13 +17,7 @@ export default function CopyButton({ text, responseId }: CopyButtonProps) {
     setFlashing(true)
     setCopied(true)
 
-    if (responseId) {
-      fetch(`/api/responses/${responseId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ was_copied: true }),
-      }).catch(() => {})
-    }
+    if (responseId) markResponseCopied(responseId)
 
     setTimeout(() => setFlashing(false), 1500)
     setTimeout(() => setCopied(false), 2000)
@@ -31,25 +26,15 @@ export default function CopyButton({ text, responseId }: CopyButtonProps) {
   return (
     <button
       onClick={handleCopy}
-      className={flashing ? 'copy-flash' : ''}
-      style={{
-        backgroundColor: flashing ? undefined : 'var(--brand-lime)',
-        color: flashing ? 'var(--brand-green)' : '#0a0a0a',
-        fontWeight: 700, padding: '0.75rem 1.75rem',
-        borderRadius: '0.5rem', border: flashing ? '1px solid var(--brand-green)' : 'none',
-        cursor: 'pointer', fontSize: '0.95rem',
-        display: 'flex', alignItems: 'center', gap: '0.5rem',
-        transition: 'color 150ms ease',
-      }}
+      className={[
+        'inline-flex items-center gap-2 px-7 py-3 rounded-lg text-sm font-bold cursor-pointer border-0 transition-all duration-150',
+        flashing
+          ? 'copy-flash'
+          : 'bg-brand-amber text-bg-base hover:opacity-85 active:opacity-75',
+      ].join(' ')}
+      style={flashing ? { color: 'var(--brand-green)' } : undefined}
     >
-      {copied ? (
-        <>
-          <span style={{ transform: 'scale(1)', transition: 'transform 150ms ease', display: 'inline-block' }}>✓</span>
-          Copied
-        </>
-      ) : (
-        'Copy Message'
-      )}
+      {copied ? <><span>✓</span> Copied</> : 'Copy Message'}
     </button>
   )
 }

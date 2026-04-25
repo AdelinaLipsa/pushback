@@ -3,13 +3,24 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { inputStyle, labelStyle } from '@/lib/ui'
+import { createProject } from '@/lib/api'
 
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'CAD', 'AUD', 'CHF']
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+function FieldError({ msg }: { msg?: string }) {
+  if (!msg) return null
+  return <p style={{ color: 'var(--urgency-high)', fontSize: '0.75rem', marginTop: '0.35rem' }}>{msg}</p>
+}
+
+function fieldStyle(hasError: boolean): React.CSSProperties {
+  return { ...inputStyle, ...(hasError && { border: '1px solid var(--urgency-high)' }) }
+}
 
 export default function NewProjectForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [form, setForm] = useState({
     title: '',
     client_name: '',
@@ -21,79 +32,75 @@ export default function NewProjectForm() {
 
   function set(key: string, value: string) {
     setForm(f => ({ ...f, [key]: value }))
+    if (fieldErrors[key]) setFieldErrors(e => ({ ...e, [key]: '' }))
+  }
+
+  function validate() {
+    const errs: Record<string, string> = {}
+    if (!form.title.trim()) errs.title = 'Project name is required'
+    if (!form.client_name.trim()) errs.client_name = 'Client name is required'
+    if (form.client_email && !EMAIL_RE.test(form.client_email)) errs.client_email = 'Enter a valid email address'
+    if (form.project_value && Number(form.project_value) < 0) errs.project_value = 'Must be a positive number'
+    return errs
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setError('')
+    const errs = validate()
+    if (Object.keys(errs).length) { setFieldErrors(errs); return }
+    setFieldErrors({})
     setLoading(true)
-
-    const res = await fetch('/api/projects', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...form,
-        project_value: form.project_value ? Number(form.project_value) : null,
-      }),
+    const result = await createProject({
+      ...form,
+      project_value: form.project_value ? Number(form.project_value) : null,
     })
-
-    const data = await res.json()
-
-    if (!res.ok) {
-      setError(data.error ?? 'Something went wrong')
-      setLoading(false)
-    } else {
-      router.push(`/projects/${data.project.id}`)
-    }
+    setLoading(false)
+    if (!result) return
+    router.push(`/projects/${result.project.id}`)
   }
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-      {error && (
-        <div style={{ backgroundColor: 'var(--urgency-high-dim)', border: '1px solid var(--urgency-high)', borderRadius: '0.5rem', padding: '0.75rem', color: 'var(--urgency-high)', fontSize: '0.875rem' }}>
-          {error}
-        </div>
-      )}
-
       <div>
         <label style={labelStyle}>Project name *</label>
         <input
           type="text"
-          required
           value={form.title}
           onChange={e => set('title', e.target.value)}
           placeholder="e.g. Acme Corp Website Redesign"
-          style={inputStyle}
+          style={fieldStyle(!!fieldErrors.title)}
           onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
-          onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
+          onBlur={e => { e.currentTarget.style.borderColor = fieldErrors.title ? 'var(--urgency-high)' : 'var(--bg-border)' }}
         />
+        <FieldError msg={fieldErrors.title} />
       </div>
 
       <div>
         <label style={labelStyle}>Client name *</label>
         <input
           type="text"
-          required
           value={form.client_name}
           onChange={e => set('client_name', e.target.value)}
           placeholder="e.g. Sarah Johnson"
-          style={inputStyle}
+          style={fieldStyle(!!fieldErrors.client_name)}
           onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
-          onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
+          onBlur={e => { e.currentTarget.style.borderColor = fieldErrors.client_name ? 'var(--urgency-high)' : 'var(--bg-border)' }}
         />
+        <FieldError msg={fieldErrors.client_name} />
       </div>
 
       <div>
         <label style={labelStyle}>Client email</label>
         <input
-          type="email"
+          type="text"
           value={form.client_email}
           onChange={e => set('client_email', e.target.value)}
           placeholder="sarah@acme.com"
-          style={inputStyle}
+          style={fieldStyle(!!fieldErrors.client_email)}
           onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
-          onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
+          onBlur={e => { e.currentTarget.style.borderColor = fieldErrors.client_email ? 'var(--urgency-high)' : 'var(--bg-border)' }}
         />
+        <FieldError msg={fieldErrors.client_email} />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '0.75rem' }}>
@@ -105,10 +112,11 @@ export default function NewProjectForm() {
             onChange={e => set('project_value', e.target.value)}
             placeholder="3200"
             min="0"
-            style={inputStyle}
+            style={fieldStyle(!!fieldErrors.project_value)}
             onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
-            onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
+            onBlur={e => { e.currentTarget.style.borderColor = fieldErrors.project_value ? 'var(--urgency-high)' : 'var(--bg-border)' }}
           />
+          <FieldError msg={fieldErrors.project_value} />
         </div>
         <div>
           <label style={labelStyle}>Currency</label>

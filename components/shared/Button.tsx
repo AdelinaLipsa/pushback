@@ -19,7 +19,7 @@ const variants: Record<Variant, string> = {
   confirm:
     'bg-brand-lime text-[#0a0a0a] font-bold hover:opacity-90',
   outline:
-    'bg-transparent border border-bg-border text-zinc-400 hover:border-zinc-500 hover:text-zinc-100',
+    'bg-white/5 border border-bg-border text-zinc-300 hover:bg-white/10 hover:border-zinc-500 hover:text-white',
   ghost:
     'bg-transparent border-0 text-zinc-400 hover:text-zinc-100 hover:bg-white/5',
   destructive:

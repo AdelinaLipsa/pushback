@@ -16,20 +16,20 @@ const geistMono = Geist_Mono({
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://pushback.app'
 
 export const metadata: Metadata = {
-  title: 'Pushback — AI responses for freelancer client problems',
-  description: 'Stop losing money to scope creep, late payments, and difficult clients. Get a professional, ready-to-send response in under a minute.',
+  title: 'Pushback — Client interaction toolkit for freelancers',
+  description: 'Stop losing money to scope creep, late payments, and difficult clients. Pushback is the complete client interaction toolkit for freelancers — professional responses, contract protection, and payment escalation.',
   metadataBase: new URL(APP_URL),
   openGraph: {
-    title: 'Pushback — AI responses for freelancer client problems',
-    description: 'Stop losing money to scope creep, late payments, and difficult clients. Get a professional, ready-to-send response in under a minute.',
+    title: 'Pushback — Client interaction toolkit for freelancers',
+    description: 'Stop losing money to scope creep, late payments, and difficult clients. Pushback is the complete client interaction toolkit for freelancers — professional responses, contract protection, and payment escalation.',
     url: APP_URL,
     siteName: 'Pushback',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pushback — AI responses for freelancer client problems',
-    description: 'Stop losing money to scope creep, late payments, and difficult clients. Get a professional, ready-to-send response in under a minute.',
+    title: 'Pushback — Client interaction toolkit for freelancers',
+    description: 'Stop losing money to scope creep, late payments, and difficult clients. Pushback is the complete client interaction toolkit for freelancers — professional responses, contract protection, and payment escalation.',
   },
 }
 

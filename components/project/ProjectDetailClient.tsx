@@ -91,11 +91,12 @@ export default function ProjectDetailClient({ project, plan, responsesUsed, auto
         )}
       </div>
 
-      <div style={{ height: '1px', backgroundColor: 'var(--bg-border)', marginBottom: '2rem' }} />
+      <PaymentSection
+        project={project}
+        onHandleLatePayment={(prefill) => setPaymentPrefill(prefill)}
+      />
 
-      <h2 className="fade-up" style={{ animationDelay: '0.18s', fontWeight: 600, fontSize: '1.1rem', marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
-        What did they do this time?
-      </h2>
+      <div style={{ height: '1px', backgroundColor: 'var(--bg-border)', marginBottom: '2rem' }} />
 
       {showEscalationNudge && escalationNextTool && (
         <div
@@ -142,11 +143,6 @@ export default function ProjectDetailClient({ project, plan, responsesUsed, auto
           autoSelectTool={nudgeAutoSelect}
         />
       </div>
-
-      <PaymentSection
-        project={project}
-        onHandleLatePayment={(prefill) => setPaymentPrefill(prefill)}
-      />
 
       <div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'flex-end' }}>
         <Link href={`/projects/${project.id}/history`} style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textDecoration: 'none' }} className="hover:text-white transition-colors">

@@ -440,32 +440,19 @@ export default function PushbackHero() {
         }}
       >
         <style>{`
-          @keyframes hero-spin { to { transform: rotate(360deg); } }
-          @keyframes hero-ping {
-            0%   { transform: scale(1); opacity: 0.5; }
-            100% { transform: scale(2.8); opacity: 0; }
+          @keyframes hero-dot-glow {
+            0%, 100% { opacity: 1;   text-shadow: 0 0 8px #84cc16, 0 0 24px #84cc1650; }
+            50%       { opacity: 0.4; text-shadow: none; }
           }
         `}</style>
-        <div className="relative w-10 h-10">
-          <span
-            className="absolute inset-0 rounded-full border border-[#84cc16]/25"
-            style={{ animation: "hero-ping 2s ease-out infinite" }}
-          />
-          <span
-            className="absolute inset-0 rounded-full border border-[#84cc16]/15"
-            style={{ animation: "hero-ping 2s ease-out 0.6s infinite" }}
-          />
-          <span
-            className="absolute inset-0 rounded-full border-[1.5px] border-transparent border-t-[#84cc16]"
-            style={{ animation: "hero-spin 0.9s linear infinite" }}
-          />
-          <span className="absolute inset-0 flex items-center justify-center">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#84cc16]" />
+        <div className="flex items-baseline select-none">
+          <span style={{ fontWeight: 800, fontSize: '1.25rem', letterSpacing: '-0.025em', color: '#fafafa' }}>
+            Pushback
+          </span>
+          <span style={{ fontWeight: 800, fontSize: '1.25rem', color: '#84cc16', animation: 'hero-dot-glow 1.6s ease-in-out infinite' }}>
+            .
           </span>
         </div>
-        <span className="mt-6 text-[#3f3f46] tracking-[0.45em] text-[10px] font-medium uppercase select-none">
-          PUSHBACK
-        </span>
       </div>
 
       <div
@@ -502,7 +489,7 @@ export default function PushbackHero() {
               Again.
             </p>
             <p className="mb-6 text-sm leading-relaxed" style={{ color: "rgba(161,161,170,0.8)" }}>
-              Pushback writes the professional response for you — ready to send in under a minute.
+              Pushback manages the client relationship for you — responses, contract analysis, and payment escalation built for freelancers who know their worth.
             </p>
             <a
               href="/signup"

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Check } from 'lucide-react'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
+import { PLANS } from '@/lib/plans'
 import PushbackHero from '@/components/hero/PushbackHero'
 
 const TICKER_ITEMS = [
@@ -31,6 +32,285 @@ I can put together a proposal for the mobile app as a follow-on project. Alterna
 Which would you prefer?
 
 [Your name]`
+
+const DEMO_TOOLS: { label: string; response: string }[] = [
+  {
+    label: 'Scope Change',
+    response: `Hi Sarah,
+
+Thanks for reaching out about the mobile app — sounds like an exciting direction.
+
+That said, our agreement covers the 5-page website with 2 revision rounds. A mobile app is a separate scope entirely, and I'd need to price it properly to deliver something solid.
+
+I can put together a proposal as a follow-on project, or we keep the current work on track and revisit after launch.
+
+Which would you prefer?
+
+— Alex`,
+  },
+  {
+    label: 'Payment Reminder',
+    response: `Hi Sarah,
+
+Just a quick note — invoice #1042 for €1,500 was due on April 15th and I haven't seen it come through yet.
+
+Could you confirm payment is on its way? Happy to resend the invoice if that's helpful.
+
+Thanks for sorting this out.
+
+— Alex`,
+  },
+  {
+    label: 'Kill Fee',
+    response: `Hi Sarah,
+
+Thanks for letting me know you're pausing the project. As per our agreement, a kill fee of 50% applies to all work completed to date.
+
+I've attached an updated invoice for €750. Once that's settled, I'll send over all files and assets produced so far.
+
+Let me know if you have any questions.
+
+— Alex`,
+  },
+  {
+    label: 'Ghost Client',
+    response: `Hi Sarah,
+
+I've followed up a few times without hearing back — just checking in to make sure everything's okay on your end.
+
+If the project direction has changed, no problem at all. I'll hold the work here until I hear from you. After 5 business days of no response, I'll formally pause the project.
+
+— Alex`,
+  },
+  {
+    label: 'Revision Limit',
+    response: `Hi Sarah,
+
+Happy to make these changes — just a heads-up that our agreement included 2 revision rounds, and this would be the third.
+
+I can continue at my standard rate of €90/hr, or we can scope a revision package if you're expecting more changes ahead.
+
+Let me know how you'd like to proceed.
+
+— Alex`,
+  },
+  {
+    label: 'Dispute Response',
+    response: `Hi Sarah,
+
+I understand you're not satisfied, and I want to resolve this professionally.
+
+The deliverables were completed as agreed, and I have full records of all approvals and communications. I'm happy to discuss specific concerns, but I'm not in a position to issue a refund for completed work.
+
+Let me know what you'd like to address directly.
+
+— Alex`,
+  },
+]
+
+type DemoPhase = 'idle' | 'selecting' | 'typing' | 'done'
+
+function HowItWorksDemo() {
+  const [activeTool, setActiveTool] = useState(0)
+  const [phase, setPhase] = useState<DemoPhase>('idle')
+  const [typed, setTyped] = useState('')
+  const [copied, setCopied] = useState(false)
+  const timers = useRef<{ t?: ReturnType<typeof setTimeout>; interval?: ReturnType<typeof setInterval> }>({})
+  const responseContainerRef = useRef<HTMLDivElement>(null)
+
+  function beginTool(index: number) {
+    if (timers.current.t) clearTimeout(timers.current.t)
+    if (timers.current.interval) clearInterval(timers.current.interval)
+    setActiveTool(index)
+    setTyped('')
+    setCopied(false)
+    setPhase('selecting')
+    timers.current.t = setTimeout(() => {
+      setPhase('typing')
+      const response = DEMO_TOOLS[index].response
+      let i = 0
+      timers.current.interval = setInterval(() => {
+        i++
+        setTyped(response.slice(0, i))
+        if (responseContainerRef.current) {
+          responseContainerRef.current.scrollTop = responseContainerRef.current.scrollHeight
+        }
+        if (i >= response.length) {
+          clearInterval(timers.current.interval)
+          setPhase('done')
+          timers.current.t = setTimeout(() => beginTool((index + 1) % DEMO_TOOLS.length), 4500)
+        }
+      }, 18)
+    }, 700)
+  }
+
+  useEffect(() => {
+    timers.current.t = setTimeout(() => beginTool(0), 600)
+    return () => {
+      if (timers.current.t) clearTimeout(timers.current.t)
+      if (timers.current.interval) clearInterval(timers.current.interval)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <div className="max-w-[860px] mx-auto">
+      {/* Mock app window */}
+      <div className="bg-bg-surface border border-bg-border rounded-2xl overflow-hidden shadow-[0_0_80px_rgba(132,204,22,0.07),0_32px_80px_rgba(0,0,0,0.4)]">
+        {/* Window chrome */}
+        <div className="flex items-center gap-2 px-5 py-3 border-b border-bg-border bg-bg-base">
+          <div className="flex gap-1.5">
+            {['#ef4444', '#f59e0b', '#22c55e'].map((c, i) => (
+              <div key={i} className="w-2.5 h-2.5 rounded-full opacity-70" style={{ backgroundColor: c }} />
+            ))}
+          </div>
+          <span className="ml-3 font-mono text-[0.65rem] text-text-muted tracking-[0.1em]">
+            pushback.app / projects / Webflow Redesign
+          </span>
+        </div>
+
+        {/* Two-panel layout */}
+        <div className="grid grid-cols-2 h-[380px]">
+          {/* Left: tool selection */}
+          <div className="p-6 border-r border-bg-border">
+            <p className="font-mono text-[0.6rem] text-text-muted tracking-[0.12em] uppercase mb-4">
+              Pick your situation
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {DEMO_TOOLS.map((tool, i) => {
+                const isSelected = i === activeTool && phase !== 'idle'
+                return (
+                  <button
+                    key={tool.label}
+                    onClick={() => beginTool(i)}
+                    className={[
+                      'px-3 py-2 rounded-lg text-[0.72rem] text-left border cursor-pointer select-none transition-all duration-300',
+                      isSelected
+                        ? 'bg-brand-lime text-[#0a0a0a] border-brand-lime font-semibold shadow-[0_0_20px_rgba(132,204,22,0.35)]'
+                        : 'bg-bg-elevated text-text-secondary border-bg-border font-normal hover:bg-[#252525] hover:text-text-primary',
+                    ].join(' ')}
+                  >
+                    {tool.label}
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Generate button */}
+            <div className="mt-5">
+              <div className={[
+                'inline-flex items-center gap-2 px-4 py-2 rounded-md text-[0.75rem] font-bold select-none transition-all duration-400',
+                phase === 'idle'
+                  ? 'bg-bg-elevated text-text-muted border border-bg-border'
+                  : 'bg-brand-lime text-[#0a0a0a] border border-brand-lime',
+              ].join(' ')}>
+                <span className={[
+                  'inline-block w-1.5 h-1.5 rounded-full transition-colors duration-400',
+                  phase === 'idle' ? 'bg-text-muted' : 'bg-[#0a0a0a]',
+                ].join(' ')} />
+                Generate response
+              </div>
+            </div>
+          </div>
+
+          {/* Right: response with typing animation */}
+          <div className="p-6 flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <p className="font-mono text-[0.6rem] text-text-muted tracking-[0.12em] uppercase">
+                Response
+              </p>
+              {phase === 'typing' && (
+                <div className="flex gap-1 items-center">
+                  {[0, 1, 2].map(i => (
+                    <div
+                      key={i}
+                      className="w-1.5 h-1.5 rounded-full bg-brand-lime"
+                      style={{ animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }}
+                    />
+                  ))}
+                </div>
+              )}
+              {phase === 'done' && (
+                <span className="bg-[rgba(132,204,22,0.15)] text-brand-lime text-[0.58rem] font-bold px-2 py-0.5 rounded tracking-[0.08em]">
+                  READY
+                </span>
+              )}
+            </div>
+
+            {/* Text area */}
+            <div className="flex-1 relative overflow-hidden">
+              {phase === 'idle' && (
+                <div className="w-full h-full bg-bg-elevated rounded-lg border border-bg-border flex items-center justify-center">
+                  <span className="text-text-muted text-[0.78rem]">Pick a situation to get started</span>
+                </div>
+              )}
+              {phase !== 'idle' && (
+                <div
+                  ref={responseContainerRef}
+                  className={[
+                    'bg-bg-elevated rounded-lg p-4 h-full overflow-y-auto transition-all duration-500',
+                    phase === 'done'
+                      ? 'border border-[rgba(132,204,22,0.3)] shadow-[0_0_30px_rgba(132,204,22,0.08)]'
+                      : 'border border-bg-border',
+                  ].join(' ')}>
+                  {phase === 'selecting' ? (
+                    <div className="flex gap-2 items-center">
+                      {[0, 1, 2].map(i => (
+                        <div
+                          key={i}
+                          className="w-1.5 h-1.5 rounded-full bg-brand-lime opacity-50"
+                          style={{ animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <pre className="text-text-primary text-[0.78rem] leading-[1.75] whitespace-pre-wrap font-[inherit] m-0">
+                      {typed}
+                      {phase === 'typing' && (
+                        <span className="inline-block w-0.5 h-[0.9em] bg-brand-lime align-text-bottom ml-px [animation:blink_0.9s_step-end_infinite]" />
+                      )}
+                    </pre>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Copy button */}
+            <div className={[
+              'mt-3.5 transition-opacity duration-400',
+              phase === 'done' ? 'opacity-100' : 'opacity-0',
+            ].join(' ')}>
+              <button
+                onClick={() => { navigator.clipboard.writeText(DEMO_TOOLS[activeTool].response).catch(() => {}); setCopied(true); setTimeout(() => setCopied(false), 2000) }}
+                className={[
+                  'px-4 py-2 rounded-md text-[0.75rem] font-bold cursor-pointer transition-all duration-200 border',
+                  copied
+                    ? 'bg-[rgba(132,204,22,0.15)] text-brand-lime border-[rgba(132,204,22,0.4)]'
+                    : 'bg-brand-lime text-[#0a0a0a] border-transparent hover:opacity-90',
+                ].join(' ')}
+              >
+                {copied ? 'Copied!' : 'Copy message'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Step labels below */}
+      <div className="flex justify-around mt-8 px-8">
+        {[
+          { num: '01', label: 'Pick your situation' },
+          { num: '02', label: 'Response generates instantly' },
+          { num: '03', label: 'Copy and send' },
+        ].map(({ num, label }) => (
+          <div key={num} className="text-center">
+            <div className="font-mono text-brand-lime text-[0.65rem] font-bold tracking-[0.12em] mb-1">{num}</div>
+            <div className="text-text-secondary text-[0.8rem]">{label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 function ToolCarousel() {
   const [active, setActive] = useState(0)
@@ -343,38 +623,13 @@ export default function LandingPage() {
       {/* How It Works */}
       <section data-animate className="py-28">
         <div className="max-w-5xl mx-auto px-6">
-          <div style={{ marginBottom: '4rem' }}>
+          <div style={{ marginBottom: '3.5rem' }}>
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>How it works</p>
-            <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, maxWidth: '18ch' }}>
-              Three steps.<br />Under a minute.
+            <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, maxWidth: '22ch' }}>
+              Pick a situation.<br />Get a response. Send it.
             </h2>
           </div>
-          <div className="grid md:grid-cols-3" style={{ gap: '1px', backgroundColor: 'var(--bg-border)', border: '1px solid var(--bg-border)', borderRadius: '1rem', overflow: 'hidden' }}>
-            {[
-              { num: '01', title: 'Add a project', desc: 'Name your project, add your client. Contract optional — Pushback works either way.' },
-              { num: '02', title: 'Pick your situation', desc: 'Scope creep? Late payment? Kill fee? Choose the tool that matches what just happened.' },
-              { num: '03', title: 'Copy and send', desc: 'A complete professional message, ready in seconds. No editing needed. Just send it.' },
-            ].map(({ num, title, desc }) => (
-              <div key={num} style={{ backgroundColor: 'var(--bg-base)', padding: '2.5rem 2rem', position: 'relative', overflow: 'hidden' }}>
-                <span style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '7rem',
-                  fontWeight: 900,
-                  color: 'rgba(132,204,22,0.05)',
-                  position: 'absolute',
-                  top: '-1.5rem',
-                  right: '-0.5rem',
-                  lineHeight: 1,
-                  pointerEvents: 'none',
-                  userSelect: 'none',
-                  letterSpacing: '-0.05em',
-                }}>{num}</span>
-                <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--brand-lime)', fontWeight: 700, fontSize: '0.7rem', letterSpacing: '0.12em', marginBottom: '1.75rem', textTransform: 'uppercase' }}>{num}</div>
-                <h3 style={{ fontWeight: 700, fontSize: '1.15rem', marginBottom: '0.75rem', letterSpacing: '-0.01em' }}>{title}</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.7 }}>{desc}</p>
-              </div>
-            ))}
-          </div>
+          <HowItWorksDemo />
         </div>
       </section>
 
@@ -447,12 +702,15 @@ export default function LandingPage() {
                 <div style={{ padding: '1.5rem' }}>
                   <pre style={{ color: 'var(--text-primary)', fontSize: '0.83rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-mono), monospace' }}>{AFTER_MESSAGE}</pre>
                 </div>
-                <div style={{ padding: '0 1.5rem 1.5rem' }}>
-                  <button style={{
-                    backgroundColor: 'var(--brand-lime)', color: '#0a0a0a',
-                    fontWeight: 700, padding: '0.6rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.8rem',
-                    border: 'none', cursor: 'pointer',
-                  }}>
+                <div style={{ padding: '0.75rem 1.5rem 1.5rem' }}>
+                  <button
+                    className="hover:opacity-90 transition-opacity"
+                    style={{
+                      backgroundColor: 'var(--brand-lime)', color: '#0a0a0a',
+                      fontWeight: 700, padding: '0.6rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.8rem',
+                      border: 'none', cursor: 'pointer',
+                    }}
+                  >
                     Copy Message
                   </button>
                 </div>
@@ -526,13 +784,13 @@ export default function LandingPage() {
                   <div style={{ backgroundColor: 'rgba(132,204,22,0.15)', color: 'var(--brand-lime)', fontSize: '0.6rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '4px', letterSpacing: '0.1em' }}>RECOMMENDED</div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>€19</span>
+                  <span style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>€{PLANS.pro.price}</span>
                   <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>/month</span>
                 </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Cancel anytime</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Cancel anytime · excl. VAT</p>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.875rem', marginBottom: '2rem', flex: 1, position: 'relative' }}>
-                {['Unlimited defense responses', 'Unlimited contract analyses', 'Full response history', 'All 8 defense tools', 'Client notes per project'].map(f => (
+                {PLANS.pro.features.map(f => (
                   <li key={f} style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <Check size={14} style={{ color: 'var(--brand-lime)', flexShrink: 0 }} />
                     {f}
@@ -549,6 +807,10 @@ export default function LandingPage() {
               </Link>
             </div>
           </div>
+
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', textAlign: 'center', marginTop: '1.5rem' }}>
+            Your contract is never stored after analysis. We read it, flag the risks, delete it.
+          </p>
         </div>
       </section>
 

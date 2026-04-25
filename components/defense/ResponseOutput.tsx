@@ -5,6 +5,24 @@ import { Sparkles } from 'lucide-react'
 import CopyButton from '@/components/shared/CopyButton'
 import NextStepCard from '@/components/defense/NextStepCard'
 import { DefenseTool } from '@/types'
+import type { DocumentType } from '@/types'
+import { markResponseSent } from '@/lib/api'
+import { btnCls } from '@/lib/ui'
+
+const DOCUMENT_TYPE_FOR: Partial<Record<DefenseTool, DocumentType>> = {
+  scope_change: 'sow_amendment',
+  moving_goalposts: 'sow_amendment',
+  kill_fee: 'kill_fee_invoice',
+  dispute_response: 'dispute_package',
+  chargeback_threat: 'dispute_package',
+  review_threat: 'dispute_package',
+}
+
+const DOCUMENT_BUTTON_LABELS: Record<DocumentType, string> = {
+  sow_amendment: 'Generate SOW Amendment',
+  kill_fee_invoice: 'Generate Kill Fee Invoice',
+  dispute_package: 'Generate Dispute Package',
+}
 
 interface ResponseOutputProps {
   response: string
@@ -12,82 +30,88 @@ interface ResponseOutputProps {
   onRegenerate: () => void
   contractClausesUsed?: string[]
   toolType: DefenseTool
+  onGenerateDocument?: (type: DocumentType) => void
+  documentGenerating?: boolean
+  documentError?: string | null
 }
 
-export default function ResponseOutput({ response, responseId, onRegenerate, contractClausesUsed, toolType }: ResponseOutputProps) {
+export default function ResponseOutput({ response, responseId, onRegenerate, contractClausesUsed, toolType, onGenerateDocument, documentGenerating, documentError }: ResponseOutputProps) {
   const [sent, setSent] = useState(false)
 
-  async function handleMarkSent() {
+  function handleMarkSent() {
     setSent(true)
-    fetch(`/api/responses/${responseId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ was_sent: true }),
-    }).catch(() => {})
+    markResponseSent(responseId)
   }
 
   return (
     <div
-      className="response-enter"
-      style={{
-        backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-        borderRadius: '0.875rem', padding: '1.5rem', marginTop: '1rem',
-      }}
+      className="response-enter bg-bg-surface border border-bg-border rounded-2xl p-6 mt-4"
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Sparkles size={16} style={{ color: 'var(--brand-lime)', flexShrink: 0 }} />
-          <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Ready to send</span>
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-2">
+          <Sparkles size={16} className="text-brand-amber shrink-0" />
+          <span className="font-semibold text-sm">Ready to send</span>
         </div>
         <button
           onClick={onRegenerate}
-          style={{ background: 'none', border: '1px solid var(--bg-border)', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.8rem', padding: '0.35rem 0.75rem', borderRadius: '0.375rem' }}
-          className="hover:border-white/20 hover:text-white transition-colors"
+          className="px-3 py-1.5 text-xs text-text-secondary border border-bg-border rounded-md bg-transparent cursor-pointer transition-all duration-150 hover:border-white/20 hover:text-text-primary"
         >
           Regenerate
         </button>
       </div>
 
-      <div style={{
-        backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)',
-        borderRadius: '0.625rem', padding: '1.25rem', marginBottom: '1.25rem',
-      }}>
-        <pre style={{
-          fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
-          fontSize: '0.875rem', lineHeight: 1.7, color: 'var(--text-primary)',
-          whiteSpace: 'pre-wrap', wordBreak: 'break-word', margin: 0,
-        }}>
+      <div className="bg-bg-base border border-bg-border rounded-lg p-5 mb-5">
+        <pre className="font-mono text-sm leading-relaxed text-text-primary whitespace-pre-wrap break-words m-0">
           {response}
         </pre>
       </div>
 
       {contractClausesUsed && contractClausesUsed.length > 0 && (
-        <div style={{ marginTop: '0.75rem' }}>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 0.25rem 0' }}>
+        <div className="mt-3">
+          <p className="text-text-muted text-[10px] uppercase tracking-widest mb-1">
             Based on your contract:
           </p>
-          <p style={{ color: '#52525b', fontSize: '0.8rem', lineHeight: 1.5, margin: 0 }}>
+          <p className="text-text-muted text-sm leading-relaxed">
             {contractClausesUsed.join(', ')}
           </p>
         </div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '1.25rem' }}>
+      <div className="flex items-center gap-3 mt-5">
         <CopyButton text={response} responseId={responseId} />
         <button
           onClick={handleMarkSent}
           disabled={sent}
-          style={{
-            background: 'none',
-            border: `1px solid ${sent ? 'var(--brand-green)' : 'var(--bg-border)'}`,
-            color: sent ? 'var(--brand-green)' : 'var(--text-secondary)',
-            padding: '0.75rem 1.25rem', borderRadius: '0.5rem', cursor: sent ? 'default' : 'pointer',
-            fontSize: '0.875rem', fontWeight: 500, transition: 'all 150ms ease',
-          }}
+          className={[
+            'px-5 py-3 rounded-lg text-sm font-medium border transition-all duration-150',
+            sent
+              ? 'border-brand-green text-brand-green cursor-default bg-transparent'
+              : 'border-bg-border text-text-secondary bg-transparent cursor-pointer hover:border-white/20 hover:text-text-primary',
+          ].join(' ')}
         >
           {sent ? 'Marked as sent' : 'Mark as sent'}
         </button>
       </div>
+
+      {(() => {
+        const docType = DOCUMENT_TYPE_FOR[toolType]
+        if (!onGenerateDocument || !docType) return null
+        return (
+          <div className="mt-4 pt-4 border-t border-bg-border">
+            {documentError && (
+              <span role="alert" className="text-xs text-urgency-high block mb-2">{documentError}</span>
+            )}
+            <button
+              onClick={() => onGenerateDocument(docType)}
+              disabled={documentGenerating}
+              aria-busy={documentGenerating}
+              className={[btnCls.outline, documentGenerating ? 'lime-pulse-border' : ''].filter(Boolean).join(' ')}
+            >
+              {documentGenerating ? 'Generating document…' : DOCUMENT_BUTTON_LABELS[docType]}
+            </button>
+          </div>
+        )
+      })()}
 
       <NextStepCard toolType={toolType} />
     </div>

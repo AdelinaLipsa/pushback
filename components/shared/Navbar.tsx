@@ -1,23 +1,70 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Briefcase, FileText, Settings, ArrowUpCircle, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, type LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { startCheckout } from '@/lib/checkout'
+import { billingPortal } from '@/lib/api'
 import { UserProfile } from '@/types'
 
 interface NavbarProps {
   profile: UserProfile | null
 }
 
-const NAV_ITEMS: { href: string; label: string; Icon: LucideIcon }[] = [
-  { href: '/projects', label: 'Projects', Icon: Briefcase },
-  { href: '/contracts', label: 'Contracts', Icon: FileText },
+const NAV_SECTIONS: { label: string; items: { href: string; label: string; Icon: LucideIcon }[] }[] = [
+  {
+    label: 'Workspace',
+    items: [
+      { href: '/dashboard', label: 'Dashboard', Icon: LayoutDashboard },
+      { href: '/projects', label: 'Projects', Icon: Briefcase },
+      { href: '/contracts', label: 'Contracts', Icon: FileText },
+      { href: '/analytics', label: 'Analytics', Icon: BarChart2 },
+    ],
+  },
+  {
+    label: 'Account',
+    items: [
+      { href: '/settings', label: 'Settings', Icon: Settings },
+    ],
+  },
 ]
+
+function NavLink({ href, label, Icon, active }: { href: string; label: string; Icon: LucideIcon; active: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={[
+        'flex items-center gap-2.5 pl-2.5 pr-3 py-2 rounded-lg text-sm no-underline transition-all duration-150 border-l-2',
+        active
+          ? 'bg-bg-elevated text-text-primary border-brand-amber font-semibold'
+          : 'text-text-secondary border-transparent hover:bg-bg-elevated/60 hover:text-text-primary font-normal',
+      ].join(' ')}
+    >
+      <Icon size={15} strokeWidth={active ? 2 : 1.5} className="shrink-0" />
+      {label}
+    </Link>
+  )
+}
 
 export default function Navbar({ profile }: NavbarProps) {
   const pathname = usePathname()
   const router = useRouter()
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [portalLoading, setPortalLoading] = useState(false)
+
+  async function handleBillingPortal() {
+    setPortalLoading(true)
+    const url = await billingPortal()
+    if (url) window.location.href = url
+    else setPortalLoading(false)
+  }
+
+  function isActive(href: string) {
+    if (href === '/dashboard') return pathname === '/dashboard'
+    return pathname.startsWith(href)
+  }
 
   async function handleSignOut() {
     const supabase = createClient()
@@ -29,128 +76,112 @@ export default function Navbar({ profile }: NavbarProps) {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside style={{
-        width: '240px', flexShrink: 0, backgroundColor: 'var(--bg-surface)',
-        borderRight: '1px solid var(--bg-border)', display: 'flex', flexDirection: 'column',
-        height: '100vh', position: 'sticky', top: 0,
-      }} className="hidden md:flex">
+      <aside className="hidden md:flex w-60 shrink-0 flex-col h-screen sticky top-0 bg-bg-surface border-r border-bg-border">
         {/* Logo */}
-        <div style={{ padding: '1.5rem 1.25rem 1rem', borderBottom: '1px solid var(--bg-border)' }}>
-          <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '0.15rem', textDecoration: 'none' }}>
-            <span style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--text-primary)' }}>Pushback</span>
-            <span style={{ color: 'var(--brand-lime)', fontWeight: 800, fontSize: '1.2rem' }}>.</span>
+        <div className="px-5 py-5 border-b border-bg-border">
+          <Link href="/dashboard" className="flex items-center no-underline">
+            <span className="font-extrabold text-xl text-text-primary tracking-tight">Pushback</span>
+            <span className="font-extrabold text-xl text-brand-amber">.</span>
           </Link>
         </div>
 
-        {/* Nav items */}
-        <nav style={{ padding: '1rem 0.75rem', flex: 1 }}>
-          {NAV_ITEMS.map(({ href, label, Icon }) => {
-            const active = pathname.startsWith(href)
-            return (
-              <Link
-                key={href}
-                href={href}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '0.75rem',
-                  padding: '0.65rem 0.75rem', borderRadius: '0.5rem',
-                  marginBottom: '0.25rem', textDecoration: 'none',
-                  backgroundColor: active ? 'var(--bg-elevated)' : 'transparent',
-                  color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  fontWeight: active ? 600 : 400, fontSize: '0.9rem',
-                  transition: 'all 150ms ease',
-                }}
-                className="hover:bg-[#1a1a1a] hover:text-white"
-              >
-                <Icon size={16} strokeWidth={active ? 2 : 1.5} style={{ opacity: 0.8, flexShrink: 0 }} />
+        {/* Nav sections */}
+        <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
+          {NAV_SECTIONS.map(({ label, items }) => (
+            <div key={label}>
+              <p className="px-2.5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-text-muted select-none">
                 {label}
-              </Link>
-            )
-          })}
-
-          <div style={{ height: '1px', backgroundColor: 'var(--bg-border)', margin: '0.75rem 0' }} />
-
-          <Link
-            href="/settings"
-            style={{
-              display: 'flex', alignItems: 'center', gap: '0.75rem',
-              padding: '0.65rem 0.75rem', borderRadius: '0.5rem',
-              textDecoration: 'none', color: 'var(--text-secondary)',
-              fontSize: '0.9rem', transition: 'all 150ms ease',
-            }}
-            className="hover:bg-[#1a1a1a] hover:text-white"
-          >
-            <Settings size={16} strokeWidth={1.5} style={{ opacity: 0.7, flexShrink: 0 }} />
-            Settings
-          </Link>
+              </p>
+              <div className="space-y-0.5">
+                {items.map(({ href, label: itemLabel, Icon }) => (
+                  <NavLink key={href} href={href} label={itemLabel} Icon={Icon} active={isActive(href)} />
+                ))}
+              </div>
+            </div>
+          ))}
 
           {profile?.plan === 'free' && (
-            <Link
-              href="/dashboard?upgrade=1"
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.75rem',
-                padding: '0.65rem 0.75rem', borderRadius: '0.5rem',
-                textDecoration: 'none', color: 'var(--brand-lime)',
-                fontSize: '0.9rem', fontWeight: 500, transition: 'all 150ms ease',
-              }}
-              className="hover:bg-[#1a1a1a]"
-            >
-              <ArrowUpCircle size={16} strokeWidth={1.5} style={{ flexShrink: 0 }} />
-              Upgrade to Pro
-            </Link>
+            <div>
+              <button
+                onClick={() => startCheckout(setCheckoutLoading)}
+                disabled={checkoutLoading}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-brand-lime border border-brand-lime/20 hover:bg-brand-lime/5 hover:border-brand-lime/40 transition-all duration-150 cursor-pointer bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ArrowUpCircle size={15} strokeWidth={1.5} className="shrink-0" />
+                {checkoutLoading ? 'Loading…' : 'Upgrade to Pro'}
+              </button>
+            </div>
+          )}
+
+          {profile?.plan === 'pro' && (
+            <div>
+              <button
+                onClick={handleBillingPortal}
+                disabled={portalLoading}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all duration-150 cursor-pointer bg-transparent border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <CreditCard size={15} strokeWidth={1.5} className="shrink-0" />
+                {portalLoading ? 'Loading…' : 'Billing portal'}
+              </button>
+            </div>
+          )}
+
+          {profile?.email === 'adelina.lipsa@gmail.com' && (
+            <div>
+              <Link
+                href="/admin"
+                className={[
+                  'flex items-center gap-2.5 pl-2.5 pr-3 py-2 rounded-lg text-sm no-underline transition-all duration-150 border-l-2',
+                  isActive('/admin')
+                    ? 'bg-bg-elevated text-text-primary border-brand-lime font-semibold'
+                    : 'text-text-muted border-transparent hover:bg-bg-elevated/60 hover:text-text-secondary font-normal',
+                ].join(' ')}
+              >
+                <ShieldCheck size={15} strokeWidth={isActive('/admin') ? 2 : 1.5} className="shrink-0" />
+                Admin
+              </Link>
+            </div>
           )}
         </nav>
 
-        {/* User */}
-        <div style={{ padding: '1rem 0.75rem', borderTop: '1px solid var(--bg-border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.75rem' }}>
-            <div style={{
-              width: '32px', height: '32px', borderRadius: '50%',
-              backgroundColor: 'rgba(132,204,22,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'var(--brand-lime)', fontWeight: 700, fontSize: '0.8rem', flexShrink: 0,
-            }}>
+        {/* User footer */}
+        <div className="px-3 pb-4 pt-3 border-t border-bg-border space-y-1">
+          <div className="flex items-center gap-3 px-2.5 py-2">
+            <div className="w-7 h-7 rounded-full bg-brand-amber/10 flex items-center justify-center text-brand-amber font-bold text-xs shrink-0">
               {profile?.email?.[0]?.toUpperCase() ?? '?'}
             </div>
-            <div style={{ flex: 1, overflow: 'hidden' }}>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-primary)', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {profile?.email ?? ''}
-              </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                {profile?.plan ?? 'free'}
-              </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-text-primary font-medium truncate">{profile?.email ?? ''}</p>
+              <p className="text-[10px] text-text-muted uppercase tracking-wider">{profile?.plan ?? 'free'}</p>
             </div>
           </div>
           <button
             onClick={handleSignOut}
-            style={{
-              width: '100%', textAlign: 'left', padding: '0.5rem 0.75rem',
-              color: 'var(--text-muted)', fontSize: '0.8rem', background: 'none',
-              border: 'none', cursor: 'pointer', borderRadius: '0.375rem',
-            }}
-            className="hover:text-white transition-colors"
+            className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all duration-150 cursor-pointer border-0 bg-transparent text-left"
           >
+            <LogOut size={14} strokeWidth={1.5} className="shrink-0" />
             Sign out
           </button>
         </div>
       </aside>
 
       {/* Mobile bottom bar */}
-      <nav style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
-        backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)',
-        padding: '0.5rem',
-      }} className="flex md:hidden">
-        {NAV_ITEMS.map(({ href, label, Icon }) => {
-          const active = pathname.startsWith(href)
+      <nav className="flex md:hidden fixed bottom-0 left-0 right-0 z-50 bg-bg-surface border-t border-bg-border px-2 py-1">
+        {[
+          { href: '/dashboard', Icon: LayoutDashboard, label: 'Home' },
+          { href: '/projects', Icon: Briefcase, label: 'Projects' },
+          { href: '/contracts', Icon: FileText, label: 'Contracts' },
+          { href: '/analytics', Icon: BarChart2, label: 'Analytics' },
+        ].map(({ href, Icon, label }) => {
+          const active = isActive(href)
           return (
             <Link
               key={href}
               href={href}
-              style={{
-                flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem',
-                padding: '0.5rem', borderRadius: '0.5rem', textDecoration: 'none',
-                color: active ? 'var(--brand-lime)' : 'var(--text-muted)',
-                fontSize: '0.7rem', fontWeight: active ? 600 : 400,
-              }}
+              className={[
+                'flex-1 flex flex-col items-center gap-1 py-2 px-3 rounded-lg no-underline text-[10px] font-medium transition-colors duration-150',
+                active ? 'text-brand-amber' : 'text-text-muted hover:text-text-secondary',
+              ].join(' ')}
             >
               <Icon size={20} strokeWidth={active ? 2 : 1.5} />
               {label}

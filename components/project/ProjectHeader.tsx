@@ -121,7 +121,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
               <Button variant="outline" size="sm" icon={<Pencil size={13} />} onClick={() => setEditing(true)}>
                 Edit project
               </Button>
-              <Button variant="outline" size="sm" icon={<Trash2 size={13} />} onClick={() => setDeleteDialogOpen(true)}>
+              <Button variant="destructive" size="sm" icon={<Trash2 size={13} />} onClick={() => setDeleteDialogOpen(true)}>
                 Delete
               </Button>
             </div>

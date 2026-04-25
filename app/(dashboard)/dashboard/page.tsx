@@ -2,8 +2,10 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { DefenseTool, Project } from '@/types'
+import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import ProjectCard from '@/components/project/ProjectCard'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
+import ArsenalQuickDeploy from '@/components/defense/ArsenalQuickDeploy'
 
 // ---- Attention alert types ----
 
@@ -211,7 +213,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const attentionItems = computeAttentionItems((projects ?? []) as ProjectWithResponses[], today)
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '900px' }}>
+    <div style={{ padding: '2rem' }}>
       {showUpgrade && profile?.plan === 'free' && (
         <div style={{ marginBottom: '2rem' }}>
           <UpgradePrompt responsesUsed={profile.defense_responses_used} />
@@ -237,52 +239,70 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
       )}
 
-      <div className="fade-up" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
-        <h1 style={{ fontWeight: 700, fontSize: '1.75rem', letterSpacing: '-0.02em' }}>Your projects</h1>
-        <Link
-          href="/projects/new"
-          style={{
-            backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 600,
-            padding: '0.6rem 1.25rem', borderRadius: '0.5rem', textDecoration: 'none',
-            fontSize: '0.9rem',
-          }}
-          className="hover:opacity-90 transition-opacity"
-        >
-          New Project →
-        </Link>
-      </div>
+      {/* Two-column command center: Arsenal left, Projects right */}
+      <div className="fade-up" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start', animationDelay: '0.08s' }}>
 
-      {!projects || projects.length === 0 ? (
-        <div style={{
-          backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-          borderRadius: '1rem', padding: '4rem 2rem', textAlign: 'center',
-        }}>
-          <div style={{ marginBottom: '1rem', opacity: 0.4, display: 'flex', justifyContent: 'center' }}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        {/* Left: Arsenal */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '1rem' }}>
+            <h2 style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.01em' }}>Arsenal</h2>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+              {DEFENSE_TOOLS.length} tools ready
+            </span>
           </div>
-          <p style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.5rem' }}>No projects yet.</p>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
-            Add a client project to start generating defense messages.
-          </p>
-          <Link
-            href="/projects/new"
-            style={{
-              backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 600,
-              padding: '0.7rem 1.5rem', borderRadius: '0.5rem', textDecoration: 'none', fontSize: '0.9rem',
-            }}
-          >
-            Add your first project →
-          </Link>
+          <ArsenalQuickDeploy
+            projects={(projects ?? []).map(p => ({ id: p.id, title: p.title, client_name: p.client_name }))}
+          />
         </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          {(projects as Project[]).map((project, i) => (
-            <div key={project.id} className="fade-up" style={{ animationDelay: `${0.08 + i * 0.06}s` }}>
-              <ProjectCard project={project} />
+
+        {/* Right: Projects */}
+        <div style={{ width: '300px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <h2 style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.01em' }}>Projects</h2>
+            <Link
+              href="/projects/new"
+              style={{
+                backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 600,
+                padding: '0.4rem 0.875rem', borderRadius: '0.5rem', textDecoration: 'none',
+                fontSize: '0.8rem',
+              }}
+              className="hover:opacity-90 transition-opacity"
+            >
+              New →
+            </Link>
+          </div>
+
+          {!projects || projects.length === 0 ? (
+            <div style={{
+              backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+              borderRadius: '0.875rem', padding: '2rem 1.25rem', textAlign: 'center',
+            }}>
+              <p style={{ fontWeight: 600, fontSize: '0.95rem', marginBottom: '0.4rem' }}>No projects yet</p>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '1.25rem', fontSize: '0.85rem' }}>
+                Add a client project to deploy tools.
+              </p>
+              <Link
+                href="/projects/new"
+                style={{
+                  backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 600,
+                  padding: '0.55rem 1.1rem', borderRadius: '0.5rem', textDecoration: 'none', fontSize: '0.85rem',
+                }}
+              >
+                Add project →
+              </Link>
             </div>
-          ))}
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              {(projects as Project[]).map((project, i) => (
+                <div key={project.id} className="fade-up" style={{ animationDelay: `${0.08 + i * 0.06}s` }}>
+                  <ProjectCard project={project} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+
+      </div>
     </div>
   )
 }

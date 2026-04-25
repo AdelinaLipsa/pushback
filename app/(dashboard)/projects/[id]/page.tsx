@@ -43,7 +43,7 @@ export default async function ProjectPage({
     tool && validToolTypes.includes(tool as DefenseTool) ? (tool as DefenseTool) : undefined
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '960px', margin: '0 auto' }}>
+    <div style={{ padding: '2rem', maxWidth: '1100px' }}>
       <ProjectDetailClient
         project={typedProject}
         plan={p?.plan ?? 'free'}

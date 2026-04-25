@@ -30,12 +30,13 @@ export async function POST(request: Request) {
     'check_and_increment_contracts',
     { uid: user.id }
   )
-  const gate = gateResult as { allowed: boolean; current_count: number } | null
+  const gate = gateResult as { allowed: boolean; current_count: number; period_count: number; reason?: string } | null
   if (gateError || !gate?.allowed) {
-    return Response.json({ error: 'UPGRADE_REQUIRED' }, { status: 403 })
+    return Response.json({ error: gate?.reason ?? 'UPGRADE_REQUIRED' }, { status: 403 })
   }
-  // Store pre-increment count for compensating decrement on failure (D-03 credit-safe)
+  // Store pre-increment counts for compensating decrements on failure (D-03 credit-safe)
   const preIncrementCount = gate.current_count
+  const prePeriodCount = gate.period_count
 
   const formData = await request.formData()
   const file = formData.get('file') as File | null
@@ -53,7 +54,7 @@ export async function POST(request: Request) {
     // Compensate — contract row could not be created, undo gate increment
     await supabase
       .from('user_profiles')
-      .update({ contracts_used: preIncrementCount })
+      .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
       .eq('id', user.id)
     return Response.json({ error: 'DB error' }, { status: 500 })
   }
@@ -134,7 +135,7 @@ export async function POST(request: Request) {
     // Compensating decrement — undo RPC increment on any unhandled error
     await supabase
       .from('user_profiles')
-      .update({ contracts_used: preIncrementCount })
+      .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
       .eq('id', user.id)
     console.error('Contract analysis error:', err)
     // D-13: distinguish malformed AI output from other failures
