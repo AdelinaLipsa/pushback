@@ -19,6 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Types & Observability** - Supabase type generation, Sentry error capture, and Anthropic spend alert
 - [x] **Phase 6: Proactive Detection** - Analyze a raw client message, identify the situation type, pre-fill the right defense tool (completed 2026-04-24)
 - [x] **Phase 7: Payment Tracking** - Add payment due date per project, dashboard overdue badge, one-click Late Payment tool pre-fill (completed 2026-04-24)
+- [ ] **Phase 8: Expanded Defense Tools** - Add 12 new defense tool types covering the most common freelancer conflict scenarios not currently handled
 
 ## Phase Details
 
@@ -138,10 +139,22 @@ Plans:
 - [x] 07-04-PLAN.md — Create PaymentSection and ProjectDetailClient; wire into project detail page.tsx (Wave 3)
 **UI hint**: yes
 
+### Phase 8: Expanded Defense Tools
+**Goal**: Freelancers have a complete toolkit for every common conflict scenario — 12 new defense tools covering ghost clients, scope disputes, pricing pushback, IP claims, and reputation threats that no competing tool addresses
+**Depends on**: Phase 7
+**Requirements**: TOOLS-01, TOOLS-02, TOOLS-03, TOOLS-04
+**Success Criteria** (what must be TRUE):
+  1. All 20 defense tools (8 existing + 12 new) render in the defense grid with correct labels, icons, and urgency indicators
+  2. Each of the 12 new tools generates a relevant, professional, situation-specific response via the defend API with correct tone per tool type
+  3. The analyze-message route correctly classifies client messages into all 20 tool types including all 12 new ones
+  4. The DefenseTool TypeScript union type includes all 12 new values — `tsc --noEmit` passes with no type errors
+  5. All icon names used in DefenseToolCard resolve in lucide-react — no missing icon errors at runtime
+**UI hint**: yes
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -152,3 +165,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5. Types & Observability | 0/3 | Planned | - |
 | 6. Proactive Detection | 3/3 | Complete | 2026-04-24 |
 | 7. Payment Tracking | 4/4 | Complete   | 2026-04-24 |
+| 8. Expanded Defense Tools | 0/? | Not planned | - |

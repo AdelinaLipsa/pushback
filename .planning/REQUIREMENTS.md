@@ -75,6 +75,13 @@
 - [x] **PAY-03**: Overdue projects show a one-click "Handle Late Payment" CTA that opens the Late Payment defense tool with payment context (amount, due date, days overdue) pre-filled
 - [x] **PAY-04**: User can mark a payment as received on a project, clearing the overdue badge
 
+### Expanded Defense Tools
+
+- [ ] **TOOLS-01**: All 12 new defense tool types are registered in `lib/defenseTools.ts` and render in the defense grid with correct labels, icons, and urgency indicators
+- [ ] **TOOLS-02**: Each new tool type generates a relevant, professional response via the defend route — tone per tool follows the prescribed guidelines in `lib/anthropic.ts`
+- [ ] **TOOLS-03**: The analyze-message route classifies client messages into all 20 tool types (8 existing + 12 new) — `DEFENSE_TOOL_VALUES` includes all 20 types
+- [ ] **TOOLS-04**: The `DefenseTool` TypeScript union in `types/index.ts` includes all 12 new values — `tsc --noEmit` passes with no type errors
+
 ## v2 Requirements
 
 ### Retention
