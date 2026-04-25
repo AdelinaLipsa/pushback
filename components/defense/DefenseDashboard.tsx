@@ -19,9 +19,10 @@ interface DefenseDashboardProps {
   initialPaymentPrefill?: { tool: DefenseTool; contextFields: Record<string, string> }
   hasContract?: boolean
   contractRiskLevel?: RiskLevel
+  autoSelectTool?: DefenseTool
 }
 
-export default function DefenseDashboard({ projectId, plan, responsesUsed, initialPaymentPrefill, hasContract, contractRiskLevel }: DefenseDashboardProps) {
+export default function DefenseDashboard({ projectId, plan, responsesUsed, initialPaymentPrefill, hasContract, contractRiskLevel, autoSelectTool }: DefenseDashboardProps) {
   const router = useRouter()
   const [selectedTool, setSelectedTool] = useState<DefenseToolMeta | null>(null)
   const [loading, setLoading] = useState(false)
@@ -50,6 +51,16 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
       }
     }
   }, [initialPaymentPrefill])
+
+  useEffect(() => {
+    if (autoSelectTool) {
+      const matchedTool = DEFENSE_TOOLS.find(t => t.type === autoSelectTool)
+      if (matchedTool) {
+        setSelectedTool(matchedTool)
+        setResponse(null)
+      }
+    }
+  }, [autoSelectTool])
 
   async function handleUpgrade() { await startCheckout(setUpgradeLoading) }
 
@@ -298,12 +309,13 @@ export default function DefenseDashboard({ projectId, plan, responsesUsed, initi
         />
       )}
 
-      {response && (
+      {response && selectedTool && (
         <ResponseOutput
           response={response.text}
           responseId={response.id}
           onRegenerate={handleRegenerate}
           contractClausesUsed={response.contractClausesUsed}
+          toolType={selectedTool.type}
         />
       )}
     </div>

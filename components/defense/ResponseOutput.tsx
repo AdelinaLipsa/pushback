@@ -3,15 +3,18 @@
 import { useState } from 'react'
 import { Sparkles } from 'lucide-react'
 import CopyButton from '@/components/shared/CopyButton'
+import NextStepCard from '@/components/defense/NextStepCard'
+import { DefenseTool } from '@/types'
 
 interface ResponseOutputProps {
   response: string
   responseId: string
   onRegenerate: () => void
   contractClausesUsed?: string[]
+  toolType: DefenseTool
 }
 
-export default function ResponseOutput({ response, responseId, onRegenerate, contractClausesUsed }: ResponseOutputProps) {
+export default function ResponseOutput({ response, responseId, onRegenerate, contractClausesUsed, toolType }: ResponseOutputProps) {
   const [sent, setSent] = useState(false)
 
   async function handleMarkSent() {
@@ -85,6 +88,8 @@ export default function ResponseOutput({ response, responseId, onRegenerate, con
           {sent ? 'Marked as sent' : 'Mark as sent'}
         </button>
       </div>
+
+      <NextStepCard toolType={toolType} />
     </div>
   )
 }
