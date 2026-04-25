@@ -6,87 +6,134 @@ interface RiskReportProps {
   analysis: ContractAnalysis
 }
 
+function SectionHeader({ label, count, countColor }: { label: string; count?: number; countColor?: string }) {
+  return (
+    <div className="flex items-baseline gap-2 mb-3">
+      <h3 className="text-[0.68rem] font-bold uppercase tracking-[0.1em] text-text-muted m-0">{label}</h3>
+      {count !== undefined && (
+        <span className="text-[0.68rem] font-bold" style={{ color: countColor }}>({count})</span>
+      )}
+    </div>
+  )
+}
+
+const SEV: Record<string, { border: string; badge: string }> = {
+  CRITICAL: { border: 'border-l-urgency-high',  badge: 'bg-urgency-high/10 border border-urgency-high/30 text-urgency-high' },
+  HIGH:     { border: 'border-l-urgency-medium', badge: 'bg-urgency-medium/10 border border-urgency-medium/30 text-urgency-medium' },
+  MEDIUM:   { border: 'border-l-yellow-500',     badge: 'bg-yellow-500/10 border border-yellow-500/30 text-yellow-500' },
+  LOW:      { border: 'border-l-urgency-low',    badge: 'bg-urgency-low/10 border border-urgency-low/30 text-urgency-low' },
+}
+
 export default function RiskReport({ analysis }: RiskReportProps) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      {/* Summary */}
-      <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+    <div className="flex flex-col gap-6">
+
+      {/* Summary — full width */}
+      <div className="bg-bg-surface border border-bg-border rounded-xl p-6">
+        <div className="flex items-center gap-3 mb-5 flex-wrap">
           <RiskScoreBadge score={analysis.risk_score} level={analysis.risk_level as RiskLevel} />
-          <span style={{
-            backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--bg-border)',
-            borderRadius: '0.375rem', padding: '0.4rem 0.875rem', fontSize: '0.85rem', fontWeight: 500,
-          }}>
-            {analysis.verdict}
-          </span>
+          <span className="text-text-muted text-xs uppercase tracking-widest">Recommendation:</span>
+          <span className="text-text-primary text-sm font-semibold">{analysis.verdict}</span>
         </div>
-        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '0.95rem' }}>{analysis.summary}</p>
+        <p className="text-text-secondary leading-[1.75] text-[0.9rem] m-0">{analysis.summary}</p>
       </div>
 
-      {/* Flagged clauses */}
-      {analysis.flagged_clauses.length > 0 && (
-        <div>
-          <h3 style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.75rem' }}>
-            Flagged clauses <span style={{ color: 'var(--urgency-high)', fontWeight: 700 }}>({analysis.flagged_clauses.length})</span>
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {analysis.flagged_clauses.map((clause, i) => (
-              <ClauseCard key={i} clause={clause} />
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Mosaic grid */}
+      <div className="grid grid-cols-[3fr_2fr] gap-6 items-start">
 
-      {/* Missing protections */}
-      {analysis.missing_protections.length > 0 && (
-        <div>
-          <h3 style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.75rem' }}>
-            Missing protections <span style={{ color: 'var(--urgency-medium)', fontWeight: 700 }}>({analysis.missing_protections.length})</span>
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {analysis.missing_protections.map((p, i) => (
-              <div key={i} style={{
-                backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-                borderLeft: '4px solid var(--urgency-medium)', borderRadius: '0.75rem', padding: '1rem 1.25rem',
-              }}>
-                <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.4rem' }}>{p.title}</div>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '0.75rem' }}>{p.why_you_need_it}</p>
-                <div style={{ backgroundColor: 'var(--bg-elevated)', borderRadius: '0.375rem', padding: '0.75rem' }}>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.3rem' }}>Suggested clause</p>
-                  <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', lineHeight: 1.6, fontFamily: 'var(--font-mono), monospace' }}>{p.suggested_clause}</p>
-                </div>
+        {/* Left column: flagged clauses + missing protections */}
+        <div className="flex flex-col gap-8">
+          {analysis.flagged_clauses.length > 0 && (
+            <section>
+              <SectionHeader label="Flagged clauses" count={analysis.flagged_clauses.length} countColor="var(--urgency-high)" />
+              <div className="flex flex-col gap-2">
+                {analysis.flagged_clauses.map((clause, i) => (
+                  <ClauseCard key={i} clause={clause} />
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+            </section>
+          )}
 
-      {/* Positive notes */}
-      {analysis.positive_notes.length > 0 && (
-        <div>
-          <h3 style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.75rem' }}>What&apos;s working for you</h3>
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-            {analysis.positive_notes.map((note, i) => (
-              <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6 }}>
-                <span style={{ color: 'var(--brand-green)', flexShrink: 0, marginTop: '0.1rem' }}>✓</span>
-                {note}
-              </li>
-            ))}
-          </ul>
+          {analysis.missing_protections.length > 0 && (
+            <section>
+              <SectionHeader label="Missing protections" count={analysis.missing_protections.length} countColor="var(--urgency-medium)" />
+              <div className="flex flex-col gap-3">
+                {analysis.missing_protections.map((p, i) => (
+                  <div key={i} className="bg-bg-surface border border-bg-border border-l-[3px] border-l-urgency-medium rounded-xl overflow-hidden">
+                    <div className="px-5 pt-4 pb-3.5">
+                      <p className="font-semibold text-[0.9rem] mb-2 m-0">{p.title}</p>
+                      <p className="text-text-secondary text-[0.85rem] leading-[1.65] m-0">{p.why_you_need_it}</p>
+                    </div>
+                    <div className="bg-bg-elevated border-t border-bg-border px-5 py-3.5">
+                      <p className="text-text-muted text-[0.65rem] uppercase tracking-[0.08em] mb-1.5">Suggested clause</p>
+                      <p className="text-text-secondary text-[0.825rem] leading-[1.7] m-0">{p.suggested_clause}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
-      )}
 
-      {/* Priority */}
-      {analysis.negotiation_priority.length > 0 && (
-        <div>
-          <h3 style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.75rem' }}>Push back on this first</h3>
-          <ol style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', paddingLeft: '1rem' }}>
-            {analysis.negotiation_priority.map((item, i) => (
-              <li key={i} style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6 }}>{item}</li>
-            ))}
-          </ol>
+        {/* Right column: what's working + push back */}
+        <div className="flex flex-col gap-8">
+          {analysis.positive_notes.length > 0 && (
+            <section>
+              <SectionHeader label="What's working for you" />
+              <div className="flex flex-col gap-1.5">
+                {analysis.positive_notes.map((note, i) => (
+                  <div key={i} className="flex items-start gap-3 bg-bg-surface border border-bg-border border-l-[3px] border-l-brand-lime rounded-xl px-4 py-3">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5 text-brand-lime">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span className="text-text-secondary text-[0.825rem] leading-[1.65]">{note}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {analysis.negotiation_priority.length > 0 && (
+            <section>
+              <SectionHeader label="Push back on this first" />
+              <div className="flex flex-col gap-1.5">
+                {analysis.negotiation_priority.map((item, i) => {
+                  const sevMatch = item.match(/^(CRITICAL|HIGH|MEDIUM|LOW)\s*[—–-]+\s*(.+)/)
+                  const severity = sevMatch?.[1] ?? ''
+                  const rest = sevMatch?.[2] ?? item
+                  const colonIdx = rest.indexOf(': ')
+                  const title = colonIdx > -1 ? rest.substring(0, colonIdx) : rest
+                  const detail = colonIdx > -1 ? rest.substring(colonIdx + 2) : ''
+                  const sev = SEV[severity]
+                  return (
+                    <div
+                      key={i}
+                      className={`flex gap-3 items-start bg-bg-surface border border-bg-border rounded-xl px-4 py-3 border-l-[3px] ${sev?.border ?? 'border-l-bg-border'}`}
+                    >
+                      <span className="shrink-0 w-5 h-5 rounded-full bg-bg-elevated border border-bg-border flex items-center justify-center text-[0.6rem] font-bold text-text-muted mt-0.5">
+                        {i + 1}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className={`flex items-center gap-2 flex-wrap ${detail ? 'mb-1' : ''}`}>
+                          {severity && sev && (
+                            <span className={`text-[0.58rem] font-bold tracking-[0.06em] rounded px-1.5 py-0.5 shrink-0 ${sev.badge}`}>
+                              {severity}
+                            </span>
+                          )}
+                          <span className="font-semibold text-[0.825rem] text-text-primary leading-snug">{title}</span>
+                        </div>
+                        {detail && (
+                          <p className="text-text-muted text-[0.775rem] leading-[1.55] m-0">{detail}</p>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </section>
+          )}
         </div>
-      )}
+      </div>
     </div>
   )
 }

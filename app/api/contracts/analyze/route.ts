@@ -93,12 +93,15 @@ export async function POST(request: Request) {
       return Response.json({ error: 'No file or text provided' }, { status: 400 })
     }
 
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
-      system: CONTRACT_ANALYSIS_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: messageContent }]
-    })
+    const message = await anthropic.messages.create(
+      {
+        model: 'claude-sonnet-4-6',
+        max_tokens: 4096,
+        system: CONTRACT_ANALYSIS_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: messageContent }]
+      } as any,
+      { headers: { 'anthropic-beta': 'files-api-2025-04-14' } }
+    )
 
     const rawText = message.content[0].type === 'text' ? message.content[0].text : '{}'
     // RELY-02: use extractJson instead of bare JSON.parse — handles preamble and markdown wrapping
