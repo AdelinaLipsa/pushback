@@ -163,11 +163,17 @@ Plans:
 ### Phase 9: Contract-Aware Intelligence
 **Goal**: Every generated message is demonstrably smarter than a generic Claude prompt — it references the freelancer's actual contract clauses, missing protections, and negotiation priorities by extracting relevant data per tool type
 **Depends on**: Phase 8
-**Requirements**: TBD
+**Requirements**: SC-01, SC-02, SC-03
 **Success Criteria** (what must be TRUE):
   1. The defend route builds a structured contract context block per tool type (scope tools get scope clauses, payment tools get payment clauses) instead of raw JSON.stringify
   2. Generated messages reference specific contract language when a contract is attached — not generic advice
   3. The ResponseOutput component shows a "Based on your contract:" section when contract data was used
+**Plans**: 4 plans
+Plans:
+- [ ] 09-01-PLAN.md — buildContractContext helper in defend/route.ts + extend response shape + update DEFENSE_SYSTEM_PROMPT (Wave 1)
+- [ ] 09-02-PLAN.md — Add inline copy button to ClauseCard "What to say back" label row (Wave 1)
+- [ ] 09-03-PLAN.md — ProjectDetailClient prop derivation + DefenseDashboard prop extension + response state + call sites (Wave 2)
+- [ ] 09-04-PLAN.md — SituationPanel risk indicator + ResponseOutput attribution section (Wave 3)
 **UI hint**: yes
 
 ### Phase 10: Smart Escalation
@@ -225,7 +231,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Proactive Detection | 3/3 | Complete | 2026-04-24 |
 | 7. Payment Tracking | 4/4 | Complete   | 2026-04-24 |
 | 8. Expanded Defense Tools | 0/2 | Planned | - |
-| 9. Contract-Aware Intelligence | 0/? | Not planned | - |
+| 9. Contract-Aware Intelligence | 0/4 | Planned | - |
 | 10. Smart Escalation | 0/? | Not planned | - |
 | 11. Document Generation | 0/? | Not planned | - |
 | 12. Client Risk Intelligence | 0/? | Not planned | - |
