@@ -1,15 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { Copy, Check } from 'lucide-react'
+import { Copy, Check, ChevronDown } from 'lucide-react'
 import { FlaggedClause } from '@/types'
 import { RISK_COLORS_RICH } from '@/lib/ui'
 
 interface ClauseCardProps {
   clause: FlaggedClause
+  delay?: number
 }
 
-export default function ClauseCard({ clause }: ClauseCardProps) {
+export default function ClauseCard({ clause, delay = 0 }: ClauseCardProps) {
   const [expanded, setExpanded] = useState(false)
   const [copied, setCopied] = useState(false)
   const colors = RISK_COLORS_RICH[clause.risk_level] ?? RISK_COLORS_RICH.medium
@@ -25,75 +26,62 @@ export default function ClauseCard({ clause }: ClauseCardProps) {
   }
 
   return (
-    <div style={{
-      backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-      borderLeft: `4px solid ${colors.border}`, borderRadius: '0.75rem', overflow: 'hidden',
-    }}>
+    <div
+      className="fade-up bg-bg-surface border border-bg-border rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/30"
+      style={{ borderLeft: `4px solid ${colors.border}`, animationDelay: `${delay}ms` }}
+    >
       <button
         onClick={() => setExpanded(!expanded)}
-        style={{
-          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '1rem 1.25rem', background: 'none', border: 'none', cursor: 'pointer',
-          color: 'var(--text-primary)', textAlign: 'left', gap: '1rem',
-        }}
+        className="w-full flex items-center justify-between px-5 py-4 bg-transparent border-none cursor-pointer text-text-primary text-left gap-4 hover:bg-white/[0.02] transition-colors duration-150"
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
-          <span style={{
-            backgroundColor: colors.badge, color: colors.badgeText,
-            fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.5rem',
-            borderRadius: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0,
-          }}>
+        <div className="flex items-center gap-3 flex-1">
+          <span
+            className="text-[0.65rem] font-bold px-2 py-0.5 rounded uppercase tracking-[0.06em] shrink-0"
+            style={{ backgroundColor: colors.badge, color: colors.badgeText }}
+          >
             {clause.risk_level}
           </span>
-          <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{clause.title}</span>
+          <span className="font-semibold text-[0.9rem] text-zinc-100">{clause.title}</span>
         </div>
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
+        <ChevronDown
+          size={15}
+          className={`shrink-0 text-zinc-500 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
+        />
       </button>
 
       {expanded && (
-        <div style={{ padding: '0 1.25rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="response-enter px-5 pb-5 flex flex-col gap-4">
           {clause.quote && (
-            <blockquote style={{
-              borderLeft: `3px solid ${colors.border}`, paddingLeft: '0.875rem', margin: 0,
-              color: 'var(--text-secondary)', fontSize: '0.8rem', fontStyle: 'italic', lineHeight: 1.6,
-            }}>
+            <blockquote
+              className="pl-3.5 m-0 text-zinc-300 text-[0.8rem] italic leading-relaxed"
+              style={{ borderLeft: `3px solid ${colors.border}` }}
+            >
               &ldquo;{clause.quote}&rdquo;
             </blockquote>
           )}
 
           <div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.3rem' }}>What this means</p>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6 }}>{clause.plain_english}</p>
+            <p className="text-zinc-200 font-bold text-[0.65rem] uppercase tracking-[0.07em] mb-1">What this means</p>
+            <p className="text-zinc-300 text-[0.875rem] leading-relaxed m-0">{clause.plain_english}</p>
           </div>
 
           <div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.3rem' }}>Why it matters</p>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6 }}>{clause.why_it_matters}</p>
+            <p className="text-zinc-200 font-bold text-[0.65rem] uppercase tracking-[0.07em] mb-1">Why it matters</p>
+            <p className="text-zinc-300 text-[0.875rem] leading-relaxed m-0">{clause.why_it_matters}</p>
           </div>
 
-          <div style={{ backgroundColor: 'var(--bg-elevated)', borderRadius: '0.5rem', padding: '0.875rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: 0 }}>What to say back</p>
+          <div className="bg-bg-elevated rounded-lg p-3.5">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-zinc-200 font-bold text-[0.65rem] uppercase tracking-[0.07em] m-0">What to say back</p>
               <button
                 onClick={handleCopyPushback}
                 aria-label="Copy to clipboard"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '0.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  color: copied ? '#84cc16' : 'var(--text-muted)',
-                  minHeight: '44px',
-                  minWidth: '44px',
-                  justifyContent: 'center',
-                }}
+                className={`flex items-center justify-center w-11 h-11 rounded-lg bg-transparent border-none cursor-pointer transition-all duration-150 hover:bg-white/5 hover:scale-110 active:scale-95 ${copied ? 'text-brand-lime' : 'text-zinc-500'}`}
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}
               </button>
             </div>
-            <p style={{ color: 'var(--text-primary)', fontSize: '0.875rem', lineHeight: 1.6 }}>{clause.pushback_language}</p>
+            <p className="text-zinc-100 text-[0.875rem] leading-relaxed m-0">{clause.pushback_language}</p>
           </div>
         </div>
       )}

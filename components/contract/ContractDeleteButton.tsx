@@ -2,102 +2,50 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Trash2, X } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { btnStyles, dialogContentStyle } from '@/lib/ui'
+import { dialogContentStyle } from '@/lib/ui'
+import { deleteContract } from '@/lib/api'
+import Button from '@/components/shared/Button'
 
-interface ContractDeleteButtonProps {
-  contractId: string
-}
-
-export default function ContractDeleteButton({ contractId }: ContractDeleteButtonProps) {
+export default function ContractDeleteButton({ contractId }: { contractId: string }) {
   const router = useRouter()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const [isError, setIsError] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
 
   async function handleDelete() {
     setDeleting(true)
-    const res = await fetch(`/api/contracts/${contractId}`, { method: 'DELETE' })
-    const data = await res.json()
+    const result = await deleteContract(contractId)
     setDeleting(false)
-
-    if (!res.ok) {
-      setErrorMessage(data.error ?? 'Could not delete contract. Please try again.')
-      setIsError(true)
-      return
-    }
-
+    if (!result) return
     router.refresh()
     router.push('/contracts')
   }
 
-  function handleOpen() {
-    setIsError(false)
-    setErrorMessage('')
-    setDialogOpen(true)
-  }
-
-  function handleDismiss() {
-    setDialogOpen(false)
-    setIsError(false)
-    setErrorMessage('')
-  }
-
   return (
     <>
-      <button
-        onClick={handleOpen}
-        style={btnStyles.outline}
-      >
+      <Button variant="outline" size="sm" icon={<Trash2 size={13} />} onClick={() => setDialogOpen(true)}>
         Delete contract
-      </button>
+      </Button>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent style={dialogContentStyle} showCloseButton={false}>
-          {isError ? (
-            <>
-              <DialogHeader>
-                <DialogTitle style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-                  Something went wrong
-                </DialogTitle>
-              </DialogHeader>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-                {errorMessage}
-              </p>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button onClick={handleDismiss} style={btnStyles.ghost}>
-                  Close
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <DialogHeader>
-                <DialogTitle style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-                  Are you sure?
-                </DialogTitle>
-              </DialogHeader>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-                This will permanently delete the contract and its analysis. There&apos;s no undo.
-              </p>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  style={{ ...btnStyles.destructive, ...(deleting ? { opacity: 0.7, cursor: 'not-allowed' } : {}) }}
-                >
-                  {deleting ? 'Deleting…' : 'Delete contract'}
-                </button>
-                <button
-                  onClick={() => setDialogOpen(false)}
-                  style={btnStyles.ghost}
-                >
-                  Cancel
-                </button>
-              </div>
-            </>
-          )}
+          <DialogHeader>
+            <DialogTitle style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+              Are you sure?
+            </DialogTitle>
+          </DialogHeader>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+            This will permanently delete the contract and its analysis. There&apos;s no undo.
+          </p>
+          <div className="flex gap-2">
+            <Button variant="destructive" icon={<Trash2 size={13} />} loading={deleting} onClick={handleDelete}>
+              {deleting ? 'Deleting…' : 'Delete contract'}
+            </Button>
+            <Button variant="ghost" icon={<X size={13} />} onClick={() => setDialogOpen(false)}>
+              Cancel
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </>

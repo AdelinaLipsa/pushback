@@ -1,9 +1,5 @@
 import type React from 'react'
 
-// Shared inline-style constants for Phase 4 components.
-// Import from here instead of duplicating per-component.
-// Convention: named exports only (lib module pattern).
-
 export const inputStyle: React.CSSProperties = {
   width: '100%',
   backgroundColor: 'var(--bg-base)',
@@ -22,6 +18,19 @@ export const labelStyle: React.CSSProperties = {
   marginBottom: '0.5rem',
 }
 
+// Tailwind class strings — use className={btnCls.x} for proper hover/focus/disabled states.
+export const btnCls = {
+  primary:
+    'inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-lime text-[#0a0a0a] text-sm font-bold rounded-lg border-0 cursor-pointer transition-all duration-150 hover:opacity-90 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed',
+  outline:
+    'inline-flex items-center justify-center gap-2 px-4 py-2 bg-transparent border border-bg-border text-text-muted text-sm rounded-lg cursor-pointer transition-all duration-150 hover:border-white/20 hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed',
+  ghost:
+    'inline-flex items-center justify-center gap-2 px-3 py-2 bg-transparent border-0 text-text-muted text-sm cursor-pointer transition-colors duration-150 hover:text-text-primary disabled:opacity-50',
+  destructive:
+    'inline-flex items-center justify-center gap-2 px-4 py-2 bg-urgency-high-dim border border-urgency-high text-urgency-high text-sm font-bold rounded-lg cursor-pointer transition-all duration-150 hover:bg-urgency-high/20 disabled:opacity-50 disabled:cursor-not-allowed',
+}
+
+// Legacy inline-style objects — kept for components not yet migrated to Tailwind.
 export const btnStyles = {
   primary: {
     backgroundColor: 'var(--brand-lime)',
