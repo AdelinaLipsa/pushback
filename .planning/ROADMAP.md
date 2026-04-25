@@ -156,8 +156,8 @@ Plans:
   5. All icon names used in DefenseToolCard resolve in lucide-react — no missing icon errors at runtime
 **Plans**: 2 plans
 Plans:
-- [ ] 08-01-PLAN.md — Verify implementation: tsc check, tool count, icon resolution, prompt completeness (Wave 1)
-- [ ] 08-02-PLAN.md — Stage and commit the 6 Phase 8 files with descriptive message (Wave 2)
+- [x] 08-01-PLAN.md — Verify implementation: tsc check, tool count, icon resolution, prompt completeness (Wave 1)
+- [x] 08-02-PLAN.md — Stage and commit the 6 Phase 8 files with descriptive message (Wave 2)
 **UI hint**: yes
 
 ### Phase 9: Contract-Aware Intelligence
