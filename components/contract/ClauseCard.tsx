@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Copy, Check } from 'lucide-react'
 import { FlaggedClause } from '@/types'
 import { RISK_COLORS_RICH } from '@/lib/ui'
 
@@ -10,7 +11,18 @@ interface ClauseCardProps {
 
 export default function ClauseCard({ clause }: ClauseCardProps) {
   const [expanded, setExpanded] = useState(false)
+  const [copied, setCopied] = useState(false)
   const colors = RISK_COLORS_RICH[clause.risk_level] ?? RISK_COLORS_RICH.medium
+
+  async function handleCopyPushback() {
+    try {
+      await navigator.clipboard.writeText(clause.pushback_language)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // clipboard unavailable — fail silently
+    }
+  }
 
   return (
     <div style={{
@@ -60,7 +72,27 @@ export default function ClauseCard({ clause }: ClauseCardProps) {
           </div>
 
           <div style={{ backgroundColor: 'var(--bg-elevated)', borderRadius: '0.5rem', padding: '0.875rem' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>What to say back</p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: 0 }}>What to say back</p>
+              <button
+                onClick={handleCopyPushback}
+                aria-label="Copy to clipboard"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '0.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: copied ? '#84cc16' : 'var(--text-muted)',
+                  minHeight: '44px',
+                  minWidth: '44px',
+                  justifyContent: 'center',
+                }}
+              >
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+              </button>
+            </div>
             <p style={{ color: 'var(--text-primary)', fontSize: '0.875rem', lineHeight: 1.6 }}>{clause.pushback_language}</p>
           </div>
         </div>
