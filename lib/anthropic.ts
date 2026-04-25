@@ -89,7 +89,10 @@ OUTPUT RULES:
 - Never start with "Here is your message:" or any preamble
 - Professional and firm but never hostile
 - Under 300 words unless genuinely required
-- Reference contract only when contract data is available — never invent terms
+- When CONTRACT CONTEXT is present: use pushback_language from relevant clauses verbatim
+  when available; cite the specific clause title when referencing the contract
+- When CONTRACT CONTEXT is absent: generate without any contract references —
+  never invent terms, never say "per your contract" or similar
 - End with a clear next step or specific request
 
 TONE BY TOOL:
