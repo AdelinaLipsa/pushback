@@ -173,7 +173,7 @@ Plans:
 - [x] 09-01-PLAN.md — buildContractContext helper in defend/route.ts + extend response shape + update DEFENSE_SYSTEM_PROMPT (Wave 1)
 - [x] 09-02-PLAN.md — Add inline copy button to ClauseCard "What to say back" label row (Wave 1)
 - [x] 09-03-PLAN.md — ProjectDetailClient prop derivation + DefenseDashboard prop extension + response state + call sites (Wave 2)
-- [ ] 09-04-PLAN.md — SituationPanel risk indicator + ResponseOutput attribution section (Wave 3)
+- [x] 09-04-PLAN.md — SituationPanel risk indicator + ResponseOutput attribution section (Wave 3)
 **UI hint**: yes
 
 ### Phase 10: Smart Escalation
