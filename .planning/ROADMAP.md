@@ -154,6 +154,10 @@ Plans:
   3. The analyze-message route correctly classifies client messages into all 20 tool types including all 12 new ones
   4. The DefenseTool TypeScript union type includes all 12 new values — `tsc --noEmit` passes with no type errors
   5. All icon names used in DefenseToolCard resolve in lucide-react — no missing icon errors at runtime
+**Plans**: 2 plans
+Plans:
+- [ ] 08-01-PLAN.md — Verify implementation: tsc check, tool count, icon resolution, prompt completeness (Wave 1)
+- [ ] 08-02-PLAN.md — Stage and commit the 6 Phase 8 files with descriptive message (Wave 2)
 **UI hint**: yes
 
 ### Phase 9: Contract-Aware Intelligence
@@ -220,7 +224,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Types & Observability | 0/3 | Planned | - |
 | 6. Proactive Detection | 3/3 | Complete | 2026-04-24 |
 | 7. Payment Tracking | 4/4 | Complete   | 2026-04-24 |
-| 8. Expanded Defense Tools | 0/? | Context captured | - |
+| 8. Expanded Defense Tools | 0/2 | Planned | - |
 | 9. Contract-Aware Intelligence | 0/? | Not planned | - |
 | 10. Smart Escalation | 0/? | Not planned | - |
 | 11. Document Generation | 0/? | Not planned | - |
