@@ -9,6 +9,7 @@ import PushbackHero from '@/components/hero/PushbackHero'
 import Footer from '@/components/shared/Footer'
 import DemoAnimation from '@/components/hero/DemoAnimation'
 import ContractAnimation from '@/components/hero/ContractAnimation'
+import ReplyThreadAnimation from '@/components/hero/ReplyThreadAnimation'
 
 const TICKER_ITEMS = [
   'Client wants free revisions',
@@ -328,7 +329,7 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-primary)', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-primary)', minHeight: '100vh', overflowX: 'hidden' }}>
       <PushbackHero />
 
       {/* Ticker */}
@@ -358,9 +359,9 @@ export default function LandingPage() {
 
           <div data-animate data-animate-delay="150"><DemoAnimation /></div>
 
-          <div className="flex justify-around mt-10 px-4">
+          <div className="flex flex-wrap justify-around gap-y-6 mt-10 px-4">
             {HOW_IT_WORKS_STEPS.map(({ num, label }, idx) => (
-              <div key={num} className="text-center" data-animate data-animate-delay={String(idx * 120)}>
+              <div key={num} className="text-center" style={{ minWidth: '7rem' }} data-animate data-animate-delay={String(idx * 120)}>
                 <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--brand-lime)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', marginBottom: '0.25rem' }}>{num}</div>
                 <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{label}</div>
               </div>
@@ -528,6 +529,41 @@ export default function LandingPage() {
                 <p style={{ marginTop: '1.25rem', fontSize: '0.6rem', color: '#3f3f46', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Pro feature</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── REPLY THREADING ── */}
+      <section style={{ borderTop: '1px solid #1c1c1e', backgroundColor: 'var(--bg-surface)' }} className="py-28">
+        <div className="max-w-5xl mx-auto px-6">
+          <div data-animate style={{ marginBottom: '3.5rem' }}>
+            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Reply threading</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
+              <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+                When they reply,<br />you&apos;re already ready.
+              </h2>
+              <div style={{ maxWidth: '32ch' }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.25rem' }}>
+                  Paste their reply and Pushback reads the room — backing down, doubling down, or escalating — then drafts the right follow-up for where the conversation actually is.
+                </p>
+                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                  {[
+                    'Stance detection in under 3 seconds',
+                    'Follow-up tailored to their exact response',
+                    'Full thread history kept per project',
+                    'Copy-ready — no editing needed',
+                  ].map(item => (
+                    <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                      <Check size={13} style={{ color: 'var(--brand-lime)', flexShrink: 0, marginTop: '0.2rem' }} />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div data-animate data-animate-delay="150">
+            <ReplyThreadAnimation />
           </div>
         </div>
       </section>
