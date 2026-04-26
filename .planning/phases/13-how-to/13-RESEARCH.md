@@ -428,17 +428,17 @@ Verified patterns from official codebase sources:
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **DemoAnimation placement in `app/page.tsx`**
+1. **DemoAnimation placement in `app/page.tsx`** — RESOLVED
    - What we know: The plan specifies a new `<section>` between hero and features/pricing. The existing page has: Hero → Ticker → "How It Works" (HowItWorksDemo) → Tool Carousel → Before/After → Pricing → Footer.
    - What's unclear: The plan says "between hero and features/pricing sections" — the existing HowItWorksDemo section already fills that slot. Does DemoAnimation replace HowItWorksDemo, or does it come after it as a second section?
-   - Recommendation: Based on 13-PLAN.md, the "See it in action" section describes a different UI (contract paste → risk score → tool card → response) vs. the existing HowItWorksDemo (tool selection → response generation). They are complementary. The DemoAnimation section should be inserted between the Ticker and the existing HowItWorksDemo section. The planner should make this call explicit in the plan.
+   - **RESOLVED:** Plan 13-01 inserts the new "See it in action" section between the Ticker (closing `</div>` at line 631) and the existing `{/* How It Works */}` section (line 633). Both DemoAnimation and HowItWorksDemo coexist on the landing page — they showcase different UIs (contract paste → risk → response vs. tool selection → response generation) and are complementary. See 13-01-PLAN.md Task 2 for the exact insertion point and copy.
 
-2. **how-it-works page — standalone logo/nav header**
+2. **how-it-works page — standalone logo/nav header** — RESOLVED
    - What we know: `app/privacy/page.tsx` includes a minimal centered Pushback logo + back-to-home link at the top. D-06 says marketing layout.
    - What's unclear: Whether "marketing layout" means including `PushbackHero` (full hero) or just a minimal logo header + Footer.
-   - Recommendation: Use the `app/privacy/page.tsx` minimal logo pattern at the top + `<Footer />` at the bottom, no full hero. The how-it-works page is informational, not a marketing conversion page.
+   - **RESOLVED:** Plan 13-02 Task 1 adopts the `app/privacy/page.tsx` minimal logo pattern — a centered Pushback wordmark linking to `/` at the top, with Footer at the bottom. No full hero. This matches the informational (not conversion) nature of the page.
 
 ---
 
@@ -451,7 +451,7 @@ Step 2.6: SKIPPED — this phase is purely code/config changes. No external tool
 ## Sources
 
 ### Primary (HIGH confidence)
-- `lib/defenseTools.ts` — verified all 20 tools, labels, descriptions, types [VERIFIED: codebase]
+- `lib/defenseTools.ts` — verified all 21 tools, labels, descriptions, types [VERIFIED: codebase]
 - `app/page.tsx` — verified existing animation patterns (HowItWorksDemo `timers` ref, typewriter, `setInterval`) [VERIFIED: codebase]
 - `components/shared/Navbar.tsx` — verified NAV_SECTIONS structure, existing imports, Help link insertion point [VERIFIED: codebase]
 - `components/shared/Footer.tsx` — verified PRODUCT_LINKS array, existing `/#how-it-works` anchor entry [VERIFIED: codebase]

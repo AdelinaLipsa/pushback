@@ -225,6 +225,11 @@ Plans:
   1. /how-it-works page exists with the 3 use modes, full tool directory (pulled from DEFENSE_TOOLS), contract analysis explanation, and FAQ
   2. Each defense tool card has a tooltip/hover state showing "when to use this" guidance
   3. Empty states on the dashboard and project page include guidance copy pointing to /how-it-works
+**Plans**: 3 plans
+Plans:
+- [ ] 13-01-PLAN.md — DemoAnimation client component (5-state machine, typewriter, vignette, entrance) + landing page "See it in action" section (Wave 1)
+- [ ] 13-02-PLAN.md — Public /how-it-works page (Server Component, marketing layout, 3 use modes, full tool directory, contract analysis explainer, FAQ) (Wave 1)
+- [ ] 13-03-PLAN.md — Wire /how-it-works into navigation/onboarding: Footer link replacement, Navbar Help link, DefenseDashboard empty-state hint, ProjectDetailClient new-project hint (Wave 2)
 **UI hint**: yes
 
 ## Progress
@@ -246,7 +251,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 10. Smart Escalation | 0/? | Not planned | - |
 | 11. Document Generation | 3/3 | Complete    | 2026-04-26 |
 | 12. Client Risk Intelligence | 4/4 | Complete    | 2026-04-26 |
-| 13. How-To & In-App Guidance | 0/? | Not planned | - |
+| 13. How-To & In-App Guidance | 0/3 | Planned | - |
 
 ## Backlog
 

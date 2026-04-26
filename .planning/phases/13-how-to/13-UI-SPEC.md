@@ -6,7 +6,7 @@ shadcn_initialized: true
 preset: base-nova
 created: 2026-04-26
 revised: 2026-04-26
-revision_reason: "checker v1 — fixed: 3 font weights → 2 (dropped 800, kept 400+600); added /how-it-works focal point declaration; added 80px to spacing exceptions table"
+revision_reason: "checker v1 — fixed: 3 font weights → 2 (dropped 800, kept 400+600); added /how-it-works focal point declaration; added 80px to spacing exceptions table. checker v2 — fixed: Navbar Help link label changed from 'How it works' to 'Help' to match CONTEXT.md D-07 and Plan 03."
 ---
 
 # Phase 13 — UI Design Contract
@@ -142,6 +142,7 @@ Source: CONTEXT.md D-05, D-06, D-08; RESEARCH.md Pattern 3
 | `components/shared/Navbar.tsx` | existing | Add "Help" link after Settings in `NAV_SECTIONS`. Icon: `HelpCircle` from lucide-react. href: `/how-it-works`. |
 | `components/shared/Footer.tsx` | existing | Replace `/#how-it-works` anchor with `/how-it-works` in `PRODUCT_LINKS` array (line 8). |
 | `components/defense/DefenseDashboard.tsx` | existing | Update empty-state hint: 2-line guidance + lime link. Gate: `showAnalyzePanel && !analysisResult`. |
+| `components/defense/DefenseToolCard.tsx` | existing | Add `title={tool.description}` to button root for native hover tooltip — satisfies SC-2 inline tooltip requirement. |
 | `app/(dashboard)/projects/[id]/page.tsx` | existing | Add 1-line hint in `ProjectDetailClient` (or page.tsx depending on component boundary). Gate: `responses.length === 0`. No dismiss. |
 
 ### New Pages
@@ -200,7 +201,7 @@ Source: CONTEXT.md D-01 through D-04, RESEARCH.md Pattern 1, 13-PLAN.md exact st
 | Landing page section eyebrow | See it in action |
 | Landing page section heading | From contract to response in seconds |
 | Landing page section subheading | Paste a clause, get a risk score, pick your situation, and copy a professional response — no legal knowledge required. |
-| Navbar Help link label | How it works |
+| Navbar Help link label | Help |
 | Footer link label | How it works (replaces "How it works" → `/#how-it-works` anchor) |
 | /how-it-works page title | Pushback — How It Works |
 | DefenseDashboard empty-state hint line 1 | Not sure which tool? |
@@ -219,7 +220,7 @@ Source: CONTEXT.md D-01 through D-04, RESEARCH.md Pattern 1, 13-PLAN.md exact st
 
 **Error states in this phase:** None. This phase is read-only UI — no API calls, no mutations.
 
-Source: CONTEXT.md D-11 through D-13, RESEARCH.md Pattern 4, 13-PLAN.md section copy
+Source: CONTEXT.md D-07 (Navbar label "Help"), D-11 through D-13, RESEARCH.md Pattern 4, 13-PLAN.md section copy
 
 ---
 
@@ -252,6 +253,15 @@ Source: CONTEXT.md D-02.
 - No interactive elements in tool directory (no click, no hover tooltip, no expansion)
 
 Source: CONTEXT.md D-08 through D-10, RESEARCH.md Pattern 3.
+
+### DefenseToolCard Hover Tooltip (Dashboard)
+
+- Native HTML `title={tool.description}` attribute on the button root.
+- Browser-native delayed-hover tooltip — no custom UI, no Radix Tooltip, no extra state.
+- Coexists with the inline visible description rendering (lines 82-84 of DefenseToolCard.tsx) — both surfaces stay.
+- Satisfies ROADMAP SC-2 ("inline tooltips: hover any tool card to see when to use this tool guidance").
+
+Source: 13-03-PLAN.md Task 4.
 
 ---
 
