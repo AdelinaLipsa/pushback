@@ -103,6 +103,30 @@ export type Database = {
           },
         ]
       }
+      feedback: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          message: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           client_email: string | null
@@ -158,6 +182,47 @@ export type Database = {
             columns: ["contract_id"]
             isOneToOne: false
             referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reply_threads: {
+        Row: {
+          client_reply: string
+          created_at: string | null
+          defense_response_id: string
+          follow_up: string
+          id: string
+          risk_signal: string
+          signal_explanation: string
+          user_id: string
+        }
+        Insert: {
+          client_reply: string
+          created_at?: string | null
+          defense_response_id: string
+          follow_up: string
+          id?: string
+          risk_signal: string
+          signal_explanation: string
+          user_id: string
+        }
+        Update: {
+          client_reply?: string
+          created_at?: string | null
+          defense_response_id?: string
+          follow_up?: string
+          id?: string
+          risk_signal?: string
+          signal_explanation?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reply_threads_defense_response_id_fkey"
+            columns: ["defense_response_id"]
+            isOneToOne: false
+            referencedRelation: "defense_responses"
             referencedColumns: ["id"]
           },
         ]
