@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy — Pushback',
+  description: 'Pushback privacy policy — how we collect, use, and protect your data.',
+}
 
 export default function PrivacyPage() {
   return (

@@ -1,5 +1,11 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
+
+export const metadata: Metadata = {
+  title: 'How It Works — Pushback',
+  description: 'See how Pushback helps freelancers handle scope creep, late payments, and difficult clients with professional AI-generated responses.',
+}
 import Footer from '@/components/shared/Footer'
 import DemoAnimation from '@/components/hero/DemoAnimation'
 import ContractAnimation from '@/components/hero/ContractAnimation'

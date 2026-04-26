@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Terms of Service — Pushback',
+  description: 'Pushback terms of service — the rules and conditions for using our platform.',
+}
 
 export default function TermsPage() {
   return (
