@@ -46,6 +46,7 @@ export default function DefenseToolCard({ tool, selected, loading, onSelect }: D
   return (
     <button
       onClick={onSelect}
+      title={tool.description}
       style={{
         backgroundColor: selected ? 'var(--bg-elevated)' : 'var(--bg-surface)',
         border: selected ? `2px solid var(--brand-lime)` : `1px solid var(--bg-border)`,
