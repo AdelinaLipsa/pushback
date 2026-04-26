@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, BookOpen, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, BookOpen, HelpCircle, type LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { startCheckout } from '@/lib/checkout'
 import { billingPortal } from '@/lib/api'
@@ -28,6 +28,7 @@ const NAV_SECTIONS: { label: string; items: { href: string; label: string; Icon:
     label: 'Account',
     items: [
       { href: '/settings', label: 'Settings', Icon: Settings },
+      { href: '/how-it-works', label: 'Help', Icon: HelpCircle },
     ],
   },
 ]
