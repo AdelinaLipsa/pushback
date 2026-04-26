@@ -127,7 +127,7 @@ export type DefenseResponse = {
   was_copied: boolean
   was_sent: boolean
   created_at: string
-  reply_threads?: Pick<ReplyThread, 'defense_response_id' | 'risk_signal' | 'signal_explanation' | 'follow_up'> | null
+  reply_threads?: Pick<ReplyThread, 'defense_response_id' | 'risk_signal' | 'signal_explanation' | 'follow_up'>[] | null
 }
 
 export type MessageAnalysis = {

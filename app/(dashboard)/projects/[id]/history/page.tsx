@@ -12,7 +12,7 @@ export default async function ProjectHistoryPage({ params }: { params: Promise<{
 
   const [{ data: project }, { data: responses }, { data: profile }] = await Promise.all([
     supabase.from('projects').select('id, title, client_name').eq('id', id).eq('user_id', user.id).single(),
-    supabase.from('defense_responses').select('*').eq('project_id', id).eq('user_id', user.id).order('created_at', { ascending: false }),
+    supabase.from('defense_responses').select('*, reply_threads(defense_response_id, risk_signal, signal_explanation, follow_up)').eq('project_id', id).eq('user_id', user.id).order('created_at', { ascending: false }),
     supabase.from('user_profiles').select('plan').eq('id', user.id).single(),
   ])
 
