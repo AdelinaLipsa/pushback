@@ -258,7 +258,9 @@ function SituationLine({ children, index }: SituationLineProps) {
         letterSpacing: "-0.03em",
         color: isHovered ? "#84cc16" : "rgba(250,250,250,0.92)",
         transition: "color 0.3s ease",
-        textShadow: isHovered ? "0 0 40px rgba(132,204,22,0.3)" : "none",
+        textShadow: isHovered
+          ? "0 0 40px rgba(132,204,22,0.3), 0 0 30px rgba(0,0,0,0.9), 0 2px 12px rgba(0,0,0,1)"
+          : "0 0 30px rgba(0,0,0,1), 0 0 20px rgba(0,0,0,0.95), 0 2px 12px rgba(0,0,0,0.9), 2px 2px 8px rgba(0,0,0,0.8), -2px 2px 8px rgba(0,0,0,0.8)",
       }}
     >
       {children}
@@ -469,9 +471,9 @@ export default function PushbackHero() {
             pushback<span style={{ color: "#84cc16" }}>.</span>
           </span>
           <div className="text-right hidden md:block">
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(161,161,170,0.7)" }}>Professional toolkit</p>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(161,161,170,0.7)" }}>for the moments clients</p>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(161,161,170,0.7)" }}>push too far</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>Professional toolkit</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>for the moments clients</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>push too far</p>
           </div>
         </div>
 
@@ -483,13 +485,13 @@ export default function PushbackHero() {
           </div>
 
           <div ref={ctaRef} className="text-right md:max-w-xs shrink-0">
-            <p className="mb-1 text-base font-semibold leading-snug" style={{ color: "rgba(250,250,250,0.9)" }}>
+            <p className="mb-1 text-base font-semibold leading-snug" style={{ color: "#fafafa", textShadow: "0 0 20px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9)" }}>
               Your client just moved the goalposts.
             </p>
             <p className="mb-5 text-base font-semibold" style={{ fontStyle: "italic", color: "#84cc16" }}>
               Again.
             </p>
-            <p className="mb-6 text-sm leading-relaxed" style={{ color: "rgba(161,161,170,0.8)" }}>
+            <p className="mb-6 text-sm leading-relaxed" style={{ color: "#fafafa", textShadow: "0 0 20px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9)" }}>
               Pushback is the professional operating system for freelancers under pressure — 21 tools covering every situation where a client crosses a line. Contract analysis, payment escalation, dispute defense, scope enforcement. Know exactly where you stand. Know exactly what to say.
             </p>
             <a
@@ -501,7 +503,7 @@ export default function PushbackHero() {
             >
               Get your position →
             </a>
-            <p className="mt-3 text-xs" style={{ color: "rgba(113,113,122,0.8)" }}>
+            <p className="mt-3 text-xs" style={{ color: "#d4d4d8", textShadow: "0 0 12px rgba(0,0,0,1), 0 1px 4px rgba(0,0,0,0.9)" }}>
               Free to start. No card required.
             </p>
           </div>
