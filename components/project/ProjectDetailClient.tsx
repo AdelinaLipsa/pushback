@@ -7,6 +7,8 @@ import { RISK_COLORS, btnStyles } from '@/lib/ui'
 import ProjectHeader from '@/components/project/ProjectHeader'
 import PaymentSection from '@/components/project/PaymentSection'
 import DefenseDashboard from '@/components/defense/DefenseDashboard'
+import ClientBehaviorCard from '@/components/project/ClientBehaviorCard'
+import { computeClientRisk } from '@/lib/clientRisk'
 
 const RISK_LABEL: Record<string, string> = { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' }
 
@@ -56,6 +58,8 @@ export default function ProjectDetailClient({ project, plan, responsesUsed, auto
   const escalationNextTool: DefenseTool | null = showEscalationNudge && stalledResponse
     ? stalledResponse.tool_type === 'payment_first' ? 'payment_second' : 'payment_final'
     : null
+
+  const clientRisk = computeClientRisk(project)
 
   return (
     <>
@@ -130,6 +134,14 @@ export default function ProjectDetailClient({ project, plan, responsesUsed, auto
             {escalationNextTool === 'payment_second' ? 'Send firm follow-up' : 'Send final notice'}
           </button>
         </div>
+      )}
+
+      {clientRisk.score > 0 && (
+        <ClientBehaviorCard
+          score={clientRisk.score}
+          level={clientRisk.level}
+          signals={clientRisk.signals}
+        />
       )}
 
       <div id="defense-dashboard">
