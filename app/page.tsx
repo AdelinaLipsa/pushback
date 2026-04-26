@@ -8,6 +8,7 @@ import { PLANS } from '@/lib/plans'
 import PushbackHero from '@/components/hero/PushbackHero'
 import Footer from '@/components/shared/Footer'
 import DemoAnimation from '@/components/hero/DemoAnimation'
+import ContractAnimation from '@/components/hero/ContractAnimation'
 
 const TICKER_ITEMS = [
   'Client wants free revisions',
@@ -26,7 +27,7 @@ const TICKER_ITEMS = [
 
 const HOW_IT_WORKS_STEPS = [
   { num: '01', label: 'Paste the client message' },
-  { num: '02', label: 'Pick your defense tool' },
+  { num: '02', label: 'Pushback identifies the situation' },
   { num: '03', label: 'Copy a professional reply' },
 ]
 
@@ -382,6 +383,153 @@ export default function LandingPage() {
           </div>
         </div>
         <div data-animate data-animate-delay="200"><ToolCarousel /></div>
+      </section>
+
+      {/* ── CONTRACT ANALYSIS ── */}
+      <section style={{ borderTop: '1px solid #1c1c1e' }} className="py-28">
+        <div className="max-w-5xl mx-auto px-6">
+          <div data-animate style={{ marginBottom: '3.5rem' }}>
+            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Contract analysis</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
+              <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+                Know what you&apos;re signing<br />before you sign it.
+              </h2>
+              <div style={{ maxWidth: '32ch' }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.25rem' }}>
+                  Upload your contract once. Pushback reads every clause, flags what&apos;s risky, surfaces what&apos;s missing, and gives you the exact language to push back with.
+                </p>
+                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                  {[
+                    'Risk score with clause-by-clause breakdown',
+                    'Missing protections you should demand',
+                    'Priority list of what to negotiate',
+                    'Exact pushback language, ready to copy',
+                  ].map(item => (
+                    <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                      <Check size={13} style={{ color: 'var(--brand-lime)', flexShrink: 0, marginTop: '0.2rem' }} />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div data-animate data-animate-delay="150">
+            <ContractAnimation />
+          </div>
+        </div>
+      </section>
+
+      {/* ── PAYMENT TRACKING ── */}
+      <section style={{ borderTop: '1px solid #1c1c1e', backgroundColor: 'var(--bg-surface)' }} className="py-28">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div data-animate>
+              <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Payment tracking</p>
+              <h2 style={{ fontWeight: 800, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: '1.25rem' }}>
+                Know who owes you<br />before you have to ask.
+              </h2>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.5rem' }}>
+                Add a payment due date to any project. Pushback tracks it, flags overdue invoices on your dashboard, and pre-loads the right follow-up tool — so you never have to manually chase a late payment.
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {[
+                  { color: '#ef4444', label: 'Overdue badge', desc: 'Past-due invoices surface with exact days overdue' },
+                  { color: '#f59e0b', label: 'Due soon warning', desc: 'Invoices within 3 days flagged before they tip over' },
+                  { color: '#84cc16', label: 'One-click follow-up', desc: 'Pushback pre-selects the right reminder tool for the stage' },
+                ].map(({ color, label, desc }) => (
+                  <li key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '2px', backgroundColor: color, flexShrink: 0, marginTop: '0.35rem' }} />
+                    <div>
+                      <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)' }}>{label}</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}> — {desc}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Payment mockup */}
+            <div data-animate data-animate-delay="150" data-animate-from="right">
+              <div style={{
+                backgroundColor: '#09090b', border: '1px solid #222225', borderRadius: '0.875rem',
+                overflow: 'hidden', boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
+              }}>
+                <div style={{ padding: '0.65rem 1rem', borderBottom: '1px solid #1c1c1f', backgroundColor: '#060608', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', gap: '0.375rem' }}>
+                    {['#ef4444','#f59e0b','#22c55e'].map((c,i) => <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: c, opacity: 0.5 }} />)}
+                  </div>
+                  <div style={{ flex: 1, backgroundColor: '#111114', border: '1px solid #2a2a2e', borderRadius: '0.3rem', padding: '0.2rem 0.75rem', fontFamily: 'var(--font-mono)', fontSize: '0.55rem', color: '#52525b', textAlign: 'center' }}>
+                    pushback.to / dashboard
+                  </div>
+                </div>
+                <div style={{ padding: '1.25rem' }}>
+                  <p style={{ fontSize: '0.55rem', color: '#52525b', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.875rem' }}>Payment status</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {[
+                      { name: 'Novo Digital', project: 'Brand identity', badge: '17d overdue', badgeColor: '#ef4444', badgeBg: 'rgba(239,68,68,0.1)', amount: '€2,400' },
+                      { name: 'Riven Studio', project: 'Website redesign', badge: 'Due in 2d', badgeColor: '#f59e0b', badgeBg: 'rgba(245,158,11,0.1)', amount: '€1,800' },
+                      { name: 'Sable & Co.', project: 'Motion package', badge: 'Paid', badgeColor: '#84cc16', badgeBg: 'rgba(132,204,22,0.1)', amount: '€950' },
+                    ].map(row => (
+                      <div key={row.name} style={{
+                        backgroundColor: '#111114', border: '1px solid #222225', borderRadius: '0.5rem',
+                        padding: '0.625rem 0.875rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem',
+                      }}>
+                        <div>
+                          <p style={{ fontSize: '0.72rem', fontWeight: 600, color: '#e4e4e7', marginBottom: '0.1rem' }}>{row.name}</p>
+                          <p style={{ fontSize: '0.62rem', color: '#52525b' }}>{row.project}</p>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a1a1aa' }}>{row.amount}</span>
+                          <span style={{ fontSize: '0.55rem', fontWeight: 700, letterSpacing: '0.06em', padding: '0.15rem 0.45rem', borderRadius: '3px', color: row.badgeColor, backgroundColor: row.badgeBg }}>{row.badge}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: '0.875rem', backgroundColor: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)', borderRadius: '0.5rem', padding: '0.625rem 0.875rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <p style={{ fontSize: '0.65rem', color: '#a1a1aa' }}>Novo Digital — 17 days overdue</p>
+                    <p style={{ fontSize: '0.6rem', fontWeight: 700, color: '#84cc16', letterSpacing: '0.04em' }}>Send reminder →</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── DOCUMENT GENERATION ── */}
+      <section style={{ borderTop: '1px solid #1c1c1e' }} className="py-28">
+        <div className="max-w-5xl mx-auto px-6">
+          <div data-animate style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Document generation</p>
+            <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: '1.25rem' }}>
+              Not just a reply.<br />A full paper trail.
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '44ch', margin: '0 auto' }}>
+              When words aren&apos;t enough, generate a formal document. Each one pulls your project details and contract terms automatically — ready to send or attach.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4" data-animate data-animate-delay="150">
+            {[
+              { label: 'SOW Amendment', color: '#f59e0b', desc: 'Scope changed mid-project. Document the new deliverables, revised timeline, and updated fee — and get it signed before you do another hour of work.' },
+              { label: 'Dispute Package', color: '#ef4444', desc: 'Client escalating or threatening a chargeback? Compile your original agreement, all communications, and a formal record of what was delivered.' },
+              { label: 'Kill Fee Invoice', color: '#84cc16', desc: 'Client cancelled after work started. Generate a kill fee invoice that references the cancellation clause in your contract and the work completed to date.' },
+            ].map(doc => (
+              <div key={doc.label} style={{
+                backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+                borderTop: `3px solid ${doc.color}`, borderRadius: '0.875rem', padding: '1.75rem',
+                display: 'flex', flexDirection: 'column',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.875rem' }}>
+                  <div style={{ width: 7, height: 7, borderRadius: '50%', backgroundColor: doc.color }} />
+                  <p style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)' }}>{doc.label}</p>
+                </div>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: 1.65, flex: 1 }}>{doc.desc}</p>
+                <p style={{ marginTop: '1.25rem', fontSize: '0.6rem', color: '#3f3f46', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Pro feature</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Pricing */}
