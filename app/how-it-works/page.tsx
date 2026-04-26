@@ -140,7 +140,7 @@ export default function HowItWorksPage() {
           {[
             {
               q: 'How many responses can I generate on the free plan?',
-              a: '3 AI-generated responses and 1 contract analysis, total — not per month. Pro accounts get unlimited responses and contract analyses.',
+              a: '1 AI-generated response and 1 contract analysis on the free plan — enough to try the full flow. Pro accounts get 150 responses and 50 contract analyses per month.',
             },
             {
               q: 'Where do my client messages and contracts go?',

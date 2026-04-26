@@ -3,7 +3,7 @@
 import {
   Layers, Clock, AlertTriangle, Ban, RefreshCw, XCircle, CheckCircle2, ShieldAlert,
   EyeOff, Hourglass, Shuffle, TrendingDown, TrendingUp, Zap, Copyright, CreditCard,
-  Eye, PackageOpen, Star, Receipt,
+  Eye, PackageOpen, Star, Receipt, Timer,
   type LucideIcon,
 } from 'lucide-react'
 import { DefenseToolMeta } from '@/types'
@@ -30,6 +30,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   PackageOpen,
   Star,
   Receipt,
+  Timer,
 }
 
 interface DefenseToolCardProps {

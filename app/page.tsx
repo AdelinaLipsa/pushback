@@ -733,6 +733,7 @@ export default function LandingPage() {
                       fontWeight: 700, padding: '0.6rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.8rem',
                       border: 'none', cursor: 'pointer',
                     }}
+                    onClick={() => navigator.clipboard.writeText(AFTER_MESSAGE).catch(() => {})}
                   >
                     Copy Message
                   </button>
