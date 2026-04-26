@@ -141,6 +141,7 @@ export default function ProjectDetailClient({ project, plan, responsesUsed, auto
           score={clientRisk.score}
           level={clientRisk.level}
           signals={clientRisk.signals}
+          clientName={project.client_name}
         />
       )}
 

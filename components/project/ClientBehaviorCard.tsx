@@ -5,6 +5,7 @@ interface ClientBehaviorCardProps {
   score: number
   level: ClientRiskLevel
   signals: ClientRiskSignal[]
+  clientName: string
 }
 
 type IconComponent = React.ComponentType<{ size?: number; color?: string; 'aria-hidden'?: boolean }>
@@ -14,7 +15,7 @@ function resolveIcon(name: string): IconComponent | null {
   return lib[name] ?? null
 }
 
-export default function ClientBehaviorCard({ score, level, signals }: ClientBehaviorCardProps) {
+export default function ClientBehaviorCard({ score, level, signals, clientName }: ClientBehaviorCardProps) {
   const accent = CLIENT_RISK_COLORS[level]
   const levelLabel = LEVEL_LABELS[level]
 
@@ -44,6 +45,9 @@ export default function ClientBehaviorCard({ score, level, signals }: ClientBeha
           color: 'var(--text-secondary)',
         }}>
           Client Risk
+          <span style={{ fontWeight: 400, color: 'var(--text-muted)', marginLeft: '0.4rem' }}>
+            · {clientName}
+          </span>
         </span>
         <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: '0.5rem' }}>
           <span style={{
