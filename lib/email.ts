@@ -33,7 +33,7 @@ function welcomeHtml(): string {
     <tr><td align="center" style="padding:40px 20px;">
       <table width="600" cellpadding="0" cellspacing="0" style="background:#111111;border:1px solid #2a2a2a;border-radius:12px;">
         <tr><td style="padding:32px 40px;border-bottom:1px solid #2a2a2a;">
-          <span style="font-weight:800;font-size:1.5rem;color:#fafafa;">Pushback</span><span style="color:#f59e0b;font-weight:800;font-size:1.5rem;">.</span>
+          <span style="font-weight:800;font-size:1.5rem;color:#fafafa;">Pushback</span><span style="color:#84cc16;font-weight:800;font-size:1.5rem;">.</span>
         </td></tr>
         <tr><td style="padding:32px 40px;">
           <h1 style="color:#fafafa;font-size:1.25rem;margin:0 0 16px;">Your free account is ready.</h1>
@@ -71,7 +71,7 @@ function upgradeHtml(billing: BillingDetails): string {
     <tr><td align="center" style="padding:40px 20px;">
       <table width="600" cellpadding="0" cellspacing="0" style="background:#111111;border:1px solid #2a2a2a;border-radius:12px;">
         <tr><td style="padding:32px 40px;border-bottom:1px solid #2a2a2a;">
-          <span style="font-weight:800;font-size:1.5rem;color:#fafafa;">Pushback</span><span style="color:#f59e0b;font-weight:800;font-size:1.5rem;">.</span>
+          <span style="font-weight:800;font-size:1.5rem;color:#fafafa;">Pushback</span><span style="color:#84cc16;font-weight:800;font-size:1.5rem;">.</span>
         </td></tr>
         <tr><td style="padding:32px 40px;">
           <h1 style="color:#fafafa;font-size:1.25rem;margin:0 0 16px;">You're on Pushback Pro.</h1>
