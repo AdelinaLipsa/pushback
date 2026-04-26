@@ -5,6 +5,8 @@ status: draft
 shadcn_initialized: true
 preset: base-nova
 created: 2026-04-26
+revised: 2026-04-26
+revision_reason: "checker v1 — fixed: 3 font weights → 2 (dropped 800, kept 400+600); added /how-it-works focal point declaration; added 80px to spacing exceptions table"
 ---
 
 # Phase 13 — UI Design Contract
@@ -44,12 +46,14 @@ Declared values (multiples of 4 only):
 | xl | 32px | Layout gaps between major sections |
 | 2xl | 48px | Section vertical spacing (py-12 equivalent) |
 | 3xl | 64px | Page-level top/bottom spacing |
+| 4xl | 80px | Landing page section vertical padding (py-20); matches existing section pattern in `app/page.tsx` |
 
 Exceptions:
 - Animation vignette overlay: `inset: 0` (full bleed)
 - Cinematic entrance touch target: wrapper `min-height` unset — purely visual component
-- Landing page section: `py-20` (80px = 5×16) — matches existing section pattern in `app/page.tsx`
 - Hint text margin: `marginTop: 0.5rem` (8px) — matches existing DefenseDashboard spacing
+
+Note: The 80px (4xl) value is the only token outside the standard 4–64px scale. It is explicitly declared here because `py-20` is used for the landing page "See it in action" section wrapper and is consistent with adjacent sections in `app/page.tsx`. No other spacing exceptions exist in this phase.
 
 Source: codebase scan of `app/page.tsx`, `components/defense/DefenseDashboard.tsx`, `components/project/ProjectDetailClient.tsx`
 
@@ -60,17 +64,20 @@ Source: codebase scan of `app/page.tsx`, `components/defense/DefenseDashboard.ts
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
 | Label / eyebrow | 11px (0.7rem) | 600 semibold | 1.2 | Uppercase tracking-widest labels ("How it works", section eyebrows, step labels in animation) |
-| Body small | 13px (0.8rem) | 400 regular | 1.5 | Tool directory list items, hint copy, secondary descriptive text |
-| Body | 14–15px (0.85–0.9rem) | 400 regular | 1.65 | Page prose, FAQ answers, tool descriptions on /how-it-works |
-| Heading | clamp(2.2rem, 5vw, 3.5rem) | 800 extrabold | 1.05 | Marketing page section headings (matches `app/page.tsx` pattern exactly) |
+| Body small | 12px (0.75rem) | 400 regular | 1.5 | Hint copy, secondary descriptive text, tool directory list items |
+| Body | 14px (0.875rem) | 400 regular | 1.65 | Page prose, FAQ answers, tool descriptions on /how-it-works |
+| Heading | clamp(2.2rem, 5vw, 3.5rem) | 600 semibold | 1.05 | Marketing page section headings (matches `font-semibold` in `app/page.tsx` landing section wrapper) |
+
+**Declared weights: 400 (regular) and 600 (semibold) only.**
 
 Notes:
 - All font sizes expressed as `rem` values in inline `style` objects — no Tailwind font-size classes.
 - Monospace font (`var(--font-mono)`) reserved for: animation badge values (e.g. `8/10`), code/clause display in animation pasting step.
 - Eyebrow labels always `uppercase`, `letterSpacing: '0.15em'` (page sections) or `0.08em` (dashboard labels).
-- Heading weight 800 applies to marketing page (`app/how-it-works/page.tsx`) only; dashboard components use weight 600 for sub-headings.
+- Weight 600 (semibold) applies to: marketing page section headings (`app/how-it-works/page.tsx`, landing section `app/page.tsx`), sub-headings in dashboard components, and eyebrow labels. This unifies headings at a single weight across both marketing and dashboard surfaces.
+- The `text-3xl font-semibold` class used in the landing section wrapper JSX (RESEARCH.md Pattern — Landing Page Section Wrapper) confirms 600 is the correct heading weight; 800 extrabold is NOT used in this phase.
 
-Source: codebase scan of `app/page.tsx` (lines 637–701), `components/defense/DefenseDashboard.tsx` (lines 88, 104), `components/project/ProjectDetailClient.tsx` (line 74)
+Source: codebase scan of `app/page.tsx` (lines 637–701), `components/defense/DefenseDashboard.tsx` (lines 88, 104), `components/project/ProjectDetailClient.tsx` (line 74), RESEARCH.md landing section wrapper code example
 
 ---
 
@@ -103,6 +110,19 @@ Do NOT use lime for: tool directory list item labels, FAQ body text, page prose,
 - Animation container background: `#09090b` (matches page bg for seamless vignette bleed)
 
 Source: CONTEXT.md specifics section + `app/globals.css` lines 42–106 + project memory `feedback_lime_color.md`
+
+---
+
+## Visuals — Focal Points
+
+| Surface | Primary Visual Anchor | Secondary Anchor |
+|---------|----------------------|-----------------|
+| `/how-it-works` page | Page heading ("How It Works" or equivalent H1 at top of content) — first element the eye lands on after any logo/nav header; weight 600, clamp size, color `var(--text-primary)` | Tool directory H3 group headings — draw scannable structure down the page |
+| Landing page "See it in action" section | `DemoAnimation` component — the only animated element in the viewport; motion draws attention naturally | Section heading "From contract to response in seconds" (above animation) — sets context |
+| DefenseDashboard hint | Hint paragraph is subordinate — no visual anchor; it is a supplementary element, not a focal point | — |
+| ProjectDetailClient hint | Same as DefenseDashboard hint — subordinate, no focal anchor | — |
+
+Source: CONTEXT.md D-05, D-06, D-08; RESEARCH.md Pattern 3
 
 ---
 
