@@ -21,6 +21,7 @@ const NEXT_STEP_TEXT: Record<DefenseTool, string> = {
   ip_dispute: "Keep a record of this exchange. If the situation escalates, use 'Dispute Response'.",
   spec_work_pressure: "Keep a record of this exchange. If the situation escalates, use 'Dispute Response'.",
   post_handoff_request: "Keep a record of this exchange. If the situation escalates, use 'Dispute Response'.",
+  disputed_hours: "Keep a record of this exchange. If the situation escalates, use 'Dispute Response'.",
 }
 
 interface NextStepCardProps {

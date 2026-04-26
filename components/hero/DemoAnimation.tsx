@@ -37,8 +37,8 @@ export default function DemoAnimation() {
   const [typedResp, setTypedResp] = useState('')
   const [entered, setEntered] = useState(false)
   const [fading, setFading] = useState(false)
-  const tRef = useRef<ReturnType<typeof setTimeout>>()
-  const ivRef = useRef<ReturnType<typeof setInterval>>()
+  const tRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const ivRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
 
   function clear() {
     clearTimeout(tRef.current)
@@ -158,7 +158,7 @@ export default function DemoAnimation() {
         <div style={{
           display: 'grid',
           gridTemplateColumns: '172px 1fr',
-          minHeight: '420px',
+          height: '480px',
           opacity: fading ? 0 : 1,
           transition: 'opacity 0.6s ease',
         }}>
@@ -290,6 +290,8 @@ export default function DemoAnimation() {
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word',
                   minHeight: '110px',
+                  maxHeight: '180px',
+                  overflowY: 'hidden',
                 }}>
                   {typedResp}
                   {phase === 'typing-resp' && (

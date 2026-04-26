@@ -81,7 +81,7 @@ export default async function AnalyticsPage() {
     })
   }
   allResponses.forEach(r => {
-    const key = isoDate(weekMonday(new Date(r.created_at)))
+    const key = isoDate(weekMonday(new Date(r.created_at!)))
     const slot = weeks.find(w => w.key === key)
     if (slot) slot.count++
   })

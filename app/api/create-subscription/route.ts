@@ -35,7 +35,6 @@ export async function POST() {
       payment_settings: { save_default_payment_method: 'on_subscription' },
       expand: ['latest_invoice.payment_intent'],
       metadata: { user_id: user.id },
-      automatic_tax: { enabled: true },
     })
 
     // Store subscription ID immediately so webhook can look up user

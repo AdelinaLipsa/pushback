@@ -170,6 +170,8 @@ export type Database = {
           email: string
           full_name: string | null
           id: string
+          period_contracts_used: number
+          period_responses_used: number
           plan: string
           profession: string | null
           stripe_customer_id: string | null
@@ -182,6 +184,8 @@ export type Database = {
           email: string
           full_name?: string | null
           id: string
+          period_contracts_used?: number
+          period_responses_used?: number
           plan?: string
           profession?: string | null
           stripe_customer_id?: string | null
@@ -194,6 +198,8 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
+          period_contracts_used?: number
+          period_responses_used?: number
           plan?: string
           profession?: string | null
           stripe_customer_id?: string | null
@@ -212,6 +218,7 @@ export type Database = {
         Returns: Json
       }
       decrement_defense_responses: { Args: { uid: string }; Returns: undefined }
+      reset_period_usage: { Args: { uid: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

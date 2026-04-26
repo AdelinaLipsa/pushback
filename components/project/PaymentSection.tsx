@@ -169,7 +169,6 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
         ) : (
           <InlineForm />
         )}
-        {error && <p style={{ color: 'var(--urgency-high)', fontSize: '0.8rem', marginTop: '0.5rem' }}>{error}</p>}
       </div>
     )
   }

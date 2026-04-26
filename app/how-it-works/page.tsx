@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import Footer from '@/components/shared/Footer'
 import DemoAnimation from '@/components/hero/DemoAnimation'
+import ContractAnimation from '@/components/hero/ContractAnimation'
 
 const TOOL_GROUPS: { heading: string; color: string; types: string[] }[] = [
   {
@@ -215,37 +216,28 @@ export default function HowItWorksPage() {
 
       {/* Contract analysis */}
       <div style={{ padding: '0 1.5rem 6rem', maxWidth: '900px', margin: '0 auto' }}>
-        <div style={{
-          background: 'linear-gradient(135deg, rgba(132,204,22,0.06) 0%, transparent 60%)',
-          border: '1px solid rgba(132,204,22,0.15)',
-          borderRadius: '1rem',
-          padding: '2.5rem',
-        }}>
-          <p style={{ color: 'var(--brand-lime)', fontSize: '0.65rem', letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '1rem' }}>
-            Contract analysis
-          </p>
-          <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '1rem', lineHeight: 1.15 }}>
-            Your responses quote your actual contract — not generic advice.
-          </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '1rem' }}>
-            Upload your signed contract once per project. Pushback reads it, scores its risk level, and maps which clauses cover payment terms, revision limits, IP, kill fees, and scope. From that point on, every response Pushback drafts for that project references your actual agreement.
-          </p>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.65 }}>
-            Instead of &ldquo;per standard industry practice, late fees may apply&rdquo; — your response says &ldquo;as outlined in section 4 of our agreement, late payment interest accrues at 8% per annum after 7 days.&rdquo; That&apos;s the difference.
-          </p>
-          <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-            <div>
-              <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Free plan</p>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>1 contract analysis included</p>
-            </div>
-            <div>
-              <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Pro plan</p>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>50 analyses/month, multiple projects</p>
-            </div>
-            <div>
-              <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Privacy</p>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Raw text processed, never stored</p>
-            </div>
+        <p style={{ color: 'var(--brand-lime)', fontSize: '0.65rem', letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '1rem', textAlign: 'center' }}>
+          Contract analysis
+        </p>
+        <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.75rem', textAlign: 'center', lineHeight: 1.1 }}>
+          Know what you&apos;re signing before you sign it.
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '3rem', textAlign: 'center', maxWidth: '52ch', margin: '0 auto 3rem' }}>
+          Upload your contract once. Pushback flags risky clauses, surfaces what&apos;s missing, and tells you exactly what to say back — so every response references your actual agreement, not generic advice.
+        </p>
+        <ContractAnimation />
+        <div style={{ marginTop: '2rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Free plan</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>1 contract analysis included</p>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Pro plan</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>50 analyses/month, multiple projects</p>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Privacy</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Raw text processed, never stored</p>
           </div>
         </div>
       </div>

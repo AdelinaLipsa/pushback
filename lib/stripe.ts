@@ -10,7 +10,6 @@ export async function createCheckoutSession(userId: string, userEmail: string) {
     metadata: { user_id: userId },
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgraded=true`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
-    automatic_tax: { enabled: true },
   })
   return session
 }

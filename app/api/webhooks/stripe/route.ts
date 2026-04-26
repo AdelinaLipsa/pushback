@@ -81,7 +81,7 @@ export async function POST(request: Request) {
   }
 
   if (event.type === 'invoice.paid') {
-    const invoice = event.data.object
+    const invoice = event.data.object as unknown as { subscription: string | { id: string } | null }
     const subscriptionId = typeof invoice.subscription === 'string' ? invoice.subscription : invoice.subscription?.id
     if (subscriptionId) {
       const { data: profileData } = await supabase
@@ -92,6 +92,18 @@ export async function POST(request: Request) {
       if (profileData?.id) {
         await supabase.rpc('reset_period_usage', { uid: profileData.id })
       }
+    }
+  }
+
+  if (event.type === 'checkout.session.expired') {
+    const session = event.data.object
+    const userId = session.metadata?.user_id
+    if (userId) {
+      await supabase
+        .from('user_profiles')
+        .update({ stripe_subscription_id: null })
+        .eq('id', userId)
+        .eq('plan', 'free')
     }
   }
 

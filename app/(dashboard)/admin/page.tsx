@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { createAdminSupabaseClient } from '@/lib/supabase/server'
 import { PLANS } from '@/lib/plans'
+import { UserTable } from './UserTable'
 
 const ADMIN_EMAIL = 'adelina.lipsa@gmail.com'
 
@@ -71,7 +72,6 @@ export default async function AdminPage() {
     )
   )
 
-  const recentSignups = profiles.slice(0, 10)
 
   return (
     <div className="p-8">
@@ -90,67 +90,40 @@ export default async function AdminPage() {
         <StatCard label="Near period limit" value={String(nearLimit.length)} sub="≥80% of monthly allowance" />
       </div>
 
-      {/* Mosaic: near-limit users | recent signups */}
-      <div className="fade-up grid grid-cols-[3fr_2fr] gap-4 items-start" style={{ animationDelay: '80ms' }}>
-
-        {/* Users near limit */}
-        <div className="bg-bg-surface border border-bg-border rounded-xl overflow-hidden">
+      {/* Near-limit detail — only rendered when there are users to show */}
+      {nearLimit.length > 0 && (
+        <div className="fade-up bg-bg-surface border border-bg-border rounded-xl overflow-hidden mb-4" style={{ animationDelay: '80ms' }}>
           <div className="px-5 py-4 border-b border-bg-border">
             <h2 className="text-[0.68rem] font-bold uppercase tracking-[0.1em] text-zinc-400">Near period limit</h2>
           </div>
-          {nearLimit.length === 0 ? (
-            <p className="px-5 py-6 text-sm text-text-muted">No pro users near their limit.</p>
-          ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-bg-border">
-                  <th className="px-5 py-2.5 text-left text-[0.65rem] font-bold uppercase tracking-[0.08em] text-text-muted">User</th>
-                  <th className="px-4 py-2.5 text-left text-[0.65rem] font-bold uppercase tracking-[0.08em] text-text-muted">Messages</th>
-                  <th className="px-4 py-2.5 text-left text-[0.65rem] font-bold uppercase tracking-[0.08em] text-text-muted">Analyses</th>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-bg-border">
+                <th className="px-5 py-2.5 text-left text-[0.65rem] font-bold uppercase tracking-[0.08em] text-text-muted">User</th>
+                <th className="px-4 py-2.5 text-left text-[0.65rem] font-bold uppercase tracking-[0.08em] text-text-muted">Messages</th>
+                <th className="px-4 py-2.5 text-left text-[0.65rem] font-bold uppercase tracking-[0.08em] text-text-muted">Analyses</th>
+              </tr>
+            </thead>
+            <tbody>
+              {nearLimit.map((p, i) => (
+                <tr key={p.id} className={i < nearLimit.length - 1 ? 'border-b border-bg-border' : ''}>
+                  <td className="px-5 py-3 text-text-secondary text-xs truncate max-w-[180px]">{p.email}</td>
+                  <td className="px-4 py-3 w-32">
+                    <MiniBar value={p.period_responses_used} max={PLANS.pro.defense_responses} />
+                    <span className="text-[0.65rem] text-text-muted">{p.period_responses_used}/{PLANS.pro.defense_responses}</span>
+                  </td>
+                  <td className="px-4 py-3 w-32">
+                    <MiniBar value={p.period_contracts_used} max={PLANS.pro.contracts} />
+                    <span className="text-[0.65rem] text-text-muted">{p.period_contracts_used}/{PLANS.pro.contracts}</span>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {nearLimit.map((p, i) => (
-                  <tr key={p.id} className={i < nearLimit.length - 1 ? 'border-b border-bg-border' : ''}>
-                    <td className="px-5 py-3 text-text-secondary text-xs truncate max-w-[180px]">{p.email}</td>
-                    <td className="px-4 py-3 w-32">
-                      <MiniBar value={p.period_responses_used} max={PLANS.pro.defense_responses} />
-                      <span className="text-[0.65rem] text-text-muted">{p.period_responses_used}/{PLANS.pro.defense_responses}</span>
-                    </td>
-                    <td className="px-4 py-3 w-32">
-                      <MiniBar value={p.period_contracts_used} max={PLANS.pro.contracts} />
-                      <span className="text-[0.65rem] text-text-muted">{p.period_contracts_used}/{PLANS.pro.contracts}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+              ))}
+            </tbody>
+          </table>
         </div>
+      )}
 
-        {/* Recent signups */}
-        <div className="bg-bg-surface border border-bg-border rounded-xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-bg-border">
-            <h2 className="text-[0.68rem] font-bold uppercase tracking-[0.1em] text-zinc-400">Recent signups</h2>
-          </div>
-          <div className="divide-y divide-bg-border">
-            {recentSignups.map(p => (
-              <div key={p.id} className="px-5 py-3 flex items-center justify-between gap-3">
-                <span className="text-xs text-text-secondary truncate">{p.email}</span>
-                <span className={[
-                  'text-[0.6rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide shrink-0',
-                  p.plan === 'pro'
-                    ? 'bg-brand-lime/15 text-brand-lime'
-                    : 'bg-bg-elevated text-text-muted',
-                ].join(' ')}>
-                  {p.plan}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-      </div>
+      <UserTable profiles={profiles} />
     </div>
   )
 }

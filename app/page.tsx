@@ -24,304 +24,11 @@ const TICKER_ITEMS = [
   'Rush delivery, no rush fee',
 ]
 
-const BEFORE_EMAIL = `Hi,
-
-I was thinking — since we're already doing the website, could we also add a mobile app? Same budget obviously. My boss really wants it and I think it would be a quick add.
-
-Also can we get this done by next Friday? The original deadline was too long anyway.
-
-Thanks`
-
-const AFTER_MESSAGE = `Hi [Client Name],
-
-Thanks for thinking of me for the mobile app — that sounds like an exciting direction for the business.
-
-That said, our current agreement covers the 5-page website with 2 revision rounds. A mobile app is a separate project scope entirely, and I'd need to scope and price it properly to give you something solid.
-
-I can put together a proposal for the mobile app as a follow-on project. Alternatively, we keep the current project on track and revisit this after launch.
-
-Which would you prefer?
-
-[Your name]`
-
-const DEMO_TOOLS: { label: string; response: string }[] = [
-  {
-    label: 'Scope Change',
-    response: `Hi Sarah,
-
-Thanks for reaching out about the mobile app — sounds like an exciting direction.
-
-That said, our agreement covers the 5-page website with 2 revision rounds. A mobile app is a separate scope entirely, and I'd need to price it properly to deliver something solid.
-
-I can put together a proposal as a follow-on project, or we keep the current work on track and revisit after launch.
-
-Which would you prefer?
-
-— Alex`,
-  },
-  {
-    label: 'Payment Reminder',
-    response: `Hi Sarah,
-
-Just a quick note — invoice #1042 for €1,500 was due on April 15th and I haven't seen it come through yet.
-
-Could you confirm payment is on its way? Happy to resend the invoice if that's helpful.
-
-Thanks for sorting this out.
-
-— Alex`,
-  },
-  {
-    label: 'Kill Fee',
-    response: `Hi Sarah,
-
-Thanks for letting me know you're pausing the project. As per our agreement, a kill fee of 50% applies to all work completed to date.
-
-I've attached an updated invoice for €750. Once that's settled, I'll send over all files and assets produced so far.
-
-Let me know if you have any questions.
-
-— Alex`,
-  },
-  {
-    label: 'Ghost Client',
-    response: `Hi Sarah,
-
-I've followed up a few times without hearing back — just checking in to make sure everything's okay on your end.
-
-If the project direction has changed, no problem at all. I'll hold the work here until I hear from you. After 5 business days of no response, I'll formally pause the project.
-
-— Alex`,
-  },
-  {
-    label: 'Revision Limit',
-    response: `Hi Sarah,
-
-Happy to make these changes — just a heads-up that our agreement included 2 revision rounds, and this would be the third.
-
-I can continue at my standard rate of €90/hr, or we can scope a revision package if you're expecting more changes ahead.
-
-Let me know how you'd like to proceed.
-
-— Alex`,
-  },
-  {
-    label: 'Dispute Response',
-    response: `Hi Sarah,
-
-I understand you're not satisfied, and I want to resolve this professionally.
-
-The deliverables were completed as agreed, and I have full records of all approvals and communications. I'm happy to discuss specific concerns, but I'm not in a position to issue a refund for completed work.
-
-Let me know what you'd like to address directly.
-
-— Alex`,
-  },
+const HOW_IT_WORKS_STEPS = [
+  { num: '01', label: 'Paste the client message' },
+  { num: '02', label: 'Pick your defense tool' },
+  { num: '03', label: 'Copy a professional reply' },
 ]
-
-type DemoPhase = 'idle' | 'selecting' | 'typing' | 'done'
-
-function HowItWorksDemo() {
-  const [activeTool, setActiveTool] = useState(0)
-  const [phase, setPhase] = useState<DemoPhase>('idle')
-  const [typed, setTyped] = useState('')
-  const [copied, setCopied] = useState(false)
-  const timers = useRef<{ t?: ReturnType<typeof setTimeout>; interval?: ReturnType<typeof setInterval> }>({})
-  const responseContainerRef = useRef<HTMLDivElement>(null)
-
-  function beginTool(index: number) {
-    if (timers.current.t) clearTimeout(timers.current.t)
-    if (timers.current.interval) clearInterval(timers.current.interval)
-    setActiveTool(index)
-    setTyped('')
-    setCopied(false)
-    setPhase('selecting')
-    timers.current.t = setTimeout(() => {
-      setPhase('typing')
-      const response = DEMO_TOOLS[index].response
-      let i = 0
-      timers.current.interval = setInterval(() => {
-        i++
-        setTyped(response.slice(0, i))
-        if (responseContainerRef.current) {
-          responseContainerRef.current.scrollTop = responseContainerRef.current.scrollHeight
-        }
-        if (i >= response.length) {
-          clearInterval(timers.current.interval)
-          setPhase('done')
-          timers.current.t = setTimeout(() => beginTool((index + 1) % DEMO_TOOLS.length), 4500)
-        }
-      }, 18)
-    }, 700)
-  }
-
-  useEffect(() => {
-    timers.current.t = setTimeout(() => beginTool(0), 600)
-    return () => {
-      if (timers.current.t) clearTimeout(timers.current.t)
-      if (timers.current.interval) clearInterval(timers.current.interval)
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  return (
-    <div className="max-w-[860px] mx-auto">
-      {/* Mock app window */}
-      <div className="bg-bg-surface border border-bg-border rounded-2xl overflow-hidden shadow-[0_0_80px_rgba(132,204,22,0.07),0_32px_80px_rgba(0,0,0,0.4)]">
-        {/* Window chrome */}
-        <div className="flex items-center gap-2 px-5 py-3 border-b border-bg-border bg-bg-base">
-          <div className="flex gap-1.5">
-            {['#ef4444', '#f59e0b', '#22c55e'].map((c, i) => (
-              <div key={i} className="w-2.5 h-2.5 rounded-full opacity-70" style={{ backgroundColor: c }} />
-            ))}
-          </div>
-          <span className="ml-3 font-mono text-[0.65rem] text-text-muted tracking-[0.1em]">
-            pushback.to / projects / Webflow Redesign
-          </span>
-        </div>
-
-        {/* Two-panel layout */}
-        <div className="grid grid-cols-2 h-[380px]">
-          {/* Left: tool selection */}
-          <div className="p-6 border-r border-bg-border">
-            <p className="font-mono text-[0.6rem] text-text-muted tracking-[0.12em] uppercase mb-4">
-              Select the situation
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {DEMO_TOOLS.map((tool, i) => {
-                const isSelected = i === activeTool && phase !== 'idle'
-                return (
-                  <button
-                    key={tool.label}
-                    onClick={() => beginTool(i)}
-                    className={[
-                      'px-3 py-2 rounded-lg text-[0.72rem] text-left border cursor-pointer select-none transition-all duration-300',
-                      isSelected
-                        ? 'bg-brand-lime text-[#0a0a0a] border-brand-lime font-semibold shadow-[0_0_20px_rgba(132,204,22,0.35)]'
-                        : 'bg-bg-elevated text-text-secondary border-bg-border font-normal hover:bg-[#252525] hover:text-text-primary',
-                    ].join(' ')}
-                  >
-                    {tool.label}
-                  </button>
-                )
-              })}
-            </div>
-
-            {/* Generate button */}
-            <div className="mt-5">
-              <div className={[
-                'inline-flex items-center gap-2 px-4 py-2 rounded-md text-[0.75rem] font-bold select-none transition-all duration-400',
-                phase === 'idle'
-                  ? 'bg-bg-elevated text-text-muted border border-bg-border'
-                  : 'bg-brand-lime text-[#0a0a0a] border border-brand-lime',
-              ].join(' ')}>
-                <span className={[
-                  'inline-block w-1.5 h-1.5 rounded-full transition-colors duration-400',
-                  phase === 'idle' ? 'bg-text-muted' : 'bg-[#0a0a0a]',
-                ].join(' ')} />
-                Generate response
-              </div>
-            </div>
-          </div>
-
-          {/* Right: response with typing animation */}
-          <div className="p-6 flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <p className="font-mono text-[0.6rem] text-text-muted tracking-[0.12em] uppercase">
-                Response
-              </p>
-              {phase === 'typing' && (
-                <div className="flex gap-1 items-center">
-                  {[0, 1, 2].map(i => (
-                    <div
-                      key={i}
-                      className="w-1.5 h-1.5 rounded-full bg-brand-lime"
-                      style={{ animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }}
-                    />
-                  ))}
-                </div>
-              )}
-              {phase === 'done' && (
-                <span className="bg-[rgba(132,204,22,0.15)] text-brand-lime text-[0.58rem] font-bold px-2 py-0.5 rounded tracking-[0.08em]">
-                  READY
-                </span>
-              )}
-            </div>
-
-            {/* Text area */}
-            <div className="flex-1 relative overflow-hidden">
-              {phase === 'idle' && (
-                <div className="w-full h-full bg-bg-elevated rounded-lg border border-bg-border flex items-center justify-center">
-                  <span className="text-text-muted text-[0.78rem]">Pick a situation to get started</span>
-                </div>
-              )}
-              {phase !== 'idle' && (
-                <div
-                  ref={responseContainerRef}
-                  className={[
-                    'bg-bg-elevated rounded-lg p-4 h-full overflow-y-auto transition-all duration-500',
-                    phase === 'done'
-                      ? 'border border-[rgba(132,204,22,0.3)] shadow-[0_0_30px_rgba(132,204,22,0.08)]'
-                      : 'border border-bg-border',
-                  ].join(' ')}>
-                  {phase === 'selecting' ? (
-                    <div className="flex gap-2 items-center">
-                      {[0, 1, 2].map(i => (
-                        <div
-                          key={i}
-                          className="w-1.5 h-1.5 rounded-full bg-brand-lime opacity-50"
-                          style={{ animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <pre className="text-text-primary text-[0.78rem] leading-[1.75] whitespace-pre-wrap font-[inherit] m-0">
-                      {typed}
-                      {phase === 'typing' && (
-                        <span className="inline-block w-0.5 h-[0.9em] bg-brand-lime align-text-bottom ml-px [animation:blink_0.9s_step-end_infinite]" />
-                      )}
-                    </pre>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Copy button */}
-            <div className={[
-              'mt-3.5 transition-opacity duration-400',
-              phase === 'done' ? 'opacity-100' : 'opacity-0',
-            ].join(' ')}>
-              <button
-                onClick={() => { navigator.clipboard.writeText(DEMO_TOOLS[activeTool].response).catch(() => {}); setCopied(true); setTimeout(() => setCopied(false), 2000) }}
-                className={[
-                  'px-4 py-2 rounded-md text-[0.75rem] font-bold cursor-pointer transition-all duration-200 border',
-                  copied
-                    ? 'bg-[rgba(132,204,22,0.15)] text-brand-lime border-[rgba(132,204,22,0.4)]'
-                    : 'bg-brand-lime text-[#0a0a0a] border-transparent hover:opacity-90',
-                ].join(' ')}
-              >
-                {copied ? 'Copied!' : 'Copy message'}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Step labels below */}
-      <div className="flex justify-around mt-8 px-8">
-        {[
-          { num: '01', label: 'Identify the situation' },
-          { num: '02', label: 'Review your position' },
-          { num: '03', label: 'Send with confidence' },
-        ].map(({ num, label }) => (
-          <div key={num} className="text-center">
-            <div className="font-mono text-brand-lime text-[0.65rem] font-bold tracking-[0.12em] mb-1">{num}</div>
-            <div className="text-text-secondary text-[0.8rem]">{label}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
 
 function ToolCarousel() {
   const [active, setActive] = useState(0)
@@ -631,28 +338,29 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* See it in action — animated product demo */}
-      <section className="py-20 border-t border-[#1c1c1e]">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <p className="text-xs tracking-widest text-[#84cc16] uppercase mb-3">See it in action</p>
-          <h2 className="text-3xl font-semibold text-white mb-4">From contract to response in seconds</h2>
-          <p className="text-[#71717a] mb-10 max-w-lg mx-auto">
-            Paste a clause, get a risk score, pick your situation, and copy a professional response — no legal knowledge required.
-          </p>
-          <DemoAnimation />
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section data-animate className="py-28">
+      {/* How it works */}
+      <section className="py-24 border-t border-[#1c1c1e]">
         <div className="max-w-5xl mx-auto px-6">
-          <div style={{ marginBottom: '3.5rem' }}>
+          <div className="text-center mb-12">
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>How it works</p>
-            <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, maxWidth: '22ch' }}>
-              Every client situation has a correct response. You now have all of them.
+            <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: '1.25rem' }}>
+              Every client situation has a correct response.<br />You now have all of them.
             </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '40ch', margin: '0 auto' }}>
+              Paste the message. Pushback identifies what&apos;s happening and drafts a firm, copy-ready reply in under 30 seconds.
+            </p>
           </div>
-          <HowItWorksDemo />
+
+          <DemoAnimation />
+
+          <div className="flex justify-around mt-10 px-4">
+            {HOW_IT_WORKS_STEPS.map(({ num, label }) => (
+              <div key={num} className="text-center">
+                <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--brand-lime)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', marginBottom: '0.25rem' }}>{num}</div>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -670,78 +378,6 @@ export default function LandingPage() {
           </div>
         </div>
         <ToolCarousel />
-      </section>
-
-      {/* Before / After */}
-      <section data-animate className="py-28">
-        <div className="max-w-5xl mx-auto px-6">
-          <div style={{ marginBottom: '4rem' }}>
-            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>In practice</p>
-            <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
-              You already have the right response.<br />You just didn&apos;t know it yet.
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-5 items-start">
-            {/* Before */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.875rem' }}>
-                <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#ef4444', display: 'inline-block', flexShrink: 0 }} />
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>The situation</p>
-              </div>
-              <div style={{ backgroundColor: '#0d0d0d', border: '1px solid #1e1e1e', borderRadius: '0.875rem', overflow: 'hidden' }}>
-                <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid #1a1a1a', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                  {[
-                    { label: 'From', value: 'client@company.com' },
-                    { label: 'Subject', value: 'Quick add — could we also do mobile app?' },
-                  ].map(({ label, value }) => (
-                    <div key={label} style={{ display: 'flex', gap: '0.75rem', fontSize: '0.75rem' }}>
-                      <span style={{ color: '#3f3f46', width: '3.5rem', flexShrink: 0 }}>{label}</span>
-                      <span style={{ color: '#71717a' }}>{value}</span>
-                    </div>
-                  ))}
-                </div>
-                <div style={{ padding: '1.5rem' }}>
-                  <pre style={{ color: '#71717a', fontSize: '0.83rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>{BEFORE_EMAIL}</pre>
-                </div>
-              </div>
-            </div>
-
-            {/* After */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.875rem' }}>
-                <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: 'var(--brand-lime)', display: 'inline-block', flexShrink: 0 }} />
-                <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>Your position</p>
-              </div>
-              <div style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid rgba(132,204,22,0.25)', borderRadius: '0.875rem', overflow: 'hidden', boxShadow: '0 0 48px rgba(132,204,22,0.08)' }}>
-                <div style={{ padding: '0.875rem 1.5rem', borderBottom: '1px solid rgba(132,204,22,0.12)', backgroundColor: 'rgba(132,204,22,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--brand-lime)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em' }}>PUSHBACK</span>
-                    <span style={{ color: 'rgba(132,204,22,0.3)' }}>·</span>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>Scope defense — Position ready</span>
-                  </div>
-                  <span style={{ backgroundColor: 'rgba(132,204,22,0.15)', color: 'var(--brand-lime)', fontSize: '0.6rem', fontWeight: 700, padding: '0.2rem 0.55rem', borderRadius: '4px', letterSpacing: '0.08em' }}>READY</span>
-                </div>
-                <div style={{ padding: '1.5rem' }}>
-                  <pre style={{ color: 'var(--text-primary)', fontSize: '0.83rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-mono), monospace' }}>{AFTER_MESSAGE}</pre>
-                </div>
-                <div style={{ padding: '0.75rem 1.5rem 1.5rem' }}>
-                  <button
-                    className="hover:opacity-90 transition-opacity"
-                    style={{
-                      backgroundColor: 'var(--brand-lime)', color: '#0a0a0a',
-                      fontWeight: 700, padding: '0.6rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.8rem',
-                      border: 'none', cursor: 'pointer',
-                    }}
-                    onClick={() => navigator.clipboard.writeText(AFTER_MESSAGE).catch(() => {})}
-                  >
-                    Copy Message
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* Pricing */}
