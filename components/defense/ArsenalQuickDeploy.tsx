@@ -181,48 +181,94 @@ export default function ArsenalQuickDeploy({ projects }: Props) {
       {pendingTool && (
         <div
           style={{
-            position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.75)',
+            position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.8)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            zIndex: 50, backdropFilter: 'blur(4px)',
+            zIndex: 50, backdropFilter: 'blur(6px)',
           }}
           onClick={() => setPendingTool(null)}
         >
           <div
             style={{
-              backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-              borderRadius: '1rem', padding: '1.5rem', width: '90vw', maxWidth: '400px',
+              backgroundColor: '#0d0d10',
+              border: '1px solid #222225',
+              borderTop: '2px solid #84cc16',
+              borderRadius: '0.875rem',
+              width: '90vw', maxWidth: '420px',
+              boxShadow: '0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04)',
+              overflow: 'hidden',
             }}
             onClick={e => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+            {/* Header */}
+            <div style={{
+              display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
+              padding: '1.25rem 1.5rem',
+              borderBottom: '1px solid #1c1c1f',
+            }}>
               <div>
-                <p style={{ fontWeight: 600, fontSize: '1rem' }}>Deploy to which project?</p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-                  {TOOL_MAP[pendingTool]?.label}
+                <p style={{ fontWeight: 700, fontSize: '0.95rem', color: '#f4f4f5', letterSpacing: '-0.01em' }}>
+                  Which project?
                 </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.3rem' }}>
+                  <div style={{
+                    width: 5, height: 5, borderRadius: '50%', backgroundColor: '#84cc16', flexShrink: 0,
+                  }} />
+                  <p style={{ fontSize: '0.75rem', color: '#52525b' }}>
+                    {TOOL_MAP[pendingTool]?.label}
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setPendingTool(null)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '0.25rem' }}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: '#52525b', padding: '0.125rem', lineHeight: 1,
+                  transition: 'color 120ms ease',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#a1a1aa' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#52525b' }}
               >
-                <X size={16} />
+                <X size={15} />
               </button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+
+            {/* Project list */}
+            <div style={{ padding: '0.75rem' }}>
               {projects.map(p => (
                 <button
                   key={p.id}
                   onClick={() => handleProjectSelect(p.id)}
                   style={{
-                    backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--bg-border)',
-                    borderRadius: '0.625rem', padding: '0.75rem 1rem', textAlign: 'left',
-                    cursor: 'pointer', color: 'var(--text-primary)', transition: 'border-color 120ms ease',
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    width: '100%', padding: '0.875rem 1rem',
+                    backgroundColor: 'transparent',
+                    border: '1px solid transparent',
+                    borderLeft: '3px solid transparent',
+                    borderRadius: '0.5rem', textAlign: 'left',
+                    cursor: 'pointer', transition: 'all 150ms ease',
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--brand-lime)' }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--bg-border)' }}
+                  onMouseEnter={e => {
+                    const el = e.currentTarget as HTMLElement
+                    el.style.backgroundColor = '#111114'
+                    el.style.borderColor = '#2a2a2e'
+                    el.style.borderLeftColor = '#84cc16'
+                    const arrow = el.querySelector('.arrow') as HTMLElement | null
+                    if (arrow) arrow.style.opacity = '1'
+                  }}
+                  onMouseLeave={e => {
+                    const el = e.currentTarget as HTMLElement
+                    el.style.backgroundColor = 'transparent'
+                    el.style.borderColor = 'transparent'
+                    el.style.borderLeftColor = 'transparent'
+                    const arrow = el.querySelector('.arrow') as HTMLElement | null
+                    if (arrow) arrow.style.opacity = '0'
+                  }}
                 >
-                  <div style={{ fontWeight: 500, fontSize: '0.9rem' }}>{p.title}</div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem', marginTop: '0.1rem' }}>{p.client_name}</div>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: '0.875rem', color: '#e4e4e7' }}>{p.title}</div>
+                    <div style={{ color: '#52525b', fontSize: '0.75rem', marginTop: '0.15rem' }}>{p.client_name}</div>
+                  </div>
+                  <ChevronRight size={14} className="arrow" style={{ opacity: 0, color: '#84cc16', flexShrink: 0, transition: 'opacity 150ms ease' }} />
                 </button>
               ))}
             </div>
