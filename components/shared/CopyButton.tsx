@@ -14,12 +14,21 @@ export default function CopyButton({ text, responseId, label = 'Copy Message' }:
   const [flashing, setFlashing] = useState(false)
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(text)
+    try {
+      await navigator.clipboard.writeText(text)
+    } catch {
+      const el = document.createElement('textarea')
+      el.value = text
+      el.style.cssText = 'position:fixed;opacity:0'
+      document.body.appendChild(el)
+      el.select()
+      const ok = document.execCommand('copy')
+      document.body.removeChild(el)
+      if (!ok) return
+    }
     setFlashing(true)
     setCopied(true)
-
     if (responseId) markResponseCopied(responseId)
-
     setTimeout(() => setFlashing(false), 1500)
     setTimeout(() => setCopied(false), 2000)
   }

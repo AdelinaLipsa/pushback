@@ -185,9 +185,10 @@ export default function DefenseDashboard({
   const [documentOutput, setDocumentOutput] = useState<string | null>(null)
   const [documentType, setDocumentType] = useState<DocumentType | null>(null)
   const [documentError, setDocumentError] = useState<string | null>(null)
+  const [localResponsesUsed, setLocalResponsesUsed] = useState(responsesUsed)
 
   const FREE_LIMIT = PLANS.free.defense_responses
-  const isAtLimit = plan === 'free' && responsesUsed >= FREE_LIMIT
+  const isAtLimit = plan === 'free' && localResponsesUsed >= FREE_LIMIT
 
   useEffect(() => {
     if (initialPaymentPrefill) {
@@ -220,11 +221,11 @@ export default function DefenseDashboard({
     if (!result) return
     if (result.upgradeRequired) { setShowUpgrade(true); return }
     setResponse({ text: result.response, id: result.id, contractClausesUsed: result.contract_clauses_used ?? [] })
+    setLocalResponsesUsed(prev => prev + 1)
     router.refresh()
   }
 
   async function handleGenerateDocument(type: DocumentType) {
-    if (plan !== 'pro') { setShowUpgrade(true); return }
     setDocumentLoading(true)
     setDocumentError(null)
     setDocumentType(type)
