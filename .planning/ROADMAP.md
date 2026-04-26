@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 9: Contract-Aware Intelligence** - Deeply integrate contract analysis data into generated responses so every message references the freelancer's actual contract terms
 - [ ] **Phase 10: Smart Escalation** - Show next-step guidance after every generated message and surface project alerts proactively on the dashboard
 - [x] **Phase 11: Document Generation** - Generate structured documents (SOW amendments, dispute packages, kill fee invoices) for Pro users — one-click, not just an email (completed 2026-04-26)
-- [ ] **Phase 12: Client Risk Intelligence** - Surface client behavioral risk scores from existing DB data (defense responses, overdue payments, conflict history) on the dashboard
+- [x] **Phase 12: Client Risk Intelligence** - Surface client behavioral risk scores from existing DB data (defense responses, overdue payments, conflict history) on the dashboard (completed 2026-04-26)
 - [ ] **Phase 13: How-To & In-App Guidance** - Marketing page animated product demo (CSS-only, no video) + /how-it-works page, tool directory, inline tooltips, and FAQ so the app is self-teaching
 
 ## Phase Details
@@ -212,9 +212,9 @@ Plans:
 **Plans**: 4 plans
 Plans:
 - [x] 12-01-PLAN.md — Create lib/clientRisk.ts with computeClientRisk + CLIENT_RISK_COLORS + RISK_WEIGHTS + LEVEL_LABELS (Wave 1)
-- [ ] 12-02-PLAN.md — Create ClientRiskBadge + wire into ProjectCard badge row (Wave 2)
-- [ ] 12-03-PLAN.md — Create ClientBehaviorCard + wire above DefenseDashboard on project detail (Wave 2)
-- [ ] 12-04-PLAN.md — Inject top-risk client row into Needs Attention section on dashboard (Wave 2)
+- [x] 12-02-PLAN.md — Create ClientRiskBadge + wire into ProjectCard badge row (Wave 2)
+- [x] 12-03-PLAN.md — Create ClientBehaviorCard + wire above DefenseDashboard on project detail (Wave 2)
+- [x] 12-04-PLAN.md — Inject top-risk client row into Needs Attention section on dashboard (Wave 2)
 **UI hint**: yes
 
 ### Phase 13: How-To & In-App Guidance
@@ -245,7 +245,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. Contract-Aware Intelligence | 0/4 | Planned | - |
 | 10. Smart Escalation | 0/? | Not planned | - |
 | 11. Document Generation | 3/3 | Complete    | 2026-04-26 |
-| 12. Client Risk Intelligence | 1/4 | In Progress|  |
+| 12. Client Risk Intelligence | 4/4 | Complete   | 2026-04-26 |
 | 13. How-To & In-App Guidance | 0/? | Not planned | - |
 
 ## Backlog
@@ -254,7 +254,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 **Goal:** Freelancer pastes a client's response to a sent pushback; app reads both the original defense tool use and the client reply, surfaces risk signals (backing down vs doubling down), and helps craft a follow-up
 **Requirements:** TBD
-**Plans:** 1/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] TBD (promote with /gsd-review-backlog when ready)
