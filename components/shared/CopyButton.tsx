@@ -6,9 +6,10 @@ import { markResponseCopied } from '@/lib/api'
 interface CopyButtonProps {
   text: string
   responseId?: string
+  label?: string
 }
 
-export default function CopyButton({ text, responseId }: CopyButtonProps) {
+export default function CopyButton({ text, responseId, label = 'Copy Message' }: CopyButtonProps) {
   const [copied, setCopied] = useState(false)
   const [flashing, setFlashing] = useState(false)
 
@@ -34,7 +35,7 @@ export default function CopyButton({ text, responseId }: CopyButtonProps) {
       ].join(' ')}
       style={flashing ? { color: 'var(--brand-green)' } : undefined}
     >
-      {copied ? <><span>✓</span> Copied</> : 'Copy Message'}
+      {copied ? <><span>✓</span> Copied</> : label}
     </button>
   )
 }

@@ -8,14 +8,15 @@ import {
   Eye, PackageOpen, Star, Receipt,
   type LucideIcon,
 } from 'lucide-react'
-import { DefenseTool, DefenseToolMeta, RiskLevel } from '@/types'
+import { DefenseTool, DefenseToolMeta, DocumentType, RiskLevel } from '@/types'
 import { DEFENSE_TOOLS, URGENCY_COLORS } from '@/lib/defenseTools'
 import { btnStyles, inputStyle } from '@/lib/ui'
 import { startCheckout } from '@/lib/checkout'
-import { generateDefense, analyzeMessage } from '@/lib/api'
+import { generateDefense, generateDocument, analyzeMessage } from '@/lib/api'
 import { PLANS } from '@/lib/plans'
 import SituationPanel from './SituationPanel'
 import ResponseOutput from './ResponseOutput'
+import DocumentOutput from './DocumentOutput'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -180,6 +181,10 @@ export default function DefenseDashboard({
     explanation: string
     situation_context: string
   } | null>(null)
+  const [documentLoading, setDocumentLoading] = useState(false)
+  const [documentOutput, setDocumentOutput] = useState<string | null>(null)
+  const [documentType, setDocumentType] = useState<DocumentType | null>(null)
+  const [documentError, setDocumentError] = useState<string | null>(null)
 
   const FREE_LIMIT = PLANS.free.defense_responses
   const isAtLimit = plan === 'free' && responsesUsed >= FREE_LIMIT
@@ -201,9 +206,9 @@ export default function DefenseDashboard({
   function selectTool(tool: DefenseToolMeta) {
     if (isAtLimit) { setShowUpgrade(true); return }
     if (selectedTool?.type === tool.type) {
-      setSelectedTool(null); setResponse(null)
+      setSelectedTool(null); setResponse(null); setDocumentOutput(null); setDocumentType(null)
     } else {
-      setSelectedTool(tool); setResponse(null)
+      setSelectedTool(tool); setResponse(null); setDocumentOutput(null); setDocumentType(null)
     }
   }
 
@@ -216,6 +221,21 @@ export default function DefenseDashboard({
     if (result.upgradeRequired) { setShowUpgrade(true); return }
     setResponse({ text: result.response, id: result.id, contractClausesUsed: result.contract_clauses_used ?? [] })
     router.refresh()
+  }
+
+  async function handleGenerateDocument(type: DocumentType) {
+    if (plan !== 'pro') { setShowUpgrade(true); return }
+    setDocumentLoading(true)
+    setDocumentError(null)
+    setDocumentType(type)
+    const result = await generateDocument(projectId, { document_type: type })
+    setDocumentLoading(false)
+    if (!result) {
+      setDocumentError('Document generation failed — please try again.')
+      return
+    }
+    if (result.upgradeRequired) { setShowUpgrade(true); return }
+    setDocumentOutput(result.document)
   }
 
   async function handleAnalyze() {
@@ -355,14 +375,24 @@ export default function DefenseDashboard({
           />
         )}
 
-        {/* Response */}
-        {showResponse && (
+        {/* Response or Document */}
+        {showResponse && !documentOutput && (
           <ResponseOutput
             response={response!.text}
             responseId={response!.id}
             onRegenerate={() => setResponse(null)}
             contractClausesUsed={response!.contractClausesUsed}
             toolType={selectedTool.type}
+            onGenerateDocument={handleGenerateDocument}
+            documentGenerating={documentLoading}
+            documentError={documentError}
+          />
+        )}
+        {showResponse && documentOutput && documentType && (
+          <DocumentOutput
+            document={documentOutput}
+            documentType={documentType}
+            onBack={() => { setDocumentOutput(null); setDocumentType(null) }}
           />
         )}
       </div>

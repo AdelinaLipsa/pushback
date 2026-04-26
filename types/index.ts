@@ -132,3 +132,5 @@ export type MessageAnalysis = {
   explanation: string
   situation_context: string
 }
+
+export type DocumentType = 'sow_amendment' | 'kill_fee_invoice' | 'dispute_package'

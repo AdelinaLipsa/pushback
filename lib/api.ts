@@ -128,6 +128,32 @@ export async function analyzeMessage(
   }
 }
 
+// ─── Documents ──────────────────────────────────────────────────────────────
+
+type DocumentData = { document: string }
+
+export type DocumentResult = { upgradeRequired: true } | (DocumentData & { upgradeRequired?: false }) | null
+
+export async function generateDocument(
+  projectId: string,
+  body: { document_type: 'sow_amendment' | 'kill_fee_invoice' | 'dispute_package'; context?: string },
+): Promise<DocumentResult> {
+  try {
+    const res = await fetch(`/api/projects/${projectId}/document`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    const data = await res.json()
+    if (res.status === 403 && data.error === 'PRO_REQUIRED') return { upgradeRequired: true }
+    if (!res.ok) { toast.error(data?.error ?? 'Something went wrong.'); return null }
+    return data as DocumentData
+  } catch {
+    toast.error('Network error — check your connection.')
+    return null
+  }
+}
+
 // ─── Responses (fire-and-forget) ─────────────────────────────────────────────
 
 export function markResponseSent(id: string) {
