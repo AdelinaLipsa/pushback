@@ -85,6 +85,9 @@ export default function ReplyThreadAnimation() {
   const [fading, setFading] = useState(false)
   const tRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const ivRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const replyRef = useRef<HTMLDivElement>(null)
+  const followUpRef = useRef<HTMLDivElement>(null)
 
   function clear() {
     clearTimeout(tRef.current)
@@ -138,6 +141,20 @@ export default function ReplyThreadAnimation() {
   }
 
   useEffect(() => {
+    if (replyRef.current) replyRef.current.scrollTop = replyRef.current.scrollHeight
+    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight
+  }, [typedReply])
+
+  useEffect(() => {
+    if (followUpRef.current) followUpRef.current.scrollTop = followUpRef.current.scrollHeight
+    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight
+  }, [typedFollowUp])
+
+  useEffect(() => {
+    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight
+  }, [phase])
+
+  useEffect(() => {
     requestAnimationFrame(() => setEntered(true))
     tRef.current = setTimeout(() => go('typing-reply', 0), 1200)
     return clear
@@ -189,9 +206,11 @@ export default function ReplyThreadAnimation() {
         </div>
 
         {/* Body */}
-        <div style={{
+        <div ref={bodyRef} style={{
           padding: '1.25rem 1.5rem',
-          minHeight: '480px',
+          height: '480px',
+          overflowY: 'auto',
+          scrollbarWidth: 'none',
           opacity: fading ? 0 : 1,
           transition: 'opacity 0.6s ease',
         }}>
@@ -263,13 +282,14 @@ export default function ReplyThreadAnimation() {
                   </div>
 
                   {/* Reply textarea */}
-                  <div style={{
+                  <div ref={replyRef} style={{
                     backgroundColor: '#0d0d10',
                     border: `1px solid ${phase === 'analyzing' ? 'rgba(132,204,22,0.3)' : '#2a2a2e'}`,
                     borderRadius: '0.5rem', padding: '0.625rem 0.75rem',
                     fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: '#a1a1aa',
                     lineHeight: 1.65, whiteSpace: 'pre-wrap', wordBreak: 'break-word',
-                    minHeight: '72px', transition: 'border-color 0.3s ease',
+                    minHeight: '72px', maxHeight: '110px', overflowY: 'auto', scrollbarWidth: 'none',
+                    transition: 'border-color 0.3s ease',
                   }}>
                     {typedReply}
                     {phase === 'typing-reply' && (
@@ -326,12 +346,13 @@ export default function ReplyThreadAnimation() {
                   <div style={{ height: '1px', backgroundColor: '#1e1e22', margin: '0.625rem 0' }} />
 
                   {/* Follow-up pre block */}
-                  <div style={{
+                  <div ref={followUpRef} style={{
                     backgroundColor: '#0a0a0a', border: '1px solid #1e1e22',
                     borderRadius: '0.375rem', padding: '0.625rem 0.75rem',
                     fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: '#d4d4d8',
                     lineHeight: 1.7, whiteSpace: 'pre-wrap', wordBreak: 'break-word',
-                    marginBottom: '0.625rem', minHeight: '52px',
+                    marginBottom: '0.625rem', minHeight: '52px', maxHeight: '120px',
+                    overflowY: 'auto', scrollbarWidth: 'none',
                   }}>
                     {typedFollowUp}
                     {phase === 'revealing' && (

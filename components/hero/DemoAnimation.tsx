@@ -39,6 +39,8 @@ export default function DemoAnimation() {
   const [fading, setFading] = useState(false)
   const tRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const ivRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
+  const msgRef = useRef<HTMLDivElement>(null)
+  const respRef = useRef<HTMLDivElement>(null)
 
   function clear() {
     clearTimeout(tRef.current)
@@ -91,6 +93,14 @@ export default function DemoAnimation() {
       tRef.current = setTimeout(() => go('typing-msg', i), 900)
     }
   }
+
+  useEffect(() => {
+    if (msgRef.current) msgRef.current.scrollTop = msgRef.current.scrollHeight
+  }, [typedMsg])
+
+  useEffect(() => {
+    if (respRef.current) respRef.current.scrollTop = respRef.current.scrollHeight
+  }, [typedResp])
 
   useEffect(() => {
     requestAnimationFrame(() => setEntered(true))
@@ -239,7 +249,7 @@ export default function DemoAnimation() {
                 <p style={{ fontSize: '0.55rem', color: '#52525b', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.4rem', fontWeight: 600 }}>
                   From: {sc.client}
                 </p>
-                <div style={{
+                <div ref={msgRef} style={{
                   backgroundColor: '#111114',
                   border: '1px solid #27272a',
                   borderRadius: '0.5rem',
@@ -252,6 +262,7 @@ export default function DemoAnimation() {
                   wordBreak: 'break-word',
                   maxHeight: '130px',
                   overflowY: 'auto',
+                  scrollbarWidth: 'none',
                 }}>
                   {phase === 'typing-msg' ? typedMsg : sc.message}
                   {phase === 'typing-msg' && (
@@ -278,7 +289,7 @@ export default function DemoAnimation() {
                 <p style={{ fontSize: '0.55rem', color: '#52525b', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.4rem', fontWeight: 600 }}>
                   Your response — {sc.tool}
                 </p>
-                <div style={{
+                <div ref={respRef} style={{
                   flex: 1,
                   backgroundColor: '#0b1a0c',
                   border: '1px solid rgba(132,204,22,0.15)',
@@ -291,7 +302,8 @@ export default function DemoAnimation() {
                   wordBreak: 'break-word',
                   minHeight: '110px',
                   maxHeight: '180px',
-                  overflowY: 'hidden',
+                  overflowY: 'auto',
+                  scrollbarWidth: 'none',
                 }}>
                   {typedResp}
                   {phase === 'typing-resp' && (
