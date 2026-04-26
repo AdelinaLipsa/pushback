@@ -3,6 +3,17 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase/server'
+import { Redis } from '@upstash/redis'
+
+const MAINTENANCE_KEY = 'pb:maintenance'
+
+const redis =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL!,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+      })
+    : null
 
 async function assertAdmin() {
   const supabase = await createServerSupabaseClient()
@@ -28,6 +39,23 @@ export async function resetPeriodUsage(userId: string) {
     .update({ period_responses_used: 0, period_contracts_used: 0 } as never)
     .eq('id', userId)
   if (error) throw new Error(error.message)
+  revalidatePath('/admin')
+}
+
+export async function getMaintenanceMode(): Promise<boolean> {
+  if (!redis) return false
+  const val = await redis.get(MAINTENANCE_KEY)
+  return val === '1'
+}
+
+export async function setMaintenanceMode(on: boolean): Promise<void> {
+  await assertAdmin()
+  if (!redis) throw new Error('Redis not configured — add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN env vars')
+  if (on) {
+    await redis.set(MAINTENANCE_KEY, '1')
+  } else {
+    await redis.del(MAINTENANCE_KEY)
+  }
   revalidatePath('/admin')
 }
 

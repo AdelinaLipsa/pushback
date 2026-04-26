@@ -3,6 +3,8 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { createAdminSupabaseClient } from '@/lib/supabase/server'
 import { PLANS } from '@/lib/plans'
 import { UserTable } from './UserTable'
+import { MaintenanceToggle } from './MaintenanceToggle'
+import { getMaintenanceMode } from './actions'
 
 function StatCard({ label, value, sub, accent }: { label: string; value: string; sub?: string; accent?: boolean }) {
   return (
@@ -47,11 +49,13 @@ export default async function AdminPage() {
   const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
 
   const [
+    maintenanceOn,
     { data: allProfiles },
     { count: responsesThisMonth },
     { count: contractsThisMonth },
     { count: newUsersThisMonth },
   ] = await Promise.all([
+    getMaintenanceMode(),
     admin.from('user_profiles').select('id, email, plan, defense_responses_used, contracts_used, period_responses_used, period_contracts_used, created_at').order('created_at', { ascending: false }),
     admin.from('defense_responses').select('id', { count: 'exact', head: true }).gte('created_at', monthStart),
     admin.from('contracts').select('id', { count: 'exact', head: true }).gte('created_at', monthStart),
@@ -76,6 +80,17 @@ export default async function AdminPage() {
       <div className="mb-8">
         <h1 className="font-bold text-[1.75rem] tracking-tight">Admin</h1>
         <p className="text-text-muted text-sm mt-1">Internal overview — visible to you only</p>
+      </div>
+
+      {/* Maintenance mode */}
+      <div className={[
+        'fade-up rounded-xl border mb-6 overflow-hidden',
+        maintenanceOn ? 'border-red-500/40 bg-red-500/5' : 'bg-bg-surface border-bg-border',
+      ].join(' ')}>
+        <div className="px-5 py-3 border-b border-bg-border">
+          <h2 className="text-[0.68rem] font-bold uppercase tracking-[0.1em] text-zinc-400">Site status</h2>
+        </div>
+        <MaintenanceToggle isOn={maintenanceOn} />
       </div>
 
       {/* Stat grid */}
