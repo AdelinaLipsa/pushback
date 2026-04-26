@@ -7,6 +7,7 @@ import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import { PLANS } from '@/lib/plans'
 import PushbackHero from '@/components/hero/PushbackHero'
 import Footer from '@/components/shared/Footer'
+import DemoAnimation from '@/components/hero/DemoAnimation'
 
 const TICKER_ITEMS = [
   'Client wants free revisions',
@@ -629,6 +630,18 @@ export default function LandingPage() {
           ))}
         </div>
       </div>
+
+      {/* See it in action — animated product demo */}
+      <section className="py-20 border-t border-[#1c1c1e]">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <p className="text-xs tracking-widest text-[#84cc16] uppercase mb-3">See it in action</p>
+          <h2 className="text-3xl font-semibold text-white mb-4">From contract to response in seconds</h2>
+          <p className="text-[#71717a] mb-10 max-w-lg mx-auto">
+            Paste a clause, get a risk score, pick your situation, and copy a professional response — no legal knowledge required.
+          </p>
+          <DemoAnimation />
+        </div>
+      </section>
 
       {/* How It Works */}
       <section data-animate className="py-28">
