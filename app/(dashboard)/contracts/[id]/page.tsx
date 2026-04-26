@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import RiskReport from '@/components/contract/RiskReport'
 import ContractDeleteButton from '@/components/contract/ContractDeleteButton'
+import ContractPendingState from '@/components/contract/ContractPendingState'
 import { ContractAnalysis } from '@/types'
 
 export default async function ContractPage({ params }: { params: Promise<{ id: string }> }) {
@@ -41,11 +42,7 @@ export default async function ContractPage({ params }: { params: Promise<{ id: s
         <p className="text-text-muted text-xs break-all mb-8">{contract.original_filename}</p>
       )}
 
-      {contract.status === 'pending' && (
-        <div className="text-text-muted p-12 text-center border border-bg-border rounded-xl text-sm">
-          Analyzing — this takes about 15–30 seconds.
-        </div>
-      )}
+      {contract.status === 'pending' && <ContractPendingState />}
 
       {contract.status === 'error' && (
         <div className="text-urgency-high bg-urgency-high-dim rounded-xl px-5 py-4 text-sm">

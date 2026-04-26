@@ -38,6 +38,7 @@ export type DefenseToolMeta = {
   icon: string
   urgency: 'low' | 'medium' | 'high'
   contextFields: ContextField[]
+  situationPlaceholder?: string
 }
 
 export type FlaggedClause = {

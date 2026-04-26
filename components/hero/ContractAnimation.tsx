@@ -19,6 +19,8 @@ const CLAUSES = [
     color: '#ef4444',
     title: 'Unlimited Revisions',
     quote: '"Client may request revisions until fully satisfied with the deliverables."',
+    plainEnglish: 'You could be revising this project indefinitely with no additional pay.',
+    whyItMatters: 'Scope creep from unlimited revisions is the #1 reason freelancers undercharge.',
     pushback: 'This agreement includes 2 rounds of revisions. Additional rounds are billed at €90/hr. Client approvals at each milestone close that revision window.',
   },
   {
@@ -26,6 +28,8 @@ const CLAUSES = [
     color: '#f97316',
     title: 'Immediate IP Transfer',
     quote: '"All work product transfers to Client upon creation."',
+    plainEnglish: 'The client owns your work the moment you create it — even before they pay.',
+    whyItMatters: "You lose all leverage if the client disputes payment after the work is done.",
     pushback: 'IP transfers to Client upon receipt of full payment. Until payment is received, I retain all rights to work product.',
   },
   {
@@ -33,8 +37,29 @@ const CLAUSES = [
     color: '#f97316',
     title: 'Net 60 Payment Terms',
     quote: '"Invoices are due within sixty (60) days of receipt."',
+    plainEnglish: 'You are effectively lending the client money interest-free for 2 months.',
+    whyItMatters: 'Net 60 terms are standard in enterprise but predatory for solo freelancers.',
     pushback: 'Payment terms are Net 14. Late payment accrues interest at 8% per annum from the due date.',
   },
+]
+
+const MISSING_PROTECTIONS = [
+  {
+    title: 'Late Payment Interest',
+    why: 'Without this, you have no leverage if the client pays 90+ days late.',
+    suggested: 'Overdue invoices accrue interest at 8% per annum from the due date.',
+  },
+  {
+    title: 'Kill Fee Clause',
+    why: 'If the client cancels mid-project, you need compensation for work completed.',
+    suggested: '50% of remaining contract value is due if project is cancelled after kickoff.',
+  },
+]
+
+const NEGOTIATION_PRIORITY = [
+  { level: 'CRITICAL', color: '#ef4444', title: 'Unlimited Revisions', detail: 'Cap at 2 rounds; charge for extras at your hourly rate' },
+  { level: 'HIGH', color: '#f97316', title: 'Net 60 Payment Terms', detail: 'Negotiate down to Net 14 or Net 30 at most' },
+  { level: 'HIGH', color: '#f97316', title: 'Immediate IP Transfer', detail: 'Tie transfer to final payment receipt' },
 ]
 
 const POSITIVE_NOTES = [
@@ -105,10 +130,10 @@ export default function ContractAnimation() {
       }, 480)
 
     } else if (next === 'expand') {
-      tRef.current = setTimeout(() => go('done'), 3800)
+      tRef.current = setTimeout(() => go('done'), 4800)
 
     } else if (next === 'done') {
-      tRef.current = setTimeout(() => go('exit'), 3200)
+      tRef.current = setTimeout(() => go('exit'), 4000)
 
     } else if (next === 'exit') {
       setFading(true)
@@ -254,9 +279,9 @@ export default function ContractAnimation() {
             </div>
           )}
 
-          {/* ── RESULTS ── */}
-          {showResults && (
-            <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: '1.25rem 1.5rem', gap: '0.875rem' }}>
+          {/* ── RESULTS: flagged clauses view ── */}
+          {showResults && phase !== 'done' && (
+            <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: '1.25rem 1.5rem', gap: '0.75rem' }}>
 
               {/* Risk badge + verdict */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', flexShrink: 0 }}>
@@ -273,14 +298,14 @@ export default function ContractAnimation() {
               </div>
 
               {/* Flagged clauses */}
-              {(phase === 'clauses' || phase === 'expand' || phase === 'done') && (
+              {(phase === 'clauses' || phase === 'expand') && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem', flex: 1, overflow: 'hidden' }}>
                   <p style={{ fontSize: '0.55rem', color: '#52525b', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, flexShrink: 0 }}>
                     Flagged clauses ({CLAUSES.length})
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', overflow: 'auto' }}>
                     {CLAUSES.slice(0, visibleClauses).map((clause, i) => {
-                      const isExpanded = i === 0 && (phase === 'expand' || phase === 'done')
+                      const isExpanded = i === 0 && phase === 'expand'
                       return (
                         <div key={i} style={{
                           backgroundColor: '#111114',
@@ -299,21 +324,37 @@ export default function ContractAnimation() {
                             <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#e4e4e7' }}>{clause.title}</span>
                           </div>
 
-                          {/* Expanded body */}
+                          {/* Expanded body — 3 panels */}
                           {isExpanded && (
-                            <div style={{ padding: '0 0.875rem 0.875rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                            <div style={{ padding: '0 0.875rem 0.875rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                              {/* Quote */}
                               <p style={{
-                                fontSize: '0.62rem', color: '#71717a', fontStyle: 'italic',
-                                borderLeft: `2px solid ${clause.color}`, paddingLeft: '0.5rem', lineHeight: 1.55,
+                                fontSize: '0.6rem', color: '#71717a', fontStyle: 'italic',
+                                borderLeft: `2px solid ${clause.color}`, paddingLeft: '0.5rem', lineHeight: 1.5,
+                                margin: 0,
                               }}>{clause.quote}</p>
+
+                              {/* What this means */}
                               <div>
-                                <p style={{ fontSize: '0.52rem', color: '#52525b', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.3rem' }}>What to say back</p>
+                                <p style={{ fontSize: '0.5rem', color: '#52525b', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.2rem' }}>What this means</p>
+                                <p style={{ fontSize: '0.6rem', color: '#a1a1aa', lineHeight: 1.55, margin: 0 }}>{clause.plainEnglish}</p>
+                              </div>
+
+                              {/* Why it matters */}
+                              <div>
+                                <p style={{ fontSize: '0.5rem', color: '#52525b', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.2rem' }}>Why it matters</p>
+                                <p style={{ fontSize: '0.6rem', color: '#a1a1aa', lineHeight: 1.55, margin: 0 }}>{clause.whyItMatters}</p>
+                              </div>
+
+                              {/* What to say back */}
+                              <div>
+                                <p style={{ fontSize: '0.5rem', color: '#52525b', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.2rem' }}>What to say back</p>
                                 <div style={{
                                   backgroundColor: '#0a0a0a', border: '1px solid #1e1e22',
-                                  borderRadius: '0.375rem', padding: '0.625rem 0.75rem',
-                                  display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem',
+                                  borderRadius: '0.375rem', padding: '0.5rem 0.625rem',
+                                  display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.625rem',
                                 }}>
-                                  <p style={{ fontSize: '0.63rem', color: '#d4d4d8', lineHeight: 1.65 }}>{clause.pushback}</p>
+                                  <p style={{ fontSize: '0.6rem', color: '#d4d4d8', lineHeight: 1.6, margin: 0 }}>{clause.pushback}</p>
                                   <div style={{
                                     backgroundColor: 'rgba(132,204,22,0.1)', border: '1px solid rgba(132,204,22,0.2)',
                                     borderRadius: '0.25rem', padding: '0.2rem 0.45rem', flexShrink: 0,
@@ -329,31 +370,110 @@ export default function ContractAnimation() {
                   </div>
                 </div>
               )}
+            </div>
+          )}
 
-              {/* Positive notes — done phase */}
-              {phase === 'done' && (
-                <div style={{ flexShrink: 0, borderTop: '1px solid #1a1a1a', paddingTop: '0.75rem' }}>
-                  <p style={{ fontSize: '0.52rem', color: '#52525b', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.4rem' }}>
-                    Working in your favor
-                  </p>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                    {POSITIVE_NOTES.map((note, i) => (
-                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <div style={{
-                          width: 13, height: 13, borderRadius: '50%', flexShrink: 0,
-                          backgroundColor: 'rgba(132,204,22,0.12)', border: '1px solid rgba(132,204,22,0.25)',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>
-                          <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#84cc16" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                        </div>
-                        <p style={{ fontSize: '0.63rem', color: '#71717a' }}>{note}</p>
-                      </div>
-                    ))}
-                  </div>
+          {/* ── RESULTS: missing protections + negotiate + positive ── */}
+          {phase === 'done' && (
+            <div style={{ flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '1.25rem 1.5rem', gap: '0.875rem' }}>
+
+              {/* Risk badge (compact) */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}>
+                <div style={{
+                  backgroundColor: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.28)',
+                  borderRadius: '0.375rem', padding: '0.25rem 0.6rem',
+                  display: 'flex', alignItems: 'center', gap: '0.4rem',
+                }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.55rem', fontWeight: 700, color: '#f97316', letterSpacing: '0.08em' }}>HIGH RISK</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 800, color: '#f97316' }}>72</span>
                 </div>
-              )}
+                <p style={{ fontSize: '0.62rem', color: '#71717a', fontStyle: 'italic', margin: 0 }}>{CONTRACT.verdict}</p>
+              </div>
+
+              {/* Missing protections */}
+              <div style={{ flexShrink: 0 }}>
+                <p style={{ fontSize: '0.52rem', color: '#52525b', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.4rem' }}>
+                  Missing protections ({MISSING_PROTECTIONS.length})
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                  {MISSING_PROTECTIONS.map((p, i) => (
+                    <div key={i} style={{
+                      backgroundColor: '#111114', border: '1px solid #222225',
+                      borderLeft: '3px solid #f97316', borderRadius: '0.5rem', overflow: 'hidden',
+                    }}>
+                      <div style={{ padding: '0.5rem 0.75rem' }}>
+                        <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#e4e4e7', marginBottom: '0.2rem' }}>{p.title}</p>
+                        <p style={{ fontSize: '0.58rem', color: '#71717a', lineHeight: 1.5, margin: 0 }}>{p.why}</p>
+                      </div>
+                      <div style={{ backgroundColor: '#0d0d10', borderTop: '1px solid #1c1c1f', padding: '0.4rem 0.75rem' }}>
+                        <p style={{ fontSize: '0.5rem', color: '#52525b', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.2rem' }}>Suggested clause</p>
+                        <p style={{ fontSize: '0.58rem', color: '#a1a1aa', lineHeight: 1.5, margin: 0 }}>{p.suggested}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* What to negotiate */}
+              <div style={{ flexShrink: 0 }}>
+                <p style={{ fontSize: '0.52rem', color: '#52525b', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.4rem' }}>
+                  What to negotiate
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                  {NEGOTIATION_PRIORITY.map((item, i) => (
+                    <div key={i} style={{
+                      backgroundColor: '#111114', border: '1px solid #222225',
+                      borderLeft: `3px solid ${item.color}`, borderRadius: '0.5rem',
+                      padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'flex-start', gap: '0.5rem',
+                    }}>
+                      <div style={{
+                        width: 16, height: 16, borderRadius: '50%', flexShrink: 0,
+                        backgroundColor: '#1a1a1a', border: '1px solid #2a2a2e',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '0.5rem', fontWeight: 700, color: '#71717a',
+                      }}>{i + 1}</div>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginBottom: '0.15rem' }}>
+                          <span style={{
+                            fontSize: '0.48rem', fontWeight: 700, letterSpacing: '0.06em',
+                            padding: '0.1rem 0.35rem', borderRadius: '3px',
+                            backgroundColor: `${item.color}1a`, color: item.color,
+                          }}>{item.level}</span>
+                          <span style={{ fontSize: '0.63rem', fontWeight: 600, color: '#e4e4e7' }}>{item.title}</span>
+                        </div>
+                        <p style={{ fontSize: '0.57rem', color: '#71717a', lineHeight: 1.45, margin: 0 }}>{item.detail}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* What's working — lime border */}
+              <div style={{ flexShrink: 0 }}>
+                <p style={{ fontSize: '0.52rem', color: '#52525b', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.4rem' }}>
+                  Working in your favor
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                  {POSITIVE_NOTES.map((note, i) => (
+                    <div key={i} style={{
+                      backgroundColor: '#111114', border: '1px solid #222225',
+                      borderLeft: '3px solid #84cc16', borderRadius: '0.5rem',
+                      padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem',
+                    }}>
+                      <div style={{
+                        width: 13, height: 13, borderRadius: '50%', flexShrink: 0,
+                        backgroundColor: 'rgba(132,204,22,0.12)', border: '1px solid rgba(132,204,22,0.25)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#84cc16" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <p style={{ fontSize: '0.62rem', color: '#71717a', margin: 0 }}>{note}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>

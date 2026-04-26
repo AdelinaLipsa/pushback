@@ -92,7 +92,7 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
             required
             value={situation}
             onChange={e => setSituation(e.target.value)}
-            placeholder="e.g. Client just emailed asking to add a mobile app to the website project, same budget…"
+            placeholder={tool.situationPlaceholder ?? 'Describe what happened…'}
             rows={4}
             style={{ ...inputStyle, resize: 'vertical' as const }}
             onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}

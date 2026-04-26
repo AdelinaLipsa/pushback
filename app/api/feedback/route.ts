@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { sendFeedbackNotification } from '@/lib/email'
 import { z } from 'zod'
 
 const CATEGORIES = ['bug', 'feature', 'idea', 'other'] as const
@@ -26,6 +27,12 @@ export async function POST(request: Request) {
   })
 
   if (error) return Response.json({ error: 'Failed to submit feedback' }, { status: 500 })
+
+  sendFeedbackNotification(
+    parsed.data.message,
+    parsed.data.category ?? null,
+    user.email ?? user.id,
+  ).catch(() => {})
 
   return Response.json({ ok: true })
 }

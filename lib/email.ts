@@ -92,6 +92,44 @@ function upgradeHtml(billing: BillingDetails): string {
 </html>`
 }
 
+function feedbackHtml(message: string, category: string | null, userEmail: string): string {
+  const categoryBadge = category
+    ? `<span style="display:inline-block;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:4px;padding:2px 10px;font-size:0.75rem;color:#a1a1aa;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.06em;">${escapeHtml(category)}</span><br>`
+    : ''
+  return `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;">
+    <tr><td align="center" style="padding:40px 20px;">
+      <table width="600" cellpadding="0" cellspacing="0" style="background:#111111;border:1px solid #2a2a2a;border-radius:12px;">
+        <tr><td style="padding:32px 40px;border-bottom:1px solid #2a2a2a;">
+          <span style="font-weight:800;font-size:1.5rem;color:#fafafa;">Pushback</span><span style="color:#84cc16;font-weight:800;font-size:1.5rem;">.</span>
+          <span style="color:#52525b;font-size:0.85rem;margin-left:12px;">New feedback</span>
+        </td></tr>
+        <tr><td style="padding:32px 40px;">
+          ${categoryBadge}
+          <p style="color:#fafafa;font-size:0.95rem;line-height:1.7;white-space:pre-wrap;margin:0 0 24px;">${escapeHtml(message)}</p>
+          <p style="color:#52525b;font-size:0.8rem;margin:0;">From: ${escapeHtml(userEmail)}</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+}
+
+export async function sendFeedbackNotification(message: string, category: string | null, userEmail: string): Promise<void> {
+  const { error } = await resend.emails.send({
+    from: FROM,
+    to: 'adelina.lipsa@gmail.com',
+    subject: `Pushback feedback${category ? ` [${category}]` : ''}: ${message.slice(0, 60)}${message.length > 60 ? '…' : ''}`,
+    html: feedbackHtml(message, category, userEmail),
+  })
+  if (error) {
+    throw new Error(`Resend error: ${error.message}`)
+  }
+}
+
 export async function sendWelcomeEmail(to: string): Promise<void> {
   const { error } = await resend.emails.send({
     from: FROM,
