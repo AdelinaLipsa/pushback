@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 10: Smart Escalation** - Show next-step guidance after every generated message and surface project alerts proactively on the dashboard
 - [x] **Phase 11: Document Generation** - Generate structured documents (SOW amendments, dispute packages, kill fee invoices) for Pro users — one-click, not just an email (completed 2026-04-26)
 - [x] **Phase 12: Client Risk Intelligence** - Surface client behavioral risk scores from existing DB data (defense responses, overdue payments, conflict history) on the dashboard (completed 2026-04-26)
-- [ ] **Phase 13: How-To & In-App Guidance** - Marketing page animated product demo (CSS-only, no video) + /how-it-works page, tool directory, inline tooltips, and FAQ so the app is self-teaching
+- [x] **Phase 13: How-To & In-App Guidance** - Marketing page animated product demo (CSS-only, no video) + /how-it-works page, tool directory, inline tooltips, and FAQ so the app is self-teaching (completed 2026-04-26)
 
 ## Phase Details
 
@@ -229,7 +229,7 @@ Plans:
 Plans:
 - [x] 13-01-PLAN.md — DemoAnimation client component (5-state machine, typewriter, vignette, entrance) + landing page "See it in action" section (Wave 1)
 - [x] 13-02-PLAN.md — Public /how-it-works page (Server Component, marketing layout, 3 use modes, full tool directory, contract analysis explainer, FAQ) (Wave 1)
-- [ ] 13-03-PLAN.md — Wire /how-it-works into navigation/onboarding: Footer link replacement, Navbar Help link, DefenseDashboard empty-state hint, ProjectDetailClient new-project hint (Wave 2)
+- [x] 13-03-PLAN.md — Wire /how-it-works into navigation/onboarding: Footer link replacement, Navbar Help link, DefenseDashboard empty-state hint, ProjectDetailClient new-project hint (Wave 2)
 **UI hint**: yes
 
 ## Progress
@@ -251,7 +251,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 10. Smart Escalation | 0/? | Not planned | - |
 | 11. Document Generation | 3/3 | Complete    | 2026-04-26 |
 | 12. Client Risk Intelligence | 4/4 | Complete    | 2026-04-26 |
-| 13. How-To & In-App Guidance | 2/3 | In Progress|  |
+| 13. How-To & In-App Guidance | 3/3 | Complete   | 2026-04-26 |
 
 ## Backlog
 
@@ -259,7 +259,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 **Goal:** Freelancer pastes a client's response to a sent pushback; app reads both the original defense tool use and the client reply, surfaces risk signals (backing down vs doubling down), and helps craft a follow-up
 **Requirements:** TBD
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] TBD (promote with /gsd-review-backlog when ready)
