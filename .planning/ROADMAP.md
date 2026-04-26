@@ -209,6 +209,12 @@ Plans:
   1. Each project card shows a client risk score (0–100) with color coding (green/yellow/red) and 1-2 signal labels
   2. Risk score is computed from defense_responses count, overdue payment history, and conflict tool types used
   3. A risk breakdown is visible on the project detail page
+**Plans**: 4 plans
+Plans:
+- [ ] 12-01-PLAN.md — Create lib/clientRisk.ts with computeClientRisk + CLIENT_RISK_COLORS + RISK_WEIGHTS + LEVEL_LABELS (Wave 1)
+- [ ] 12-02-PLAN.md — Create ClientRiskBadge + wire into ProjectCard badge row (Wave 2)
+- [ ] 12-03-PLAN.md — Create ClientBehaviorCard + wire above DefenseDashboard on project detail (Wave 2)
+- [ ] 12-04-PLAN.md — Inject top-risk client row into Needs Attention section on dashboard (Wave 2)
 **UI hint**: yes
 
 ### Phase 13: How-To & In-App Guidance
@@ -239,7 +245,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. Contract-Aware Intelligence | 0/4 | Planned | - |
 | 10. Smart Escalation | 0/? | Not planned | - |
 | 11. Document Generation | 3/3 | Complete    | 2026-04-26 |
-| 12. Client Risk Intelligence | 0/? | Not planned | - |
+| 12. Client Risk Intelligence | 0/4 | Planned | - |
 | 13. How-To & In-App Guidance | 0/? | Not planned | - |
 
 ## Backlog
