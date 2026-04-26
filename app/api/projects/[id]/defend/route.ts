@@ -235,6 +235,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       await releaseAnthropicSlot()
     }
 
+    if (response.startsWith('This tool handles freelancer-client situations only')) {
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
+      return Response.json({ error: response }, { status: 400 })
+    }
+
     // Credit-safe insert — only proceed if save succeeds (RELY-04)
     const { data: saved, error: saveError } = await supabase
       .from('defense_responses')

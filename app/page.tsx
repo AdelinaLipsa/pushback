@@ -302,7 +302,7 @@ export default function LandingPage() {
           if (entry.isIntersecting) {
             const el = entry.target as HTMLElement
             el.style.opacity = '1'
-            el.style.transform = 'translateY(0)'
+            el.style.transform = 'translateY(0) translateX(0)'
             observer.unobserve(entry.target)
           }
         })
@@ -313,9 +313,13 @@ export default function LandingPage() {
       const htmlEl = el as HTMLElement
       const rect = htmlEl.getBoundingClientRect()
       if (rect.top >= window.innerHeight - 60) {
+        const from = htmlEl.dataset.animateFrom || 'up'
+        const delay = htmlEl.dataset.animateDelay || '0'
+        const tx = from === 'left' ? '-28px' : from === 'right' ? '28px' : '0px'
+        const ty = from === 'up' ? '28px' : '0px'
         htmlEl.style.opacity = '0'
-        htmlEl.style.transform = 'translateY(32px)'
-        htmlEl.style.transition = 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)'
+        htmlEl.style.transform = `translateY(${ty}) translateX(${tx})`
+        htmlEl.style.transition = `opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`
       }
       observer.observe(el)
     })
@@ -341,7 +345,7 @@ export default function LandingPage() {
       {/* How it works */}
       <section className="py-24 border-t border-[#1c1c1e]">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12" data-animate>
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>How it works</p>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: '1.25rem' }}>
               Every client situation has a correct response.<br />You now have all of them.
@@ -351,11 +355,11 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <DemoAnimation />
+          <div data-animate data-animate-delay="150"><DemoAnimation /></div>
 
           <div className="flex justify-around mt-10 px-4">
-            {HOW_IT_WORKS_STEPS.map(({ num, label }) => (
-              <div key={num} className="text-center">
+            {HOW_IT_WORKS_STEPS.map(({ num, label }, idx) => (
+              <div key={num} className="text-center" data-animate data-animate-delay={String(idx * 120)}>
                 <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--brand-lime)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', marginBottom: '0.25rem' }}>{num}</div>
                 <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{label}</div>
               </div>
@@ -365,8 +369,8 @@ export default function LandingPage() {
       </section>
 
       {/* Tool Carousel — 3D coverflow */}
-      <section data-animate style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)' }} className="py-28">
-        <div className="max-w-5xl mx-auto px-6" style={{ marginBottom: '3.5rem' }}>
+      <section style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)' }} className="py-28">
+        <div className="max-w-5xl mx-auto px-6" data-animate style={{ marginBottom: '3.5rem' }}>
           <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>The arsenal</p>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
@@ -377,13 +381,13 @@ export default function LandingPage() {
             </p>
           </div>
         </div>
-        <ToolCarousel />
+        <div data-animate data-animate-delay="200"><ToolCarousel /></div>
       </section>
 
       {/* Pricing */}
-      <section data-animate style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)' }} className="py-28">
+      <section style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)' }} className="py-28">
         <div className="max-w-4xl mx-auto px-6">
-          <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
+          <div data-animate style={{ marginBottom: '4rem', textAlign: 'center' }}>
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Pricing</p>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: '1.25rem' }}>
               Start free.<br />Own every situation.
@@ -395,7 +399,7 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
             {/* Free */}
-            <div style={{ backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)', borderRadius: '1rem', padding: '2rem', display: 'flex', flexDirection: 'column' }}>
+            <div data-animate data-animate-from="left" data-animate-delay="150" style={{ backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)', borderRadius: '1rem', padding: '2rem', display: 'flex', flexDirection: 'column' }}>
               <div style={{ marginBottom: '2rem' }}>
                 <div style={{ fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1rem' }}>Free</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem', marginBottom: '0.5rem' }}>
@@ -421,7 +425,7 @@ export default function LandingPage() {
             </div>
 
             {/* Pro */}
-            <div style={{
+            <div data-animate data-animate-from="right" data-animate-delay="250" style={{
               backgroundColor: 'var(--bg-elevated)',
               border: '1px solid rgba(132,204,22,0.3)',
               borderRadius: '1rem',

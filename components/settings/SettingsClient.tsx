@@ -330,7 +330,7 @@ export default function SettingsClient({ profile, nextBillingDate, isEmailUser }
               GDPR Article 17 — request permanent deletion of your account and all associated data.
             </p>
             <a
-              href={`mailto:adelina.lipsa@gmail.com?subject=Data%20deletion%20request&body=Please%20delete%20my%20account%20and%20all%20associated%20data.%0A%0AEmail%3A%20${encodeURIComponent(profile.email)}`}
+              href={`mailto:hello@pushback.to?subject=Data%20deletion%20request&body=Please%20delete%20my%20account%20and%20all%20associated%20data.%0A%0AEmail%3A%20${encodeURIComponent(profile.email)}`}
               className="inline-flex items-center gap-1.5 text-xs text-text-muted hover:text-text-secondary transition-colors"
               style={{ textDecoration: 'none' }}
             >

@@ -13,7 +13,7 @@ const LEGAL_LINKS = [
   { label: 'Terms of Service', href: '/terms' },
   {
     label: 'Data deletion',
-    href: 'mailto:adelina.lipsa@gmail.com?subject=Data%20deletion%20request&body=Please%20delete%20my%20account%20and%20all%20associated%20data.',
+    href: 'mailto:hello@pushback.to?subject=Data%20deletion%20request&body=Please%20delete%20my%20account%20and%20all%20associated%20data.',
   },
 ]
 

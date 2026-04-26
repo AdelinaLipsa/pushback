@@ -11,7 +11,7 @@ export default function PrivacyPage() {
             <span style={{ color: 'var(--brand-lime)', fontWeight: 800, fontSize: '1.5rem' }}>.</span>
           </Link>
           <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', fontSize: '0.85rem' }}>
-            Last updated: April 2026 · Contact: adelina.lipsa@gmail.com
+            Last updated: April 2026 · Contact: hello@pushback.to
           </p>
         </div>
 
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
             Introduction
           </h2>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, fontSize: '1rem', marginBottom: '1rem' }}>
-            Pushback ("we", "our", "us") operates this application and is committed to protecting your personal information. This Privacy Policy explains what data we collect, how we use it, who we share it with, and your rights. If you have questions or requests, contact us at adelina.lipsa@gmail.com.
+            Pushback ("we", "our", "us") operates this application and is committed to protecting your personal information. This Privacy Policy explains what data we collect, how we use it, who we share it with, and your rights. If you have questions or requests, contact us at hello@pushback.to.
           </p>
 
           <h2 style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '1.25rem', lineHeight: 1.2, marginTop: '2rem', marginBottom: '0.75rem' }}>
@@ -91,7 +91,7 @@ export default function PrivacyPage() {
             Your Rights
           </h2>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, fontSize: '1rem', marginBottom: '1rem' }}>
-            You have the right to access, export, correct, or delete the personal data we hold about you. To submit any of these requests, email us at adelina.lipsa@gmail.com from the address associated with your Pushback account. We will respond within 30 days.
+            You have the right to access, export, correct, or delete the personal data we hold about you. To submit any of these requests, email us at hello@pushback.to from the address associated with your Pushback account. We will respond within 30 days.
           </p>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, fontSize: '1rem', marginBottom: '1rem' }}>
             You may also delete your account directly from your account settings, which will trigger the data removal process described above.
@@ -116,7 +116,7 @@ export default function PrivacyPage() {
           </h2>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, fontSize: '1rem', marginBottom: '1rem' }}>
             If you have any questions about this Privacy Policy or how we handle your data, please contact us at{' '}
-            <Link href="mailto:adelina.lipsa@gmail.com" style={{ color: 'var(--brand-lime)', fontWeight: 500, textDecoration: 'none' }}>adelina.lipsa@gmail.com</Link>.
+            <Link href="mailto:hello@pushback.to" style={{ color: 'var(--brand-lime)', fontWeight: 500, textDecoration: 'none' }}>hello@pushback.to</Link>.
           </p>
 
         </div>

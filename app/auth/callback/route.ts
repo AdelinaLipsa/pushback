@@ -16,11 +16,14 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/login?error=auth_failed`)
   }
 
-  // New-signup detection: created_at within the last 60 seconds covers both
-  // Google OAuth first-sign-in and email/password confirmation callbacks.
-  // Returning logins have an older created_at and skip the email.
+  // New-signup detection: email_confirmed_at is set to "now" at the moment this
+  // callback fires for both flows — email/password (confirmation link click) and
+  // Google OAuth (first sign-in). Returning users have an old email_confirmed_at
+  // and are correctly excluded. created_at is NOT used because email/password users
+  // always take longer than 60s to open their inbox and click the confirmation link.
+  const confirmedAt = data.user.email_confirmed_at
   const isNewUser =
-    Date.now() - new Date(data.user.created_at).getTime() < 60_000
+    !!confirmedAt && Date.now() - new Date(confirmedAt).getTime() < 60_000
   if (isNewUser && data.user.email) {
     // Fire-and-forget: never awaited, never blocks the redirect below.
     // sendWelcomeEmail throws on Resend error — .catch() absorbs it.

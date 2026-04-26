@@ -15,6 +15,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .eq('id', user.id)
     .single()
 
+  const isAdmin = !!process.env.ADMIN_EMAIL && user.email === process.env.ADMIN_EMAIL
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--bg-base)' }}>
       {/* Ambient glow — mix-blend-mode:screen so it tints through transparent content, sidebar solid bg covers it naturally */}
@@ -22,7 +24,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="dash-glow-a" />
         <div className="dash-glow-b" />
       </div>
-      <Navbar profile={profile as UserProfile | null} />
+      <Navbar profile={profile as UserProfile | null} isAdmin={isAdmin} />
       <main style={{ flex: 1, overflow: 'auto', paddingBottom: '4rem', position: 'relative', zIndex: 1 }} className="md:pb-0">
         {children}
       </main>

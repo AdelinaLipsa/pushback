@@ -3,6 +3,7 @@ import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import Footer from '@/components/shared/Footer'
 import DemoAnimation from '@/components/hero/DemoAnimation'
 import ContractAnimation from '@/components/hero/ContractAnimation'
+import ReplyThreadAnimation from '@/components/hero/ReplyThreadAnimation'
 
 const TOOL_GROUPS: { heading: string; color: string; types: string[] }[] = [
   {
@@ -27,23 +28,6 @@ const TOOL_GROUPS: { heading: string; color: string; types: string[] }[] = [
   },
 ]
 
-const STEPS = [
-  {
-    n: '01',
-    title: 'Paste the client message',
-    body: 'Drop any email, DM, or message into the analyze box. Pushback reads it in seconds and identifies exactly what kind of situation you\'re dealing with — scope creep, late payment, ghosting, rate pressure, dispute.',
-  },
-  {
-    n: '02',
-    title: 'Pick your defense tool',
-    body: 'Pushback pre-selects the right tool automatically. Or browse the full arsenal of 21 situation-specific tools and pick the one that fits. Each tool is built for a specific client problem — not a generic AI chat.',
-  },
-  {
-    n: '03',
-    title: 'Copy a professional reply',
-    body: 'A firm, ready-to-send response is drafted in seconds. If you\'ve uploaded your contract, the reply references your actual clauses — payment terms, revision limits, kill fee. Edit if you want, copy, send.',
-  },
-]
 
 const FAQS = [
   {
@@ -52,7 +36,7 @@ const FAQS = [
   },
   {
     q: 'How is this different from asking ChatGPT?',
-    a: 'Pushback uses 21 battle-tested response frameworks built specifically for client disputes — not a general-purpose chat. It knows your contract, tracks your project history, and drafts responses that reference your actual terms. The output is copy-ready, not a draft you need to rewrite.',
+    a: 'Pushback has 21 situation-specific tools built for client disputes — not a general-purpose chat. It knows your contract, tracks your project history, and drafts responses that reference your actual terms. The output is copy-ready, not a draft you need to rewrite.',
   },
   {
     q: 'Where do my client messages and contracts go?',
@@ -70,11 +54,21 @@ const FAQS = [
     q: 'Can I cancel my Pro subscription anytime?',
     a: 'Yes — from the billing portal in your account settings. You keep Pro access until the end of the current billing period.',
   },
+  {
+    q: 'How does payment tracking work?',
+    a: 'Add a payment due date to any project. Pushback tracks it and surfaces overdue invoices as alerts on your dashboard — with the exact number of days past due and a direct link to the right follow-up tool. No manual chasing required.',
+  },
+  {
+    q: 'What documents can Pushback generate?',
+    a: 'Three: an SOW amendment (when scope changes mid-project), a dispute package (when a client escalates or threatens a chargeback), and a kill fee invoice (when a client cancels after work has started). Each pulls your project details and contract terms automatically. Document generation is a Pro feature.',
+  },
 ]
 
 export default function HowItWorksPage() {
   return (
-    <div style={{ backgroundColor: 'var(--bg-base)', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: 'var(--bg-base)', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
+      <div className="dash-glow-a" />
+      <div className="dash-glow-b" />
 
       {/* Logo header */}
       <div style={{ textAlign: 'center', padding: '2.5rem 1.5rem 0' }}>
@@ -93,54 +87,13 @@ export default function HowItWorksPage() {
           A professional reply to any client situation. In under 30 seconds.
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.65 }}>
-          Paste the message. Pushback identifies what&apos;s happening, picks the right tool, and drafts a firm reply — using your actual contract clauses if you&apos;ve uploaded one.
+          Paste the message. Pushback identifies what&apos;s happening, picks the right tool, and drafts a firm reply — referencing your actual contract clauses, payment terms, and revision limits.
         </p>
       </div>
 
       {/* DEMO — full width cinematic */}
       <div style={{ padding: '0 1.5rem 6rem', maxWidth: '900px', margin: '0 auto' }}>
         <DemoAnimation />
-      </div>
-
-      {/* How it works — 3 steps */}
-      <div style={{ padding: '0 1.5rem 6rem', maxWidth: '900px', margin: '0 auto' }}>
-        <p style={{ color: 'var(--brand-lime)', fontSize: '0.65rem', letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '1rem', textAlign: 'center' }}>
-          The workflow
-        </p>
-        <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '3rem', textAlign: 'center', lineHeight: 1.1 }}>
-          Three steps. No legal background required.
-        </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem' }}>
-          {STEPS.map(step => (
-            <div key={step.n} style={{
-              backgroundColor: 'var(--bg-surface)',
-              border: '1px solid var(--bg-border)',
-              borderRadius: '0.875rem',
-              padding: '2rem',
-              position: 'relative',
-              overflow: 'hidden',
-            }}>
-              <span style={{
-                display: 'block',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '2.5rem',
-                fontWeight: 800,
-                color: 'rgba(132,204,22,0.12)',
-                lineHeight: 1,
-                marginBottom: '1.25rem',
-                letterSpacing: '-0.04em',
-              }}>
-                {step.n}
-              </span>
-              <h3 style={{ color: 'var(--text-primary)', fontSize: '1.05rem', fontWeight: 700, marginBottom: '0.75rem', letterSpacing: '-0.01em' }}>
-                {step.title}
-              </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.65 }}>
-                {step.body}
-              </p>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* What makes it different */}
@@ -172,7 +125,7 @@ export default function HowItWorksPage() {
           <div>
             <p style={{ color: 'var(--brand-lime)', fontFamily: 'var(--font-mono)', fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '0.25rem' }}>0</p>
             <p style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.35rem' }}>Rewriting required</p>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: 1.55 }}>Output is copy-ready. You edit if you want to, but most responses go out exactly as drafted.</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: 1.55 }}>Output is copy-ready. Edit to match your voice, or send exactly as drafted.</p>
           </div>
         </div>
       </div>
@@ -214,6 +167,50 @@ export default function HowItWorksPage() {
         </div>
       </div>
 
+      {/* Payment tracking */}
+      <div style={{ padding: '0 1.5rem 6rem', maxWidth: '900px', margin: '0 auto' }}>
+        <p style={{ color: 'var(--brand-lime)', fontSize: '0.65rem', letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '1rem', textAlign: 'center' }}>
+          Payment visibility
+        </p>
+        <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.75rem', textAlign: 'center', lineHeight: 1.1 }}>
+          Know who owes you before you have to ask.
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '3rem', textAlign: 'center', maxWidth: '52ch', margin: '0 auto 3rem' }}>
+          Add a payment due date to any project. Pushback tracks it, flags overdue invoices on your dashboard, and pre-loads the right follow-up tool — so you never have to manually chase a late payment.
+        </p>
+        <div style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--bg-border)',
+          borderRadius: '1rem',
+          padding: '2rem 2.5rem',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gap: '2rem',
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: 8, height: 8, borderRadius: '2px', backgroundColor: '#ef4444', flexShrink: 0 }} />
+              <p style={{ color: 'var(--text-primary)', fontSize: '0.82rem', fontWeight: 700 }}>Overdue badge</p>
+            </div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', lineHeight: 1.6 }}>Past-due invoices surface as a red alert on your dashboard — with the exact number of days overdue so nothing slips through.</p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: 8, height: 8, borderRadius: '2px', backgroundColor: '#f59e0b', flexShrink: 0 }} />
+              <p style={{ color: 'var(--text-primary)', fontSize: '0.82rem', fontWeight: 700 }}>Due soon warning</p>
+            </div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', lineHeight: 1.6 }}>Invoices within 3 days of their due date get an amber warning — get ahead of it before it tips into overdue.</p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: 8, height: 8, borderRadius: '2px', backgroundColor: '#84cc16', flexShrink: 0 }} />
+              <p style={{ color: 'var(--text-primary)', fontSize: '0.82rem', fontWeight: 700 }}>One-click follow-up</p>
+            </div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', lineHeight: 1.6 }}>Click any overdue alert and Pushback pre-selects the right reminder tool for the stage you&apos;re at — first notice, second chase, or final warning.</p>
+          </div>
+        </div>
+      </div>
+
       {/* Contract analysis */}
       <div style={{ padding: '0 1.5rem 6rem', maxWidth: '900px', margin: '0 auto' }}>
         <p style={{ color: 'var(--brand-lime)', fontSize: '0.65rem', letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '1rem', textAlign: 'center' }}>
@@ -240,6 +237,80 @@ export default function HowItWorksPage() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Raw text processed, never stored</p>
           </div>
         </div>
+      </div>
+
+      {/* Reply threading */}
+      <div style={{ padding: '0 1.5rem 6rem', maxWidth: '900px', margin: '0 auto' }}>
+        <p style={{ color: 'var(--brand-lime)', fontSize: '0.65rem', letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '1rem', textAlign: 'center' }}>
+          Reply threading
+        </p>
+        <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.75rem', textAlign: 'center', lineHeight: 1.1 }}>
+          Client replies back? Know exactly where you stand.
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '3rem', textAlign: 'center', maxWidth: '52ch', margin: '0 auto 3rem' }}>
+          Paste their reply into the history page. Pushback reads their stance — backing down, doubling down, or escalating — and drafts the right follow-up message so you never lose the thread.
+        </p>
+        <ReplyThreadAnimation />
+        <div style={{ marginTop: '2rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>4 stances detected</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Backing down, doubling down, escalating, unclear</p>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>One reply per thread</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Analysis lives in your message history — no separate tab</p>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Pro feature</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Uses the same credit pool as response generation</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Document generation */}
+      <div style={{ padding: '0 1.5rem 6rem', maxWidth: '900px', margin: '0 auto' }}>
+        <p style={{ color: 'var(--brand-lime)', fontSize: '0.65rem', letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '1rem', textAlign: 'center' }}>
+          Document generation
+        </p>
+        <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.75rem', textAlign: 'center', lineHeight: 1.1 }}>
+          Not just a reply. A full paper trail.
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '3rem', textAlign: 'center', maxWidth: '52ch', margin: '0 auto 3rem' }}>
+          When words aren&apos;t enough, generate a formal document. Each one pulls your project details and contract terms automatically — ready to send or attach.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
+          {[
+            {
+              label: 'SOW Amendment',
+              color: '#f59e0b',
+              desc: 'Scope changed mid-project? Generate a formal amendment that documents the new deliverables, revised timeline, and updated fee — and gets both parties back on the same page in writing.',
+            },
+            {
+              label: 'Dispute Package',
+              color: '#ef4444',
+              desc: 'Client escalating or threatening a chargeback? Compile a dispute package with your original agreement, all communications, and a formal record of what was delivered — ready to send or escalate.',
+            },
+            {
+              label: 'Kill Fee Invoice',
+              color: '#84cc16',
+              desc: 'Client cancelled after work started? Generate a kill fee invoice that references the cancellation clause in your contract and the work completed to date — no awkward back-and-forth.',
+            },
+          ].map(doc => (
+            <div key={doc.label} style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--bg-border)',
+              borderRadius: '0.875rem',
+              padding: '1.75rem 2rem',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: doc.color, flexShrink: 0 }} />
+                <p style={{ color: 'var(--text-primary)', fontSize: '0.85rem', fontWeight: 700 }}>{doc.label}</p>
+              </div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: 1.65 }}>{doc.desc}</p>
+            </div>
+          ))}
+        </div>
+        <p style={{ color: '#3f3f46', fontSize: '0.75rem', textAlign: 'center', marginTop: '1.5rem' }}>Pro feature — uses the same credit pool as response generation</p>
       </div>
 
       {/* FAQ */}

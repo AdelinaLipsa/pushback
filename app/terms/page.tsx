@@ -11,7 +11,7 @@ export default function TermsPage() {
             <span style={{ color: 'var(--brand-lime)', fontWeight: 800, fontSize: '1.5rem' }}>.</span>
           </Link>
           <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', fontSize: '0.85rem' }}>
-            Last updated: April 2026 · Contact: adelina.lipsa@gmail.com
+            Last updated: April 2026 · Contact: hello@pushback.to
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export default function TermsPage() {
             Cancellation
           </h2>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, fontSize: '1rem', marginBottom: '1rem' }}>
-            You may cancel your Pro subscription at any time from your account settings or by emailing adelina.lipsa@gmail.com. Cancellation takes effect at the end of the current billing period — you retain Pro access until that date, and no pro-rated refunds are issued for the remaining days. Cancellations requested within 30 days of the first Pro charge on a given account are eligible for a full refund on request.
+            You may cancel your Pro subscription at any time from your account settings or by emailing hello@pushback.to. Cancellation takes effect at the end of the current billing period — you retain Pro access until that date, and no pro-rated refunds are issued for the remaining days. Cancellations requested within 30 days of the first Pro charge on a given account are eligible for a full refund on request.
           </p>
 
           <h2 style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '1.25rem', lineHeight: 1.2, marginTop: '2rem', marginBottom: '0.75rem' }}>
@@ -96,7 +96,7 @@ export default function TermsPage() {
           </h2>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, fontSize: '1rem', marginBottom: '1rem' }}>
             Questions about these Terms? Contact us at{' '}
-            <Link href="mailto:adelina.lipsa@gmail.com" style={{ color: 'var(--brand-lime)', fontWeight: 500, textDecoration: 'none' }}>adelina.lipsa@gmail.com</Link>.
+            <Link href="mailto:hello@pushback.to" style={{ color: 'var(--brand-lime)', fontWeight: 500, textDecoration: 'none' }}>hello@pushback.to</Link>.
           </p>
 
         </div>

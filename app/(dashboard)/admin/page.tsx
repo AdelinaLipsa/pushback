@@ -4,8 +4,6 @@ import { createAdminSupabaseClient } from '@/lib/supabase/server'
 import { PLANS } from '@/lib/plans'
 import { UserTable } from './UserTable'
 
-const ADMIN_EMAIL = 'adelina.lipsa@gmail.com'
-
 function StatCard({ label, value, sub, accent }: { label: string; value: string; sub?: string; accent?: boolean }) {
   return (
     <div className={[
@@ -43,7 +41,7 @@ function MiniBar({ value, max }: { value: number; max: number }) {
 export default async function AdminPage() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user || user.email !== ADMIN_EMAIL) redirect('/dashboard')
+  if (!user || !process.env.ADMIN_EMAIL || user.email !== process.env.ADMIN_EMAIL) redirect('/dashboard')
 
   const admin = createAdminSupabaseClient()
   const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()

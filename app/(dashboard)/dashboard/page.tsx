@@ -8,6 +8,7 @@ import UpgradePrompt from '@/components/shared/UpgradePrompt'
 import ArsenalQuickDeploy from '@/components/defense/ArsenalQuickDeploy'
 import { computeClientRisk, LEVEL_LABELS, CLIENT_RISK_COLORS } from '@/lib/clientRisk'
 import WelcomeToast from '@/components/shared/WelcomeToast'
+import OnboardingModal from '@/components/shared/OnboardingModal'
 
 // ---- Attention alert types ----
 
@@ -259,6 +260,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
   return (
     <div style={{ padding: '2rem' }}>
+      <OnboardingModal isNew={isNewUser} />
       <WelcomeToast isNew={isNewUser} />
       {showUpgrade && profile?.plan === 'free' && (
         <div style={{ marginBottom: '2rem' }}>
@@ -325,6 +327,24 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               Not sure which tool fits?{' '}
               <span style={{ color: 'var(--brand-lime)', fontWeight: 600 }}>Browse the full arsenal</span>
               {' '}— every situation mapped with when to use it.
+            </span>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: '1rem', flexShrink: 0, transition: 'color 150ms ease' }} className="group-hover:text-text-secondary">→</span>
+          </Link>
+          <Link
+            href="/how-it-works"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              marginTop: '0.5rem', padding: '0.75rem 1rem',
+              backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+              borderRadius: '0.625rem', textDecoration: 'none',
+              transition: 'border-color 150ms ease',
+            }}
+            className="hover:border-white/20 group"
+          >
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              New here?{' '}
+              <span style={{ color: 'var(--brand-lime)', fontWeight: 600 }}>See how it works</span>
+              {' '}— the full walkthrough with animations.
             </span>
             <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: '1rem', flexShrink: 0, transition: 'color 150ms ease' }} className="group-hover:text-text-secondary">→</span>
           </Link>

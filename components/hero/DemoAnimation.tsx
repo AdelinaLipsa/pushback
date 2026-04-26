@@ -13,9 +13,9 @@ const SCENARIOS = [
   {
     project: 'Brand Identity — Noir Studio',
     client: 'Marcus T.',
-    tool: 'Late Payment',
-    message: `Hey Alex! Heads up — things are a bit tight this month so the invoice might be a couple of weeks late. Just cash flow stuff, nothing serious. Hope that's okay!`,
-    response: `Hi Marcus,\n\nThanks for the heads up. Just to flag: our agreement specifies Net 14 payment terms, and invoice #1042 for €2,400 was due on April 12th.\n\nAs outlined in section 4 of our contract, late payment interest accrues at 8% per annum after 7 days past the due date.\n\nPlease confirm when I can expect the transfer.\n\n— Alex`,
+    tool: 'Retroactive Discount',
+    message: `Hey Alex, just reviewing the invoice before we send payment. Honestly, the project took longer than expected on our end to review and the back-and-forth added up. We feel €1,800 is more in line with the value delivered. Can you reissue at that amount?`,
+    response: `Hi Marcus,\n\nThe invoice stands at €2,400 — that's the agreed project fee from our signed contract dated March 3rd, not a variable tied to review cycles on your side.\n\nThe scope we delivered matches exactly what was specified. Any delays in the review process don't affect the contracted amount.\n\nPayment is now 9 days overdue. Please process the original invoice by Friday to avoid the late payment clause in section 4.\n\n— Alex`,
   },
   {
     project: 'E-comm Redesign — Volta',
@@ -26,7 +26,7 @@ const SCENARIOS = [
   },
 ] as const
 
-const SIDEBAR_TOOLS = ['Scope Change', 'Payment Reminder', 'Late Payment', 'Ghost Client', 'Revision Limit', 'Kill Fee', 'Dispute Response', 'Rate Negotiation']
+const SIDEBAR_TOOLS = ['Scope Change', 'Late Payment', 'Retroactive Discount', 'Ghost Client', 'Revision Limit', 'Kill Fee', 'Dispute Response', 'Rate Negotiation']
 
 type Phase = 'idle' | 'typing-msg' | 'analyzing' | 'detected' | 'typing-resp' | 'done' | 'exit'
 

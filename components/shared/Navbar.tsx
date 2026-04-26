@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, BookOpen, HelpCircle, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, BookOpen, HelpCircle, MessageSquare, type LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { startCheckout } from '@/lib/checkout'
 import { billingPortal } from '@/lib/api'
@@ -11,6 +11,7 @@ import { UserProfile } from '@/types'
 
 interface NavbarProps {
   profile: UserProfile | null
+  isAdmin?: boolean
 }
 
 const NAV_SECTIONS: { label: string; items: { href: string; label: string; Icon: LucideIcon }[] }[] = [
@@ -28,6 +29,7 @@ const NAV_SECTIONS: { label: string; items: { href: string; label: string; Icon:
     label: 'Account',
     items: [
       { href: '/settings', label: 'Settings', Icon: Settings },
+      { href: '/feedback', label: 'Feedback', Icon: MessageSquare },
       { href: '/how-it-works', label: 'Help', Icon: HelpCircle },
     ],
   },
@@ -50,7 +52,7 @@ function NavLink({ href, label, Icon, active }: { href: string; label: string; I
   )
 }
 
-export default function Navbar({ profile }: NavbarProps) {
+export default function Navbar({ profile, isAdmin }: NavbarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [checkoutLoading, setCheckoutLoading] = useState(false)
@@ -99,7 +101,7 @@ export default function Navbar({ profile }: NavbarProps) {
                   {items.map(({ href, label: itemLabel, Icon }) => (
                     <NavLink key={href} href={href} label={itemLabel} Icon={Icon} active={isActive(href)} />
                   ))}
-                  {label === 'Account' && profile?.email === 'adelina.lipsa@gmail.com' && (
+                  {label === 'Account' && isAdmin && (
                     <Link
                       href="/admin"
                       className={[

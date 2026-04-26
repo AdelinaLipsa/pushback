@@ -4,12 +4,10 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase/server'
 
-const ADMIN_EMAIL = 'adelina.lipsa@gmail.com'
-
 async function assertAdmin() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user || user.email !== ADMIN_EMAIL) redirect('/dashboard')
+  if (!user || !process.env.ADMIN_EMAIL || user.email !== process.env.ADMIN_EMAIL) redirect('/dashboard')
   return createAdminSupabaseClient()
 }
 

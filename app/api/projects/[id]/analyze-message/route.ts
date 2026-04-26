@@ -92,6 +92,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const { tool_type, explanation, situation_context } = validated.data
+
+    if (situation_context === 'OFF_TOPIC') {
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
+      return Response.json(
+        { error: 'This tool handles freelancer-client situations only. Paste a message from your client and I\'ll help you respond.' },
+        { status: 400 }
+      )
+    }
+
     return Response.json({ tool_type, explanation, situation_context })
   } catch (err) {
     console.error('Analyze-message route error:', err)

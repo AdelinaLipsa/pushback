@@ -39,23 +39,31 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       }}
       className="hover:border-white/20 hover:[border-left-color:var(--brand-lime)] hover:bg-bg-elevated"
     >
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.75rem' }}>
-        <div>
-          <div style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.25rem' }}>{project.title}</div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-            {project.client_name}
-            {formatValue() && <span> · {formatValue()}</span>}
-          </div>
+      {/* Row 1: title + status */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.2rem' }}>
+        <div style={{ fontWeight: 600, fontSize: '1rem', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {project.title}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-          <span style={{
-            backgroundColor: project.status === 'active' ? 'rgba(34,197,94,0.1)' : 'var(--bg-elevated)',
-            color: project.status === 'active' ? 'var(--brand-green)' : 'var(--text-muted)',
-            fontSize: '0.7rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px',
-            letterSpacing: '0.05em', textTransform: 'uppercase',
-          }}>
-            {project.status}
-          </span>
+        <span style={{
+          flexShrink: 0,
+          backgroundColor: project.status === 'active' ? 'rgba(34,197,94,0.1)' : 'var(--bg-elevated)',
+          color: project.status === 'active' ? 'var(--brand-green)' : 'var(--text-muted)',
+          fontSize: '0.7rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px',
+          letterSpacing: '0.05em', textTransform: 'uppercase',
+        }}>
+          {project.status}
+        </span>
+      </div>
+
+      {/* Row 2: client · value */}
+      <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '0.6rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        {project.client_name}
+        {formatValue() && <span> · {formatValue()}</span>}
+      </div>
+
+      {/* Row 3: risk / client-risk / overdue badges */}
+      {(riskLevel || isOverdue) && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
           {riskLevel && (
             <span style={{
               backgroundColor: 'rgba(0,0,0,0.3)', border: `1px solid ${RISK_COLORS[riskLevel]}`,
@@ -68,20 +76,20 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           <ClientRiskBadge score={clientRisk.score} level={clientRisk.level} />
           {isOverdue && (
             <span style={{
-              backgroundColor: 'rgba(239, 68, 68, 0.1)',
-              color: 'var(--urgency-high)',
-              fontSize: '0.7rem',
-              fontWeight: 600,
-              padding: '0.2rem 0.6rem',
-              borderRadius: '9999px',
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase' as const,
+              backgroundColor: 'rgba(239,68,68,0.1)', color: 'var(--urgency-high)',
+              fontSize: '0.7rem', fontWeight: 600, padding: '0.2rem 0.6rem',
+              borderRadius: '9999px', letterSpacing: '0.05em', textTransform: 'uppercase' as const,
             }}>
               OVERDUE
             </span>
           )}
         </div>
-      </div>
+      )}
+      {!riskLevel && (
+        <div style={{ marginBottom: '0.5rem' }}>
+          <ClientRiskBadge score={clientRisk.score} level={clientRisk.level} />
+        </div>
+      )}
 
       {lastResponse && (
         <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
@@ -89,7 +97,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div>
       )}
 
-      {!riskLevel && (
+      {!lastResponse && !riskLevel && (
         <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>No contract analyzed</div>
       )}
     </Link>

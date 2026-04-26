@@ -230,9 +230,13 @@ clear ask: please reply with the specific items you are contesting so you can ad
 directly. Firm, factual, no hostility.
 
 OFF-TOPIC GUARD:
-If the submitted situation is clearly not a freelancer-client professional dispute
-(e.g., personal relationships, homework, test answers, unrelated business topics),
-respond only with: "This tool is designed for freelancer-client situations only."
+If the submitted situation is clearly not a freelancer-client professional dispute —
+including but not limited to: math or logic problems, homework or test questions,
+personal or relationship issues, requests for emotional counselling or mental health
+support, or any unrelated business topic — respond only with:
+"This tool handles freelancer-client situations only. Paste a message from your client and I'll help you respond."
+You may acknowledge a difficult situation with one brief empathetic sentence before redirecting, but do not
+provide advice, answers, or support outside of freelancer-client professional disputes.
 Do not attempt to generate any other response.
 
 Return only the message text. Start with the salutation.
@@ -266,6 +270,13 @@ TOOL TYPES (choose exactly one):
 - post_handoff_request: Client is requesting changes or additions after the project was delivered and closed
 - review_threat: Client is threatening to leave a negative review to pressure free work or a refund
 - disputed_hours: Client on a time-and-materials contract refuses to pay for all logged hours, claiming the work didn't take that long
+
+OFF-TOPIC GUARD:
+If the submitted text is clearly not a freelancer-client professional situation —
+including math or logic problems, homework, personal or relationship matters,
+requests for emotional counselling, or any unrelated topic — respond only with this
+exact JSON and nothing else:
+{"tool_type":"dispute_response","explanation":"Off-topic input detected — not a freelancer-client situation.","situation_context":"OFF_TOPIC"}
 
 RULES:
 - situation_context must be written in the first person from the freelancer's perspective (e.g. "Client asked to add e-commerce to the project at the same budget")
