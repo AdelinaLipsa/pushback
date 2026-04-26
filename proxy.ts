@@ -35,6 +35,26 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // Rate-limit auth callbacks — max 10 per IP per hour to prevent account flooding
+  if (pathname === '/auth/callback' && request.nextUrl.searchParams.has('code') && redis) {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+    if (ip !== 'unknown') {
+      try {
+        const key = `pb:signup:${ip}`
+        const count = await redis.incr(key)
+        if (count === 1) await redis.expire(key, 3600)
+        if (count > 10) {
+          return new NextResponse('Too many authentication attempts. Please try again later.', {
+            status: 429,
+            headers: { 'Retry-After': '3600' },
+          })
+        }
+      } catch {
+        // fail open
+      }
+    }
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
