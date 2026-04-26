@@ -7,6 +7,7 @@ import ProjectCard from '@/components/project/ProjectCard'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
 import ArsenalQuickDeploy from '@/components/defense/ArsenalQuickDeploy'
 import { computeClientRisk, LEVEL_LABELS, CLIENT_RISK_COLORS } from '@/lib/clientRisk'
+import WelcomeToast from '@/components/shared/WelcomeToast'
 
 // ---- Attention alert types ----
 
@@ -201,7 +202,7 @@ function AttentionAlert({ item, borderColorOverride }: { item: AttentionItem; bo
   )
 }
 
-export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ upgrade?: string; upgraded?: string }> }) {
+export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ upgrade?: string; upgraded?: string; welcome?: string }> }) {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -218,6 +219,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   ])
 
   const showUpgrade = params.upgrade === '1' || params.upgraded === 'true'
+  const isNewUser = params.welcome === '1'
 
   const today = new Date()
   const attentionItems = computeAttentionItems((projects ?? []) as ProjectWithResponses[], today)
@@ -257,6 +259,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
   return (
     <div style={{ padding: '2rem' }}>
+      <WelcomeToast isNew={isNewUser} />
       {showUpgrade && profile?.plan === 'free' && (
         <div style={{ marginBottom: '2rem' }}>
           <UpgradePrompt responsesUsed={profile.defense_responses_used} />
