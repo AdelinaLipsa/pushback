@@ -35,7 +35,7 @@ Standard 8-point scale — inherited from project globals. No exceptions for thi
 | Token | Value | Usage |
 |-------|-------|-------|
 | xs | 4px | Icon-to-text gap inside badge pills |
-| sm | 8px | Gap between badges in badge row; signal label gap in ClientBehaviorCard |
+| sm | 8px | Gap between badges in badge row; signal label gap in ClientBehaviorCard; vertical gap between signal rows |
 | md | 16px | Internal card padding (horizontal); section gap within ClientBehaviorCard |
 | lg | 24px | ClientBehaviorCard padding; gap above DefenseDashboard |
 | xl | 32px | Section separation on project detail page |
@@ -48,16 +48,18 @@ Exceptions: None.
 
 ## Typography
 
-Inherits project-wide Inter font. Phase 12 adds no new type roles. All new text uses existing roles at existing sizes.
+Inherits project-wide Inter font. Phase 12 uses exactly 3 type sizes.
 
 | Role | Size | Weight | Line Height | Usage in Phase 12 |
 |------|------|--------|-------------|-------------------|
-| Body | 14px (0.875rem) | 400 | 1.5 | Signal labels in ClientBehaviorCard; badge row secondary text |
 | Label | 11.2px (0.7rem) | 600 | 1.2 | Badge pill text (matches existing status / contract risk pill size) |
-| Card heading | 14.4px (0.9rem) | 600 | 1.4 | ClientBehaviorCard section title ("Client Risk") |
-| Score display | 24px (1.5rem) | 800 | 1.0 | Numeric score inside ClientBehaviorCard — must read at a glance |
+| Body | 14px (0.875rem) | 400 | 1.5 | Signal text in ClientBehaviorCard signal list; score range label (color: var(--text-muted) distinguishes it from primary text at the same size); badge row secondary text |
+| Card heading | 14px (0.875rem) | 600 | 1.4 | ClientBehaviorCard section title ("Client Risk") — weight 600 distinguishes heading from body at the same size |
+| Score display | 24px (1.5rem) | 600 | 1.0 | Numeric score inside ClientBehaviorCard — size alone carries the hierarchy |
 
-No new font sizes beyond what already exists in the project. The score display at 24px/800 matches the existing RiskScoreBadge score number (1.5rem / fontWeight 800 in components/contract/RiskScoreBadge.tsx).
+Size rationale: 0.7rem, 0.875rem, and 1.5rem form three perceptually distinct steps. Within the 0.875rem tier, weight (400 vs 600) and color (var(--text-secondary) vs var(--text-muted)) handle all sub-role distinctions. No fourth size is needed.
+
+Font weights used: 400 (regular) and 600 (semibold) only.
 
 ---
 
@@ -75,7 +77,7 @@ All values are CSS custom properties from app/globals.css. No new color tokens a
 | Destructive | `var(--urgency-high)` = `#ef4444` | Red risk level only |
 | Text primary | `var(--text-primary)` = `#fafafa` | Score number, card headings |
 | Text secondary | `var(--text-secondary)` = `#a1a1aa` | Signal label text, supporting copy |
-| Text muted | `var(--text-muted)` = `#52525b` | Zero-state text, secondary counts |
+| Text muted | `var(--text-muted)` = `#52525b` | Zero-state text, score range label, secondary counts |
 
 ### Risk Level Colors (new constant: CLIENT_RISK_COLORS)
 
@@ -108,7 +110,7 @@ Accent (`var(--brand-lime)`) is NOT used for risk levels. Lime is exclusively fo
 - Text color: `{CLIENT_RISK_COLORS[level]}` — matches border
 - Font size: 0.7rem (11.2px) — matches existing badge pills in the row
 - Font weight: 600
-- Padding: `0.2rem 0.6rem` — matches existing badge pills
+- Padding: `0.25rem 0.5rem` — matches existing badge pills (4px / 8px on the 8-point scale)
 - Letter spacing: none (no uppercase, unlike status pill)
 
 **Label format:** `Client {score}` — e.g. "Client 0", "Client 40", "Client 72"
@@ -127,13 +129,13 @@ level: 'green' | 'yellow' | 'red'
 **Render condition:** Only when `score > 0` (D-10). Zero-activity projects get no card.
 
 **Visual anatomy:**
-- Outer container: `backgroundColor: 'var(--bg-surface)'`, `border: '1px solid var(--bg-border)'`, `borderLeft: '4px solid {CLIENT_RISK_COLORS[level]}'`, `borderRadius: '0.875rem'`, `padding: '1.25rem 1.5rem'`
+- Outer container: `backgroundColor: 'var(--bg-surface)'`, `border: '1px solid var(--bg-border)'`, `borderLeft: '4px solid {CLIENT_RISK_COLORS[level]}'`, `borderRadius: '0.875rem'`, `padding: '1rem 1.5rem'`
 - Left accent border width: 4px — matches the `ProjectCard` hover lime border width for visual consistency
 - No filled background tint — the left accent strip carries the severity signal
 
 **Header row (flex, space-between):**
-- Left: Section label "Client Risk" in 0.9rem / 600 weight / `var(--text-secondary)`
-- Right: Score display — `{score}` in 1.5rem / 800 weight / `{CLIENT_RISK_COLORS[level]}`; followed by score range label in 0.8rem / 400 / `var(--text-muted)` — e.g. "72 · High risk" or "40 · Watch this client" or "12 · No concerns"
+- Left: Section label "Client Risk" in 0.875rem / weight 600 / `var(--text-secondary)`
+- Right: Score display — `{score}` in 1.5rem / weight 600 / `{CLIENT_RISK_COLORS[level]}`; followed by score range label in 0.875rem / weight 400 / `var(--text-muted)` — e.g. "72 · High risk" or "40 · Watch this client" or "12 · No concerns"
 
 **Score range labels:**
 | Level | Score | Label |
@@ -142,12 +144,12 @@ level: 'green' | 'yellow' | 'red'
 | yellow | 26–60 | "Watch this client" |
 | red | 61+ | "High-risk client" |
 
-**Signal list (below header row, marginTop: 0.75rem):**
+**Signal list (below header row, marginTop: 0.5rem):**
 - Each signal: one row, flex, gap 8px
 - Signal icon: Lucide icon, 14px, `var(--text-muted)`, `flexShrink: 0`
-- Signal text: 0.85rem / 400 / `var(--text-secondary)`
+- Signal text: 0.875rem / weight 400 / `var(--text-secondary)`
 - No bullet points, no list markers — icon-text rows only
-- Vertical gap between signals: 6px (0.375rem)
+- Vertical gap between signals: 8px (`gap: '0.5rem'`)
 - Empty signal list: card does not render (score = 0 gate covers this)
 
 **Signal icon assignments:**
@@ -189,7 +191,7 @@ signals: Array<{
 **Render condition:** Only when at least one project has score > 25 (D-15). Not shown when all clients are clean.
 
 **Row anatomy (follows AttentionAlert pattern exactly):**
-- Same container: `backgroundColor: 'var(--bg-surface)'`, `border: '1px solid var(--bg-border)'`, `borderLeft: '3px solid {CLIENT_RISK_COLORS[level]}'`, `borderRadius: '0.5rem'`, padding: `0.75rem 1rem`
+- Same container: `backgroundColor: 'var(--bg-surface)'`, `border: '1px solid var(--bg-border)'`, `borderLeft: '3px solid {CLIENT_RISK_COLORS[level]}'`, `borderRadius: '0.5rem'`, padding: `0.5rem 1rem`
 - Left side (flex column): Project title + client name in the same style as existing AttentionAlert; below that: description text
 - Right side: `View project →` link (same lime style as "Handle now →")
 - No new component needed if it fits in an extended AttentionAlert — evaluate at implementation
@@ -330,7 +332,7 @@ No third-party registries. No new shadcn components added. All new UI is compose
 |----------|--------|-------|
 | Badge pill visual style | ProjectCard.tsx (existing pill pattern) | Matched exactly: rgba(0,0,0,0.3) bg, 1px colored border |
 | Risk level color mapping | globals.css + lib/ui.ts RISK_COLORS | Reusing --brand-green, --urgency-medium, --urgency-high |
-| Score display weight/size | RiskScoreBadge.tsx (1.5rem / 800) | Parallel pattern for consistency |
+| Score display weight/size | Checker fix applied | Weight reduced from 800 to 600; size (1.5rem) carries hierarchy |
 | Badge label prefix "Client" | 12-CONTEXT.md specifics section | Direct user directive |
 | Always show badge (green too) | 12-CONTEXT.md D-02 | Locked decision |
 | Card above DefenseDashboard | 12-CONTEXT.md D-11 | Locked decision |
@@ -349,6 +351,9 @@ No third-party registries. No new shadcn components added. All new UI is compose
 | Signal label format (human-readable) | 12-CONTEXT.md D-12 + specifics | "3 scope changes" not "scope_change ×3" |
 | font-sans = Inter | globals.css @theme | --font-sans: var(--font-inter) |
 | fade-up animation for new cards | dashboard/page.tsx existing pattern | Matching existing animation convention |
+| Signal list vertical gap | Checker fix applied | Changed from 6px to 8px (gap: '0.5rem') |
+| Badge pill padding | Checker fix applied | Changed from 0.2rem 0.6rem to 0.25rem 0.5rem (4px / 8px) |
+| Typography collapsed to 3 sizes | Checker fix applied | 0.8rem and 0.85rem removed; all mid-level text at 0.875rem; weight/color handle sub-role distinction |
 
 ---
 
