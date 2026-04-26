@@ -1,6 +1,6 @@
 import { anthropic, DOCUMENT_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { acquireAnthropicSlot, releaseAnthropicSlot } from '@/lib/rate-limit'
+import { acquireAnthropicSlot, releaseAnthropicSlot, checkRateLimit, defendRateLimit } from '@/lib/rate-limit'
 import type { ContractAnalysis, DefenseResponse } from '@/types'
 import { z } from 'zod'
 
@@ -34,6 +34,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!profile || profile.plan !== 'pro') {
     return Response.json({ error: 'PRO_REQUIRED' }, { status: 403 })
   }
+
+  const rateLimitResponse = await checkRateLimit(defendRateLimit, user.id)
+  if (rateLimitResponse) return rateLimitResponse
 
   try {
     // Validate request body
@@ -84,7 +87,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Defense responses — last 5 (most recent first) for timeline reconstruction
     const responses = (project.defense_responses ?? []) as Pick<DefenseResponse, 'tool_type' | 'situation' | 'response' | 'created_at'>[]
-    const sortedResponses = [...responses].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 5)
+    const sortedResponses = [...responses].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5)
     const responsesBlock = sortedResponses.length > 0
       ? [
           '\nRECENT DEFENSE HISTORY (most recent first):',
@@ -92,7 +95,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         ].join('\n')
       : ''
 
-    const contextBlock = context ? `\n\nADDITIONAL CONTEXT FROM USER:\n${context}` : ''
+    const safeContext = context
+      ? context
+          .replace(/[^\x20-\x7E\n\r]/g, '')
+          .replace(/\bignore\s+(all\s+)?(previous|above|prior)\s+instructions?\b/gi, '[removed]')
+          .slice(0, 2000)
+      : ''
+    const contextBlock = safeContext ? `\n\n<user_context>\n${safeContext}\n</user_context>` : ''
 
     const userMessage = [
       projectLines,
