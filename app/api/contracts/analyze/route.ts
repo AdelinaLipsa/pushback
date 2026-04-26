@@ -1,3 +1,5 @@
+export const maxDuration = 30
+
 import Anthropic from '@anthropic-ai/sdk'
 import { anthropic, CONTRACT_ANALYSIS_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'

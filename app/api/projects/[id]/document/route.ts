@@ -1,3 +1,5 @@
+export const maxDuration = 30
+
 import { anthropic, DOCUMENT_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { acquireAnthropicSlot, releaseAnthropicSlot, checkRateLimit, defendRateLimit } from '@/lib/rate-limit'
