@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 72" width="480" height="72">
+  <!-- Transparent background — wordmark only -->
+  <text
+    x="0"
+    y="54"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-weight="800"
+    font-size="64"
+    letter-spacing="-2.6"
+  ><tspan fill="#fafafa">Pushback</tspan><tspan fill="#84cc16">.</tspan></text>
+</svg>

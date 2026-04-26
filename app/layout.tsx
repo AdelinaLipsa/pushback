@@ -19,6 +19,12 @@ export const metadata: Metadata = {
   title: 'Pushback — Client interaction toolkit for freelancers',
   description: 'Stop losing money to scope creep, late payments, and difficult clients. Pushback is the complete client interaction toolkit for freelancers — professional responses, contract protection, and payment escalation.',
   metadataBase: new URL(APP_URL),
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+  },
   openGraph: {
     title: 'Pushback — Client interaction toolkit for freelancers',
     description: 'Stop losing money to scope creep, late payments, and difficult clients. Pushback is the complete client interaction toolkit for freelancers — professional responses, contract protection, and payment escalation.',

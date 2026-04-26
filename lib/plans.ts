@@ -5,10 +5,10 @@ export const PLANS = {
     defense_responses: 1,
     contracts: 1,
     features: [
-      '1 defense tool response',
-      '1 contract analysis',
-      'All 8 situation types',
-      'Copy-ready messages'
+      '1 defense response',
+      '1 contract risk analysis',
+      'Access to all 21 tools',
+      'No card required'
     ]
   },
   pro: {
@@ -20,10 +20,12 @@ export const PLANS = {
     contracts: 50,
     features: [
       '150 defense responses/month',
-      '50 contract analyses/month',
-      'Full response history',
-      'All 8 defense tools',
-      'Client notes per project'
+      '50 contract risk analyses/month',
+      'Full response and contract history',
+      'All 21 tools — full arsenal access',
+      'Project-level client notes',
+      'Analytics and usage patterns',
+      'Document generation (NDAs, proposals, scope agreements)'
     ]
   }
 }

@@ -95,12 +95,26 @@ function ToolRow({ tool, onClick }: { tool: DefenseToolMeta; onClick: () => void
 
 function CategoryCard({ category, onToolClick }: { category: typeof CATEGORIES[number]; onToolClick: (t: DefenseTool) => void }) {
   return (
-    <div style={{
-      backgroundColor: 'var(--bg-surface)',
-      border: '1px solid var(--bg-border)',
-      borderRadius: '0.875rem',
-      overflow: 'hidden',
-    }}>
+    <div
+      style={{
+        backgroundColor: 'var(--bg-surface)',
+        border: '1px solid var(--bg-border)',
+        borderLeft: '4px solid var(--bg-border)',
+        borderRadius: '0.875rem',
+        overflow: 'hidden',
+        transition: 'background-color 150ms ease, border-color 150ms ease',
+      }}
+      onMouseEnter={e => {
+        const el = e.currentTarget as HTMLElement
+        el.style.backgroundColor = 'var(--bg-elevated)'
+        el.style.borderLeftColor = 'var(--brand-lime)'
+      }}
+      onMouseLeave={e => {
+        const el = e.currentTarget as HTMLElement
+        el.style.backgroundColor = 'var(--bg-surface)'
+        el.style.borderLeftColor = 'var(--bg-border)'
+      }}
+    >
       <div style={{
         padding: '0.75rem 1rem',
         borderBottom: '1px solid var(--bg-border)',
@@ -157,8 +171,10 @@ export default function ArsenalQuickDeploy({ projects }: Props) {
         gridTemplateColumns: 'repeat(2, 1fr)',
         gap: '0.75rem',
       }}>
-        {CATEGORIES.map(cat => (
-          <CategoryCard key={cat.label} category={cat} onToolClick={handleToolClick} />
+        {CATEGORIES.map((cat, i) => (
+          <div key={cat.label} className="fade-up" style={{ animationDelay: `${0.12 + i * 0.07}s` }}>
+            <CategoryCard category={cat} onToolClick={handleToolClick} />
+          </div>
         ))}
       </div>
 

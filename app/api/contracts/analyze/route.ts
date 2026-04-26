@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { anthropic, CONTRACT_ANALYSIS_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { checkRateLimit, contractRateLimit } from '@/lib/rate-limit'
+import { professionContext } from '@/lib/profession'
 import { ContractAnalysis } from '@/types'
 
 // D-13: Inline JSON extraction helper — handles preamble-wrapped and markdown-fenced output
@@ -38,11 +39,16 @@ export async function POST(request: Request) {
   const preIncrementCount = gate.current_count
   const prePeriodCount = gate.period_count
 
-  const formData = await request.formData()
+  const [formData, { data: profileData }] = await Promise.all([
+    request.formData(),
+    supabase.from('user_profiles').select('profession').eq('id', user.id).single(),
+  ])
   const file = formData.get('file') as File | null
   const text = formData.get('text') as string | null
   const title = (formData.get('title') as string) || 'Untitled contract'
   const project_id = formData.get('project_id') as string | null
+
+  const profCtx = professionContext(profileData?.profession)
 
   const { data: contract } = await supabase
     .from('contracts')
@@ -83,11 +89,11 @@ export async function POST(request: Request) {
       await supabase.from('contracts').update({ anthropic_file_id: fileUpload.id }).eq('id', contract.id)
       messageContent = [
         { type: 'document', source: { type: 'file', file_id: fileUpload.id } } as any,
-        { type: 'text', text: 'Analyze this freelance contract and return the JSON analysis.' }
+        { type: 'text', text: `Analyze this freelance contract and return the JSON analysis.${profCtx ? `\n\n${profCtx}` : ''}` }
       ]
     } else if (text) {
       await supabase.from('contracts').update({ contract_text: text }).eq('id', contract.id)
-      messageContent = [{ type: 'text', text: `Analyze this freelance contract:\n\n${text}` }]
+      messageContent = [{ type: 'text', text: `${profCtx ? `${profCtx}\n\n` : ''}Analyze this freelance contract:\n\n${text}` }]
     } else {
       await supabase.from('contracts').update({ status: 'error' }).eq('id', contract.id)
       await supabase.from('user_profiles').update({ contracts_used: preIncrementCount }).eq('id', user.id)

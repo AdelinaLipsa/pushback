@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <defs>
+    <radialGradient id="gA" cx="55%" cy="28%" r="65%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#84cc16" stop-opacity="0.18"/>
+      <stop offset="55%" stop-color="#84cc16" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#84cc16" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gB" cx="32%" cy="78%" r="50%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#84cc16" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#84cc16" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gC" cx="50%" cy="50%" r="30%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#84cc16" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#84cc16" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="1000" fill="#0a0a0a"/>
+
+  <!-- Ambient glows -->
+  <rect width="1000" height="1000" fill="url(#gA)"/>
+  <rect width="1000" height="1000" fill="url(#gB)"/>
+  <rect width="1000" height="1000" fill="url(#gC)"/>
+
+  <!-- Logo: "Pushback." centered -->
+  <text
+    x="500"
+    y="500"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-weight="800"
+    font-size="120"
+    letter-spacing="-4.8"
+    text-anchor="middle"
+    dominant-baseline="central"
+  ><tspan fill="#fafafa">Pushback</tspan><tspan fill="#84cc16">.</tspan></text>
+</svg>

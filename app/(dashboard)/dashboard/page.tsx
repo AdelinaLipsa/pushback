@@ -227,23 +227,25 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       )}
 
       {attentionItems.length > 0 && (
-        <div className="fade-up" style={{ marginBottom: '2rem', animationDelay: '0.05s' }}>
-          <h2 style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.75rem', color: 'var(--text-secondary)' }}>
+        <div style={{ marginBottom: '2rem' }}>
+          <h2 className="fade-up" style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.75rem', color: 'var(--text-secondary)', animationDelay: '0.04s' }}>
             Needs attention
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {attentionItems.map((item, i) => (
-              <AttentionAlert key={`${item.projectId}-${item.severity}-${i}`} item={item} />
+              <div key={`${item.projectId}-${item.severity}-${i}`} className="fade-up" style={{ animationDelay: `${0.07 + i * 0.06}s` }}>
+                <AttentionAlert item={item} />
+              </div>
             ))}
           </div>
         </div>
       )}
 
       {/* Two-column command center: Arsenal left, Projects right */}
-      <div className="fade-up" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start', animationDelay: '0.08s' }}>
+      <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
 
         {/* Left: Arsenal */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="fade-up" style={{ flex: 1, minWidth: 0, animationDelay: '0.1s' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '1rem' }}>
             <h2 style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.01em' }}>Arsenal</h2>
             <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 500 }}>
@@ -253,10 +255,28 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           <ArsenalQuickDeploy
             projects={(projects ?? []).map(p => ({ id: p.id, title: p.title, client_name: p.client_name }))}
           />
+          <Link
+            href="/arsenal"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              marginTop: '0.875rem', padding: '0.75rem 1rem',
+              backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+              borderRadius: '0.625rem', textDecoration: 'none',
+              transition: 'border-color 150ms ease',
+            }}
+            className="hover:border-white/20 group"
+          >
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              Not sure which tool fits?{' '}
+              <span style={{ color: 'var(--brand-lime)', fontWeight: 600 }}>Browse the full arsenal</span>
+              {' '}— every situation mapped with when to use it.
+            </span>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: '1rem', flexShrink: 0, transition: 'color 150ms ease' }} className="group-hover:text-text-secondary">→</span>
+          </Link>
         </div>
 
         {/* Right: Projects */}
-        <div style={{ width: '300px', flexShrink: 0 }}>
+        <div className="slide-in-right" style={{ width: '300px', flexShrink: 0, animationDelay: '0.15s' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
             <h2 style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.01em' }}>Projects</h2>
             <Link

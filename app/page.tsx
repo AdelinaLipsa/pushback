@@ -6,11 +6,21 @@ import { Check } from 'lucide-react'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import { PLANS } from '@/lib/plans'
 import PushbackHero from '@/components/hero/PushbackHero'
+import Footer from '@/components/shared/Footer'
 
 const TICKER_ITEMS = [
-  'Scope Change', 'Kill Fee', 'Payment Chase', 'Revision Limit',
-  'Delivery Sign-Off', 'Dispute Response', 'Scope Change', 'Kill Fee',
-  'Payment Chase', 'Revision Limit', 'Delivery Sign-Off', 'Dispute Response',
+  'Client wants free revisions',
+  'Invoice is 3 weeks overdue',
+  'They approved it, now they don\'t like it',
+  'Client went silent',
+  'They\'re threatening a bad review',
+  '"Can we also do a mobile app?"',
+  'Project cancelled mid-build',
+  'You quoted €3,000, they came back with €900',
+  'Delivered and signed off — now they want changes',
+  'They want source files you didn\'t include',
+  '"This took you less time than expected"',
+  'Rush delivery, no rush fee',
 ]
 
 const BEFORE_EMAIL = `Hi,
@@ -173,7 +183,7 @@ function HowItWorksDemo() {
           {/* Left: tool selection */}
           <div className="p-6 border-r border-bg-border">
             <p className="font-mono text-[0.6rem] text-text-muted tracking-[0.12em] uppercase mb-4">
-              Pick your situation
+              Select the situation
             </p>
             <div className="grid grid-cols-2 gap-2">
               {DEMO_TOOLS.map((tool, i) => {
@@ -298,9 +308,9 @@ function HowItWorksDemo() {
       {/* Step labels below */}
       <div className="flex justify-around mt-8 px-8">
         {[
-          { num: '01', label: 'Pick your situation' },
-          { num: '02', label: 'Response generates instantly' },
-          { num: '03', label: 'Copy and send' },
+          { num: '01', label: 'Identify the situation' },
+          { num: '02', label: 'Review your position' },
+          { num: '03', label: 'Send with confidence' },
         ].map(({ num, label }) => (
           <div key={num} className="text-center">
             <div className="font-mono text-brand-lime text-[0.65rem] font-bold tracking-[0.12em] mb-1">{num}</div>
@@ -626,7 +636,7 @@ export default function LandingPage() {
           <div style={{ marginBottom: '3.5rem' }}>
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>How it works</p>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, maxWidth: '22ch' }}>
-              Pick a situation.<br />Get a response. Send it.
+              Every client situation has a correct response. You now have all of them.
             </h2>
           </div>
           <HowItWorksDemo />
@@ -636,13 +646,13 @@ export default function LandingPage() {
       {/* Tool Carousel — 3D coverflow */}
       <section data-animate style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)' }} className="py-28">
         <div className="max-w-5xl mx-auto px-6" style={{ marginBottom: '3.5rem' }}>
-          <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>The toolkit</p>
+          <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>The arsenal</p>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
               Every situation.<br />Already handled.
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, maxWidth: '30ch' }}>
-              Professional defense tools built for the exact moments freelancers get squeezed.
+              21 situations. Every one of them real. Scope creep, payment stonewalling, chargeback threats, rate pressure, IP disputes, ghost clients — this is not a list of edge cases. This is freelance work in 2025. You now have a prepared response to all of it.
             </p>
           </div>
         </div>
@@ -653,9 +663,9 @@ export default function LandingPage() {
       <section data-animate className="py-28">
         <div className="max-w-5xl mx-auto px-6">
           <div style={{ marginBottom: '4rem' }}>
-            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>See it in action</p>
+            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>In practice</p>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
-              Stop drafting.<br />Start sending.
+              You already have the right response.<br />You just didn&apos;t know it yet.
             </h2>
           </div>
 
@@ -664,7 +674,7 @@ export default function LandingPage() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.875rem' }}>
                 <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#ef4444', display: 'inline-block', flexShrink: 0 }} />
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>Client email</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>The situation</p>
               </div>
               <div style={{ backgroundColor: '#0d0d0d', border: '1px solid #1e1e1e', borderRadius: '0.875rem', overflow: 'hidden' }}>
                 <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid #1a1a1a', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
@@ -688,14 +698,14 @@ export default function LandingPage() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.875rem' }}>
                 <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: 'var(--brand-lime)', display: 'inline-block', flexShrink: 0 }} />
-                <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>Your message, ready to send</p>
+                <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>Your position</p>
               </div>
               <div style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid rgba(132,204,22,0.25)', borderRadius: '0.875rem', overflow: 'hidden', boxShadow: '0 0 48px rgba(132,204,22,0.08)' }}>
                 <div style={{ padding: '0.875rem 1.5rem', borderBottom: '1px solid rgba(132,204,22,0.12)', backgroundColor: 'rgba(132,204,22,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--brand-lime)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em' }}>PUSHBACK</span>
                     <span style={{ color: 'rgba(132,204,22,0.3)' }}>·</span>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>Scope creep response</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>Scope defense — Position ready</span>
                   </div>
                   <span style={{ backgroundColor: 'rgba(132,204,22,0.15)', color: 'var(--brand-lime)', fontSize: '0.6rem', fontWeight: 700, padding: '0.2rem 0.55rem', borderRadius: '4px', letterSpacing: '0.08em' }}>READY</span>
                 </div>
@@ -726,10 +736,10 @@ export default function LandingPage() {
           <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Pricing</p>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: '1.25rem' }}>
-              One free response.<br />No card. No catch.
+              Start free.<br />Own every situation.
             </h2>
             <p style={{ color: 'var(--text-secondary)', maxWidth: '38ch', margin: '0 auto', lineHeight: 1.7, fontSize: '0.95rem' }}>
-              Try it with your first situation. Upgrade when you want more.
+              Run your first situation free. No card, no friction. Upgrade when the work gets serious.
             </p>
           </div>
 
@@ -756,7 +766,7 @@ export default function LandingPage() {
                 border: '1px solid var(--bg-border)', color: 'var(--text-primary)',
                 padding: '0.8rem', borderRadius: '0.5rem', fontWeight: 600, fontSize: '0.875rem',
               }} className="hover:border-white/30 transition-colors">
-                Try it free
+                Run a free situation
               </Link>
             </div>
 
@@ -803,7 +813,7 @@ export default function LandingPage() {
                 padding: '0.8rem', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.875rem',
                 position: 'relative',
               }} className="hover:opacity-90 transition-opacity">
-                Start Pro free
+                Get full access
               </Link>
             </div>
           </div>
@@ -814,23 +824,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{ borderTop: '1px solid var(--bg-border)', padding: '2.5rem 1.5rem' }}>
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            <span style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Pushback</span>
-            <span style={{ color: 'var(--brand-lime)', fontWeight: 800 }}>.</span>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginLeft: '0.75rem' }}>Stop absorbing. Start pushing back.</span>
-          </div>
-          <div style={{ display: 'flex', gap: '1.5rem' }}>
-            {['Privacy', 'Terms'].map(label => (
-              <Link key={label} href={`/${label.toLowerCase()}`} style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }} className="hover:text-white transition-colors">
-                {label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

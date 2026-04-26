@@ -21,6 +21,7 @@ export type DefenseTool =
   | 'spec_work_pressure'
   | 'post_handoff_request'
   | 'review_threat'
+  | 'disputed_hours'
 
 export type ContextField = {
   key: string
@@ -72,6 +73,7 @@ export type UserProfile = {
   email: string
   full_name: string | null
   plan: Plan
+  profession: string | null
   defense_responses_used: number
   contracts_used: number
   period_responses_used: number

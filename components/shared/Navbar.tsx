@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, BookOpen, type LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { startCheckout } from '@/lib/checkout'
 import { billingPortal } from '@/lib/api'
@@ -21,6 +21,7 @@ const NAV_SECTIONS: { label: string; items: { href: string; label: string; Icon:
       { href: '/projects', label: 'Projects', Icon: Briefcase },
       { href: '/contracts', label: 'Contracts', Icon: FileText },
       { href: '/analytics', label: 'Analytics', Icon: BarChart2 },
+      { href: '/arsenal', label: 'Arsenal', Icon: BookOpen },
     ],
   },
   {
@@ -86,22 +87,39 @@ export default function Navbar({ profile }: NavbarProps) {
         </div>
 
         {/* Nav sections */}
-        <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
-          {NAV_SECTIONS.map(({ label, items }) => (
-            <div key={label}>
-              <p className="px-2.5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-text-muted select-none">
-                {label}
-              </p>
-              <div className="space-y-0.5">
-                {items.map(({ href, label: itemLabel, Icon }) => (
-                  <NavLink key={href} href={href} label={itemLabel} Icon={Icon} active={isActive(href)} />
-                ))}
+        <nav className="flex-1 px-3 py-4 flex flex-col overflow-y-auto">
+          <div className="space-y-5">
+            {NAV_SECTIONS.map(({ label, items }) => (
+              <div key={label}>
+                <p className="px-2.5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-text-muted select-none">
+                  {label}
+                </p>
+                <div className="space-y-0.5">
+                  {items.map(({ href, label: itemLabel, Icon }) => (
+                    <NavLink key={href} href={href} label={itemLabel} Icon={Icon} active={isActive(href)} />
+                  ))}
+                  {label === 'Account' && profile?.email === 'adelina.lipsa@gmail.com' && (
+                    <Link
+                      href="/admin"
+                      className={[
+                        'flex items-center gap-2.5 pl-2.5 pr-3 py-2 rounded-lg text-sm no-underline transition-all duration-150 border-l-2',
+                        isActive('/admin')
+                          ? 'bg-bg-elevated text-text-primary border-brand-lime font-semibold'
+                          : 'text-text-muted border-transparent hover:bg-bg-elevated/60 hover:text-text-secondary font-normal',
+                      ].join(' ')}
+                    >
+                      <ShieldCheck size={15} strokeWidth={isActive('/admin') ? 2 : 1.5} className="shrink-0" />
+                      Admin
+                    </Link>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
-          {profile?.plan === 'free' && (
-            <div>
+          {/* Upgrade / billing — pinned to bottom of nav */}
+          <div className="mt-auto pt-4">
+            {profile?.plan === 'free' && (
               <button
                 onClick={() => startCheckout(setCheckoutLoading)}
                 disabled={checkoutLoading}
@@ -110,11 +128,9 @@ export default function Navbar({ profile }: NavbarProps) {
                 <ArrowUpCircle size={15} strokeWidth={1.5} className="shrink-0" />
                 {checkoutLoading ? 'Loading…' : 'Upgrade to Pro'}
               </button>
-            </div>
-          )}
+            )}
 
-          {profile?.plan === 'pro' && (
-            <div>
+            {profile?.plan === 'pro' && (
               <button
                 onClick={handleBillingPortal}
                 disabled={portalLoading}
@@ -123,25 +139,8 @@ export default function Navbar({ profile }: NavbarProps) {
                 <CreditCard size={15} strokeWidth={1.5} className="shrink-0" />
                 {portalLoading ? 'Loading…' : 'Billing portal'}
               </button>
-            </div>
-          )}
-
-          {profile?.email === 'adelina.lipsa@gmail.com' && (
-            <div>
-              <Link
-                href="/admin"
-                className={[
-                  'flex items-center gap-2.5 pl-2.5 pr-3 py-2 rounded-lg text-sm no-underline transition-all duration-150 border-l-2',
-                  isActive('/admin')
-                    ? 'bg-bg-elevated text-text-primary border-brand-lime font-semibold'
-                    : 'text-text-muted border-transparent hover:bg-bg-elevated/60 hover:text-text-secondary font-normal',
-                ].join(' ')}
-              >
-                <ShieldCheck size={15} strokeWidth={isActive('/admin') ? 2 : 1.5} className="shrink-0" />
-                Admin
-              </Link>
-            </div>
-          )}
+            )}
+          </div>
         </nav>
 
         {/* User footer */}

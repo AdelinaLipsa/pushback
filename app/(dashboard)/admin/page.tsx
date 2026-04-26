@@ -74,7 +74,7 @@ export default async function AdminPage() {
   const recentSignups = profiles.slice(0, 10)
 
   return (
-    <div className="p-8 max-w-[960px]">
+    <div className="p-8">
       <div className="mb-8">
         <h1 className="font-bold text-[1.75rem] tracking-tight">Admin</h1>
         <p className="text-text-muted text-sm mt-1">Internal overview — visible to you only</p>

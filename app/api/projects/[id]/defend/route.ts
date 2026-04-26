@@ -2,6 +2,7 @@ import { anthropic, DEFENSE_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { checkRateLimit, defendRateLimit, acquireAnthropicSlot, releaseAnthropicSlot } from '@/lib/rate-limit'
 import { DEFENSE_TOOLS, DEFENSE_TOOL_VALUES } from '@/lib/defenseTools'
+import { professionContext } from '@/lib/profession'
 import { DefenseTool, ContractAnalysis } from '@/types'
 import { z } from 'zod'
 
@@ -36,6 +37,7 @@ const TOOL_GROUP_MAP: Record<DefenseTool, keyof typeof TOOL_CLAUSE_KEYWORDS> = {
   rate_increase_pushback: 'dispute',
   rush_fee_demand: 'dispute',
   spec_work_pressure: 'dispute',
+  disputed_hours: 'payment',
 }
 
 function buildContractContext(
@@ -109,6 +111,7 @@ const PROMPT_TOOL_LABELS: Record<DefenseTool, string> = {
   spec_work_pressure: 'EXPOSURE / SPEC WORK DEMAND',
   post_handoff_request: 'POST-HANDOFF REQUEST — CLOSED PROJECT',
   review_threat: 'REVIEW / REPUTATION THREAT',
+  disputed_hours: 'DISPUTED HOURS — TIME & MATERIALS',
 }
 
 // WR-01: use shared DEFENSE_TOOL_VALUES for properly-typed enum (no `as DefenseTool` cast needed downstream)
@@ -167,12 +170,19 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
     const { tool_type, situation, extra_context } = parsed.data
 
-    const { data: project } = await supabase
-      .from('projects')
-      .select('id, title, client_name, project_value, currency, notes, contracts(analysis)')
-      .eq('id', id)
-      .eq('user_id', user.id)
-      .single()
+    const [{ data: project }, { data: profileData }] = await Promise.all([
+      supabase
+        .from('projects')
+        .select('id, title, client_name, project_value, currency, notes, contracts(analysis)')
+        .eq('id', id)
+        .eq('user_id', user.id)
+        .single(),
+      supabase
+        .from('user_profiles')
+        .select('profession')
+        .eq('id', user.id)
+        .single(),
+    ])
 
     if (!project) {
       await supabase.rpc('decrement_defense_responses', { uid: user.id })
@@ -180,6 +190,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const contextLines = [
+      professionContext(profileData?.profession),
       `PROJECT: ${project.title}`,
       `CLIENT: ${project.client_name}`,
       project.project_value ? `VALUE: ${project.project_value} ${project.currency}` : null,

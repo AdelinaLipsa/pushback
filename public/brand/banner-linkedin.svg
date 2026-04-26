@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1584 396" width="1584" height="396">
+  <defs>
+    <radialGradient id="gA" cx="62%" cy="15%" r="70%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#84cc16" stop-opacity="0.15"/>
+      <stop offset="55%" stop-color="#84cc16" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="#84cc16" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gB" cx="22%" cy="88%" r="48%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#84cc16" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#84cc16" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1584" height="396" fill="#0a0a0a"/>
+
+  <!-- Ambient glows -->
+  <rect width="1584" height="396" fill="url(#gA)"/>
+  <rect width="1584" height="396" fill="url(#gB)"/>
+
+  <!-- Thin lime top border -->
+  <rect width="1584" height="2" fill="#84cc16" opacity="0.35"/>
+
+  <!-- Logo: centered -->
+  <text
+    x="792"
+    y="190"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-weight="800"
+    font-size="96"
+    letter-spacing="-3.8"
+    text-anchor="middle"
+    dominant-baseline="central"
+  ><tspan fill="#fafafa">Pushback</tspan><tspan fill="#84cc16">.</tspan></text>
+
+  <!-- Tagline -->
+  <text
+    x="792"
+    y="290"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-weight="400"
+    font-size="18"
+    letter-spacing="2"
+    text-anchor="middle"
+    dominant-baseline="central"
+    fill="#52525b"
+  >FOR FREELANCERS WHO KNOW THEIR WORTH</text>
+
+  <!-- Thin lime bottom border -->
+  <rect y="394" width="1584" height="2" fill="#84cc16" opacity="0.35"/>
+</svg>

@@ -183,3 +183,13 @@ export async function billingPortal(): Promise<string | null> {
   const data = await request<{ url: string }>('/api/billing-portal', { method: 'POST' })
   return data?.url ?? null
 }
+
+// ─── Profile ─────────────────────────────────────────────────────────────────
+
+export async function updateProfile(body: { profession: string | null }) {
+  return request<{ ok: true }>('/api/profile', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+}

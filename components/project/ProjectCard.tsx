@@ -29,10 +29,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       href={`/projects/${project.id}`}
       style={{
         display: 'block', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-        borderRadius: '0.875rem', padding: '1.25rem 1.5rem', textDecoration: 'none', color: 'inherit',
+        borderLeft: '4px solid var(--bg-border)', borderRadius: '0.875rem',
+        padding: '1.25rem 1.5rem', textDecoration: 'none', color: 'inherit',
         transition: 'border-color 150ms ease, background-color 150ms ease',
       }}
-      className="hover:border-white/20 hover:bg-[#141414]"
+      className="hover:border-white/20 hover:[border-left-color:var(--brand-lime)] hover:bg-bg-elevated"
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.75rem' }}>
         <div>

@@ -104,7 +104,7 @@ export default async function AnalyticsPage() {
   const hasAnyData = totalResponses > 0 || totalContracts > 0
 
   return (
-    <div className="p-8 max-w-[920px]">
+    <div className="p-8">
       <div className="fade-up mb-8" style={{ animationDelay: '0.02s' }}>
         <h1 className="font-extrabold text-2xl tracking-[-0.02em] mb-1">Analytics</h1>
         <p className="text-text-muted text-sm">Your Pushback usage and outcomes at a glance.</p>

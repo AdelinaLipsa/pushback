@@ -287,10 +287,10 @@ export default function PushbackHero() {
   const animateFrameFnRef = useRef<(() => void) | null>(null)
 
   const situations = [
-    "SCOPE CREEP.",
-    "LATE PAYMENTS.",
-    "KILL FEES.",
-    "DISPUTES.",
+    "THEY CHANGED",
+    "THE BRIEF.",
+    "THEY WON'T PAY.",
+    "YOU NEED A POSITION.",
   ]
 
   const createShader = (gl: WebGLRenderingContext, type: number, source: string) => {
@@ -469,8 +469,9 @@ export default function PushbackHero() {
             pushback<span style={{ color: "#84cc16" }}>.</span>
           </span>
           <div className="text-right hidden md:block">
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(161,161,170,0.7)" }}>For freelancers</p>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(161,161,170,0.7)" }}>who know their worth</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(161,161,170,0.7)" }}>Professional toolkit</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(161,161,170,0.7)" }}>for the moments clients</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(161,161,170,0.7)" }}>push too far</p>
           </div>
         </div>
 
@@ -483,13 +484,13 @@ export default function PushbackHero() {
 
           <div ref={ctaRef} className="text-right md:max-w-xs shrink-0">
             <p className="mb-1 text-base font-semibold leading-snug" style={{ color: "rgba(250,250,250,0.9)" }}>
-              Your client just asked for more.
+              Your client just moved the goalposts.
             </p>
             <p className="mb-5 text-base font-semibold" style={{ fontStyle: "italic", color: "#84cc16" }}>
               Again.
             </p>
             <p className="mb-6 text-sm leading-relaxed" style={{ color: "rgba(161,161,170,0.8)" }}>
-              Pushback manages the client relationship for you — responses, contract analysis, and payment escalation built for freelancers who know their worth.
+              Pushback is the professional operating system for freelancers under pressure — 21 tools covering every situation where a client crosses a line. Contract analysis, payment escalation, dispute defense, scope enforcement. Know exactly where you stand. Know exactly what to say.
             </p>
             <a
               href="/signup"
@@ -498,10 +499,10 @@ export default function PushbackHero() {
               onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.04, duration: 0.25, ease: "power2.out" })}
               onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" })}
             >
-              Try it free →
+              Get your position →
             </a>
             <p className="mt-3 text-xs" style={{ color: "rgba(113,113,122,0.8)" }}>
-              No card required · 1 free response
+              Free to start. No card required.
             </p>
           </div>
         </div>

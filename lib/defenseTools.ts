@@ -211,6 +211,19 @@ export const DEFENSE_TOOLS: DefenseToolMeta[] = [
     icon: 'Star',
     urgency: 'high',
     contextFields: []
+  },
+  {
+    type: 'disputed_hours',
+    label: 'Disputed Hours',
+    description: "Client on a T&M contract refuses to pay for all logged hours, claiming the work didn't take that long",
+    icon: 'Timer',
+    urgency: 'high',
+    contextFields: [
+      { key: 'hours_logged',     label: 'Hours you logged',          placeholder: 'e.g. 20',                                  type: 'number', required: false },
+      { key: 'hours_accepted',   label: 'Hours client will accept',  placeholder: 'e.g. 12',                                  type: 'number', required: false },
+      { key: 'hourly_rate',      label: 'Hourly rate',               placeholder: 'e.g. 85',                                  type: 'number', required: false },
+      { key: 'has_time_records', label: 'Time-tracking records?',    placeholder: 'e.g. yes — Toggl / spreadsheet / calendar', type: 'text',   required: false },
+    ]
   }
 ]
 
