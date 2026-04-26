@@ -6,10 +6,11 @@ import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import ProjectCard from '@/components/project/ProjectCard'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
 import ArsenalQuickDeploy from '@/components/defense/ArsenalQuickDeploy'
+import { computeClientRisk, LEVEL_LABELS, CLIENT_RISK_COLORS } from '@/lib/clientRisk'
 
 // ---- Attention alert types ----
 
-type AlertSeverity = 'overdue' | 'due-soon' | 'ghost' | 'stalled'
+type AlertSeverity = 'overdue' | 'due-soon' | 'ghost' | 'stalled' | 'client-risk'
 
 interface AttentionItem {
   projectId: string
@@ -17,8 +18,9 @@ interface AttentionItem {
   clientName: string
   description: string
   daysDelta: number | null
-  handleTool: DefenseTool
+  handleTool: DefenseTool | null
   severity: AlertSeverity
+  ctaLabel?: string  // override default "Handle now →" text (used by client-risk severity)
 }
 
 // Returns number of business days between two dates (Mon–Fri only)
@@ -146,9 +148,17 @@ const SEVERITY_BORDER: Record<AlertSeverity, string> = {
   'due-soon': 'var(--brand-lime)',
   ghost: '#f59e0b',
   stalled: '#f59e0b',
+  // client-risk border color is resolved per-item in AttentionAlert (depends on level: green/yellow/red).
+  // Use red as the static fallback since the spotlight only fires for score > 25 (yellow or red).
+  'client-risk': CLIENT_RISK_COLORS.red,
 }
 
-function AttentionAlert({ item }: { item: AttentionItem }) {
+function AttentionAlert({ item, borderColorOverride }: { item: AttentionItem; borderColorOverride?: string }) {
+  const borderColor = borderColorOverride ?? SEVERITY_BORDER[item.severity]
+  const ctaLabel = item.ctaLabel ?? 'Handle now →'
+  const href = item.handleTool
+    ? `/projects/${item.projectId}?tool=${item.handleTool}`
+    : `/projects/${item.projectId}`
   return (
     <div
       style={{
@@ -159,7 +169,7 @@ function AttentionAlert({ item }: { item: AttentionItem }) {
         padding: '0.75rem 1rem',
         backgroundColor: 'var(--bg-surface)',
         border: '1px solid var(--bg-border)',
-        borderLeft: `3px solid ${SEVERITY_BORDER[item.severity]}`,
+        borderLeft: `3px solid ${borderColor}`,
         borderRadius: '0.5rem',
         flexWrap: 'wrap',
       }}
@@ -174,7 +184,7 @@ function AttentionAlert({ item }: { item: AttentionItem }) {
         <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{item.description}</span>
       </div>
       <Link
-        href={`/projects/${item.projectId}?tool=${item.handleTool}`}
+        href={href}
         style={{
           color: 'var(--brand-lime)',
           fontSize: '0.85rem',
@@ -185,7 +195,7 @@ function AttentionAlert({ item }: { item: AttentionItem }) {
         }}
         className="hover:opacity-80 transition-opacity"
       >
-        Handle now →
+        {ctaLabel}
       </Link>
     </div>
   )
@@ -212,6 +222,39 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const today = new Date()
   const attentionItems = computeAttentionItems((projects ?? []) as ProjectWithResponses[], today)
 
+  // Phase 12 D-13/D-14/D-15/D-16: surface the single highest-risk yellow/red project
+  // into the existing Needs Attention list. Server-computed; no additional DB call.
+  const projectList = (projects ?? []) as ProjectWithResponses[]
+  let topRiskItem: AttentionItem | null = null
+  let topRiskBorder: string | null = null
+  if (projectList.length > 0) {
+    const scored = projectList
+      .map((p) => ({ project: p, risk: computeClientRisk(p) }))
+      .filter((entry) => entry.risk.score > 25)  // D-15: only when at least one is yellow or red
+      .sort((a, b) => b.risk.score - a.risk.score)
+    const top = scored[0]
+    if (top) {
+      topRiskItem = {
+        projectId: top.project.id,
+        projectTitle: top.project.title,
+        clientName: top.project.client_name,
+        description: `Client Risk: ${top.risk.score} — ${LEVEL_LABELS[top.risk.level]}`,
+        daysDelta: null,
+        handleTool: null,
+        severity: 'client-risk',
+        ctaLabel: 'View project →',
+      }
+      topRiskBorder = CLIENT_RISK_COLORS[top.risk.level]
+    }
+  }
+
+  // Avoid duplicating a project already showing as overdue/ghost/stalled.
+  // If the top-risk project is already in attentionItems, drop the topRiskItem.
+  if (topRiskItem && attentionItems.some((a) => a.projectId === topRiskItem!.projectId)) {
+    topRiskItem = null
+    topRiskBorder = null
+  }
+
   return (
     <div style={{ padding: '2rem' }}>
       {showUpgrade && profile?.plan === 'free' && (
@@ -226,7 +269,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
       )}
 
-      {attentionItems.length > 0 && (
+      {(attentionItems.length > 0 || topRiskItem) && (
         <div style={{ marginBottom: '2rem' }}>
           <h2 className="fade-up" style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.75rem', color: 'var(--text-secondary)', animationDelay: '0.04s' }}>
             Needs attention
@@ -237,6 +280,15 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 <AttentionAlert item={item} />
               </div>
             ))}
+            {topRiskItem && (
+              <div
+                key={`client-risk-${topRiskItem.projectId}`}
+                className="fade-up"
+                style={{ animationDelay: `${0.07 + attentionItems.length * 0.06}s` }}
+              >
+                <AttentionAlert item={topRiskItem} borderColorOverride={topRiskBorder ?? undefined} />
+              </div>
+            )}
           </div>
         </div>
       )}
