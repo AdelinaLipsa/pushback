@@ -238,6 +238,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Expanded Defense Tools | 0/2 | Planned | - |
 | 9. Contract-Aware Intelligence | 0/4 | Planned | - |
 | 10. Smart Escalation | 0/? | Not planned | - |
-| 11. Document Generation | 3/3 | Complete   | 2026-04-26 |
+| 11. Document Generation | 3/3 | Complete    | 2026-04-26 |
 | 12. Client Risk Intelligence | 0/? | Not planned | - |
 | 13. How-To & In-App Guidance | 0/? | Not planned | - |
