@@ -81,9 +81,104 @@ export default function HowItWorksPage() {
           </div>
         </section>
 
-        {/* TOOL DIRECTORY MARKER — Task 2 inserts the tool directory section here */}
-        {/* CONTRACT ANALYSIS MARKER — Task 2 inserts the contract analysis section here */}
-        {/* FAQ MARKER — Task 2 inserts the FAQ section here */}
+        {/* Tool Directory */}
+        <section style={{ marginBottom: '3.5rem' }}>
+          <h2 style={{ color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: 600, marginBottom: '0.75rem' }}>
+            The full tool directory
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            21 defense tools, grouped by what&apos;s happening with your client. Pick one when you know exactly what you&apos;re dealing with.
+          </p>
+
+          {TOOL_GROUPS.map(group => (
+            <div key={group.heading} style={{ marginBottom: '2rem' }}>
+              <h3 style={{
+                color: 'var(--text-primary)',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                marginBottom: '1rem',
+              }}>
+                {group.heading}
+              </h3>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                {group.types.map(type => {
+                  const tool = DEFENSE_TOOLS.find(t => t.type === type)
+                  if (!tool) return null
+                  return (
+                    <li key={type} style={{ fontSize: '0.9rem', lineHeight: 1.55 }}>
+                      <strong style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{tool.label}</strong>
+                      <span style={{ color: 'var(--text-secondary)' }}> — {tool.description}</span>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          ))}
+        </section>
+
+        {/* Contract analysis */}
+        <section style={{ marginBottom: '3.5rem' }}>
+          <h2 style={{ color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: 600, marginBottom: '0.75rem' }}>
+            How contract analysis works
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '1rem' }}>
+            Upload your signed contract once. Pushback reads it, scores its risk, and identifies which clauses cover payment terms, revisions, IP, kill fees, and scope. From that point on, every response Pushback drafts for that project quotes your actual contract — not generic advice.
+          </p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.65 }}>
+            Free accounts get one contract analysis. Pro accounts can analyze unlimited contracts and link them to multiple projects. Contract text is processed by Anthropic on our behalf and is never stored as raw text — only structured analysis is kept on your account.
+          </p>
+        </section>
+
+        {/* FAQ */}
+        <section style={{ marginBottom: '3.5rem' }}>
+          <h2 style={{ color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: 600, marginBottom: '1.5rem' }}>
+            Frequently asked
+          </h2>
+
+          {[
+            {
+              q: 'How many responses can I generate on the free plan?',
+              a: '3 AI-generated responses and 1 contract analysis, total — not per month. Pro accounts get unlimited responses and contract analyses.',
+            },
+            {
+              q: 'Where do my client messages and contracts go?',
+              a: 'Pushback sends them to Anthropic (Claude) as a data processor to generate responses. Anthropic does not retain your content for training. Raw contract text is read, analyzed, and discarded — only the structured analysis is stored on your account.',
+            },
+            {
+              q: 'Can I delete my data?',
+              a: 'Yes. You can delete any individual project, contract, or response from the dashboard. To delete your entire account and all associated data, email us from the address linked to your account — see the data deletion link in the footer.',
+            },
+            {
+              q: 'What if Pushback identifies the wrong situation?',
+              a: 'You can ignore the suggestion and pick a different tool from the sidebar. Every response is also editable before you copy or send — Pushback drafts the message, you decide what goes out.',
+            },
+            {
+              q: 'Is the AI output legal advice?',
+              a: 'No. Pushback drafts professional, ready-to-send responses based on your situation and contract. It is not a substitute for a lawyer. For high-stakes disputes, escalate to a qualified professional.',
+            },
+            {
+              q: 'Can I cancel my Pro subscription?',
+              a: 'Yes — anytime, from the billing portal linked in your account. You keep Pro access until the end of the current billing period.',
+            },
+          ].map(({ q, a }) => (
+            <div key={q} style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--bg-border)',
+              borderRadius: '0.75rem',
+              padding: '1.25rem 1.5rem',
+              marginBottom: '0.75rem',
+            }}>
+              <p style={{ color: 'var(--text-primary)', fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                {q}
+              </p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                {a}
+              </p>
+            </div>
+          ))}
+        </section>
 
       </div>
 
