@@ -227,8 +227,8 @@ Plans:
   3. Empty states on the dashboard and project page include guidance copy pointing to /how-it-works
 **Plans**: 3 plans
 Plans:
-- [ ] 13-01-PLAN.md — DemoAnimation client component (5-state machine, typewriter, vignette, entrance) + landing page "See it in action" section (Wave 1)
-- [ ] 13-02-PLAN.md — Public /how-it-works page (Server Component, marketing layout, 3 use modes, full tool directory, contract analysis explainer, FAQ) (Wave 1)
+- [x] 13-01-PLAN.md — DemoAnimation client component (5-state machine, typewriter, vignette, entrance) + landing page "See it in action" section (Wave 1)
+- [x] 13-02-PLAN.md — Public /how-it-works page (Server Component, marketing layout, 3 use modes, full tool directory, contract analysis explainer, FAQ) (Wave 1)
 - [ ] 13-03-PLAN.md — Wire /how-it-works into navigation/onboarding: Footer link replacement, Navbar Help link, DefenseDashboard empty-state hint, ProjectDetailClient new-project hint (Wave 2)
 **UI hint**: yes
 
@@ -251,7 +251,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 10. Smart Escalation | 0/? | Not planned | - |
 | 11. Document Generation | 3/3 | Complete    | 2026-04-26 |
 | 12. Client Risk Intelligence | 4/4 | Complete    | 2026-04-26 |
-| 13. How-To & In-App Guidance | 0/3 | Planned | - |
+| 13. How-To & In-App Guidance | 2/3 | In Progress|  |
 
 ## Backlog
 
@@ -259,7 +259,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 **Goal:** Freelancer pastes a client's response to a sent pushback; app reads both the original defense tool use and the client reply, surfaces risk signals (backing down vs doubling down), and helps craft a follow-up
 **Requirements:** TBD
-**Plans:** 4/4 plans complete
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] TBD (promote with /gsd-review-backlog when ready)
