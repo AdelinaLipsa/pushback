@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   variable: '--font-mono',
 })
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://pushback.app'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://pushback.to'
 
 export const metadata: Metadata = {
   title: 'Pushback — Client interaction toolkit for freelancers',

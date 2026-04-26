@@ -174,7 +174,7 @@ function HowItWorksDemo() {
             ))}
           </div>
           <span className="ml-3 font-mono text-[0.65rem] text-text-muted tracking-[0.1em]">
-            pushback.app / projects / Webflow Redesign
+            pushback.to / projects / Webflow Redesign
           </span>
         </div>
 
