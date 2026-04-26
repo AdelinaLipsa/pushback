@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { Project } from '@/types'
 import { RISK_COLORS } from '@/lib/ui'
 import { timeAgo } from '@/lib/utils'
+import { computeClientRisk } from '@/lib/clientRisk'
+import ClientRiskBadge from '@/components/project/ClientRiskBadge'
 
 interface ProjectCardProps {
   project: Project
@@ -18,6 +20,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     project.payment_due_date !== null &&
     project.payment_received_at === null &&
     new Date(project.payment_due_date) < new Date()
+
+  const clientRisk = computeClientRisk(project)
 
   function formatValue() {
     if (!project.project_value) return null
@@ -61,6 +65,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               Risk {riskScore}/10
             </span>
           )}
+          <ClientRiskBadge score={clientRisk.score} level={clientRisk.level} />
           {isOverdue && (
             <span style={{
               backgroundColor: 'rgba(239, 68, 68, 0.1)',
