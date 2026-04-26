@@ -1,5 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="gA" cx="55%" cy="38%" r="60%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#84cc16" stop-opacity="0.22"/>
+      <stop offset="60%" stop-color="#84cc16" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#84cc16" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
   <rect width="32" height="32" rx="7" fill="#0a0a0a"/>
+  <rect width="32" height="32" rx="7" fill="url(#gA)"/>
   <text
     x="16"
     y="16"
