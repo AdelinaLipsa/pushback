@@ -1,7 +1,33 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { Redis } from '@upstash/redis'
+
+const MAINTENANCE_KEY = 'pb:maintenance'
+
+const redis =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL!,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+      })
+    : null
 
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Maintenance mode — bypass for /maintenance and /admin (admin stays accessible to turn it off)
+  const bypassMaintenance =
+    pathname === '/maintenance' ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/auth')
+
+  if (!bypassMaintenance && redis) {
+    const isOn = await redis.get(MAINTENANCE_KEY)
+    if (isOn === '1') {
+      return NextResponse.redirect(new URL('/maintenance', request.url))
+    }
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -23,12 +49,12 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/signup')
-  const isDashboardRoute = request.nextUrl.pathname.startsWith('/dashboard') ||
-    request.nextUrl.pathname.startsWith('/projects') ||
-    request.nextUrl.pathname.startsWith('/contracts') ||
-    request.nextUrl.pathname.startsWith('/settings')
+  const isAuthRoute = pathname.startsWith('/login') ||
+    pathname.startsWith('/signup')
+  const isDashboardRoute = pathname.startsWith('/dashboard') ||
+    pathname.startsWith('/projects') ||
+    pathname.startsWith('/contracts') ||
+    pathname.startsWith('/settings')
 
   if (!user && isDashboardRoute) {
     const url = request.nextUrl.clone()
