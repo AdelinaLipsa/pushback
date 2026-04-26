@@ -22,9 +22,16 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/auth')
 
   if (!bypassMaintenance && redis) {
-    const isOn = await redis.get(MAINTENANCE_KEY)
-    if (isOn === '1') {
-      return NextResponse.redirect(new URL('/maintenance', request.url))
+    try {
+      const isOn = await Promise.race([
+        redis.get(MAINTENANCE_KEY),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 1500)),
+      ])
+      if (isOn === '1') {
+        return NextResponse.redirect(new URL('/maintenance', request.url))
+      }
+    } catch {
+      // fail open — Redis unavailable, let the request through
     }
   }
 
