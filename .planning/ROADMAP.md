@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 8: Expanded Defense Tools** - Add 12 new defense tool types covering the most common freelancer conflict scenarios not currently handled
 - [ ] **Phase 9: Contract-Aware Intelligence** - Deeply integrate contract analysis data into generated responses so every message references the freelancer's actual contract terms
 - [ ] **Phase 10: Smart Escalation** - Show next-step guidance after every generated message and surface project alerts proactively on the dashboard
-- [ ] **Phase 11: Document Generation** - Generate structured documents (SOW amendments, dispute packages, kill fee invoices) for Pro users — one-click, not just an email
+- [x] **Phase 11: Document Generation** - Generate structured documents (SOW amendments, dispute packages, kill fee invoices) for Pro users — one-click, not just an email (completed 2026-04-26)
 - [ ] **Phase 12: Client Risk Intelligence** - Surface client behavioral risk scores from existing DB data (defense responses, overdue payments, conflict history) on the dashboard
 - [ ] **Phase 13: How-To & In-App Guidance** - Marketing page animated product demo (CSS-only, no video) + /how-it-works page, tool directory, inline tooltips, and FAQ so the app is self-teaching
 
@@ -196,9 +196,9 @@ Plans:
   3. Generated documents are formatted for copy/save/attach — structured sections, not a wall of text
 **Plans**: 3 plans
 Plans:
-- [ ] 11-01-PLAN.md — Add DocumentType union, DOCUMENT_SYSTEM_PROMPT, generateDocument client function, and CopyButton label prop (Wave 1)
-- [ ] 11-02-PLAN.md — Create POST /api/projects/[id]/document with auth, Pro gate, IDOR-safe project fetch, Zod validation, Anthropic call (Wave 1)
-- [ ] 11-03-PLAN.md — Build DocumentOutput component, add document button row to ResponseOutput, wire DefenseDashboard state + render switch (Wave 2)
+- [x] 11-01-PLAN.md — Add DocumentType union, DOCUMENT_SYSTEM_PROMPT, generateDocument client function, and CopyButton label prop (Wave 1)
+- [x] 11-02-PLAN.md — Create POST /api/projects/[id]/document with auth, Pro gate, IDOR-safe project fetch, Zod validation, Anthropic call (Wave 1)
+- [x] 11-03-PLAN.md — Build DocumentOutput component, add document button row to ResponseOutput, wire DefenseDashboard state + render switch (Wave 2)
 **UI hint**: yes
 
 ### Phase 12: Client Risk Intelligence
@@ -238,6 +238,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Expanded Defense Tools | 0/2 | Planned | - |
 | 9. Contract-Aware Intelligence | 0/4 | Planned | - |
 | 10. Smart Escalation | 0/? | Not planned | - |
-| 11. Document Generation | 0/3 | Planned | - |
+| 11. Document Generation | 3/3 | Complete   | 2026-04-26 |
 | 12. Client Risk Intelligence | 0/? | Not planned | - |
 | 13. How-To & In-App Guidance | 0/? | Not planned | - |
