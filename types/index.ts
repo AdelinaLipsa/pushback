@@ -127,6 +127,7 @@ export type DefenseResponse = {
   was_copied: boolean
   was_sent: boolean
   created_at: string
+  reply_threads?: Pick<ReplyThread, 'defense_response_id' | 'risk_signal' | 'signal_explanation' | 'follow_up'> | null
 }
 
 export type MessageAnalysis = {
@@ -136,3 +137,17 @@ export type MessageAnalysis = {
 }
 
 export type DocumentType = 'sow_amendment' | 'kill_fee_invoice' | 'dispute_package'
+
+// 999.1: Reply threading — D-09 (separate table), D-13 (4-stance taxonomy)
+export type RiskSignal = 'backing_down' | 'doubling_down' | 'escalating' | 'unclear'
+
+export type ReplyThread = {
+  id: string
+  defense_response_id: string
+  user_id: string
+  client_reply: string
+  risk_signal: RiskSignal
+  signal_explanation: string
+  follow_up: string
+  created_at: string
+}
