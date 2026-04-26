@@ -211,7 +211,7 @@ Plans:
   3. A risk breakdown is visible on the project detail page
 **Plans**: 4 plans
 Plans:
-- [ ] 12-01-PLAN.md — Create lib/clientRisk.ts with computeClientRisk + CLIENT_RISK_COLORS + RISK_WEIGHTS + LEVEL_LABELS (Wave 1)
+- [x] 12-01-PLAN.md — Create lib/clientRisk.ts with computeClientRisk + CLIENT_RISK_COLORS + RISK_WEIGHTS + LEVEL_LABELS (Wave 1)
 - [ ] 12-02-PLAN.md — Create ClientRiskBadge + wire into ProjectCard badge row (Wave 2)
 - [ ] 12-03-PLAN.md — Create ClientBehaviorCard + wire above DefenseDashboard on project detail (Wave 2)
 - [ ] 12-04-PLAN.md — Inject top-risk client row into Needs Attention section on dashboard (Wave 2)
@@ -245,7 +245,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. Contract-Aware Intelligence | 0/4 | Planned | - |
 | 10. Smart Escalation | 0/? | Not planned | - |
 | 11. Document Generation | 3/3 | Complete    | 2026-04-26 |
-| 12. Client Risk Intelligence | 0/4 | Planned | - |
+| 12. Client Risk Intelligence | 1/4 | In Progress|  |
 | 13. How-To & In-App Guidance | 0/? | Not planned | - |
 
 ## Backlog
@@ -254,7 +254,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 **Goal:** Freelancer pastes a client's response to a sent pushback; app reads both the original defense tool use and the client reply, surfaces risk signals (backing down vs doubling down), and helps craft a follow-up
 **Requirements:** TBD
-**Plans:** 0 plans
+**Plans:** 1/4 plans executed
 
 Plans:
 - [ ] TBD (promote with /gsd-review-backlog when ready)
