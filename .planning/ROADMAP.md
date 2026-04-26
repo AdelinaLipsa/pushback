@@ -259,7 +259,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 **Goal:** Freelancer pastes a client's response to a sent pushback; app reads both the original defense tool use and the client reply, surfaces risk signals (backing down vs doubling down), and helps craft a follow-up
 **Requirements:** TBD
-**Plans:** 3/3 plans complete
+**Plans:** 3 plans
 
 Plans:
-- [ ] TBD (promote with /gsd-review-backlog when ready)
+- [ ] 999.1-01-PLAN.md — Migration 009_reply_threads (table + RLS + UNIQUE) + RiskSignal/ReplyThread types + REPLY_ANALYSIS_SYSTEM_PROMPT + [BLOCKING] supabase db push (Wave 1)
+- [ ] 999.1-02-PLAN.md — POST /api/responses/[id]/reply: auth, rate limit, RPC gate, IDOR-safe parent fetch, two-message Anthropic call, extractJson, replyResponseSchema, 23505 conflict handling, 7-site compensating decrements + smoke-test checkpoint (Wave 2)
+- [ ] 999.1-03-PLAN.md — History page reply_threads join + ReplyThreadCard component + ResponseHistory inline textarea/submit/render extension + UI verification checkpoint (Wave 3)
