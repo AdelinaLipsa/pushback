@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   Layers, Clock, AlertTriangle, Ban, RefreshCw, XCircle, CheckCircle2, ShieldAlert,
   EyeOff, Hourglass, Shuffle, TrendingDown, TrendingUp, Zap, Copyright, CreditCard,
@@ -325,6 +326,15 @@ export default function DefenseDashboard({
               <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>or pick from the left</span>
               <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--bg-border)' }} />
             </div>
+
+            {!analysisResult && (
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem', textAlign: 'center' }}>
+                Not sure which tool?{' '}
+                <Link href="/how-it-works" style={{ color: 'var(--brand-lime)', textDecoration: 'none' }}>
+                  See the tool guide →
+                </Link>
+              </p>
+            )}
           </div>
         )}
 
