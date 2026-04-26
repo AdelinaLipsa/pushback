@@ -65,6 +65,21 @@ export default function ProjectDetailClient({ project, plan, responsesUsed, auto
     <>
       <ProjectHeader project={project} />
 
+      {responses.length === 0 && (
+        <p
+          className="fade-up"
+          style={{
+            animationDelay: '0.05s',
+            fontSize: '0.75rem',
+            color: '#3f3f46',
+            marginBottom: '0.5rem',
+            marginTop: '-0.5rem',
+          }}
+        >
+          New to Pushback? Paste a message from your client above — we&apos;ll figure out what you&apos;re dealing with.
+        </p>
+      )}
+
       {/* Contract strip */}
       <div className="fade-up" style={{
         animationDelay: '0.1s',
