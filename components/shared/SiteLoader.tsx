@@ -7,24 +7,9 @@ export default function SiteLoader() {
   const [gone, setGone] = useState(false)
 
   useEffect(() => {
-    const HOLD = 350
-    const FADE = 550
-    const start = Date.now()
-
-    const fade = () => {
-      const delay = Math.max(0, HOLD - (Date.now() - start))
-      setTimeout(() => {
-        setFading(true)
-        setTimeout(() => setGone(true), FADE + 50)
-      }, delay)
-    }
-
-    if (document.readyState === 'complete') {
-      fade()
-    } else {
-      window.addEventListener('load', fade, { once: true })
-      return () => window.removeEventListener('load', fade)
-    }
+    const t1 = setTimeout(() => setFading(true), 400)
+    const t2 = setTimeout(() => setGone(true), 1000)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
   if (gone) return null
