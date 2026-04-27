@@ -20,7 +20,8 @@ export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const authError = searchParams.get('error')
-  const next = searchParams.get('next') ?? '/dashboard'
+  const rawNext = searchParams.get('next') ?? ''
+  const next = rawNext.startsWith('/') && !rawNext.includes('://') ? rawNext : '/dashboard'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
