@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { checkRateLimit, writesRateLimit } from '@/lib/rate-limit'
 import type { Database } from '@/types/database.types'
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -45,6 +46,9 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const rateLimitResponse = await checkRateLimit(writesRateLimit, user.id)
+  if (rateLimitResponse) return rateLimitResponse
 
   const { error } = await supabase.from('projects').delete().eq('id', id).eq('user_id', user.id)
   if (error) return Response.json({ error: error.message }, { status: 500 })

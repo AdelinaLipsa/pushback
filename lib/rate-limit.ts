@@ -19,6 +19,16 @@ export const contractRateLimit = redis
   ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(5, '1 m'), prefix: 'pb:contract' })
   : null
 
+// 5 feedback submissions per minute — each triggers an email notification
+export const feedbackRateLimit = redis
+  ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(5, '1 m'), prefix: 'pb:feedback' })
+  : null
+
+// 30 write operations per minute — project/contract create and delete
+export const writesRateLimit = redis
+  ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(30, '1 m'), prefix: 'pb:writes' })
+  : null
+
 export async function checkRateLimit(
   limiter: Ratelimit | null,
   userId: string,
