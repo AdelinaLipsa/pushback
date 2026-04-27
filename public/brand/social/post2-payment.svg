@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <defs>
+    <radialGradient id="g1" cx="82%" cy="18%" r="52%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#84cc16" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#84cc16" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="15%" cy="85%" r="40%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#84cc16" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#84cc16" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#ffffff" stroke-width="0.4" opacity="0.025"/>
+    </pattern>
+  </defs>
+
+  <rect width="1080" height="1080" fill="#0a0a0a"/>
+  <rect width="1080" height="1080" fill="url(#grid)"/>
+  <rect width="1080" height="1080" fill="url(#g1)"/>
+  <rect width="1080" height="1080" fill="url(#g2)"/>
+
+  <!-- Left accent bar -->
+  <rect x="160" y="80" width="3" height="848" fill="#84cc16" opacity="0.18"/>
+
+  <!-- Category label -->
+  <line x1="184" y1="112" x2="210" y2="112" stroke="#84cc16" stroke-width="2.5"/>
+  <text x="224" y="120" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="17" fill="#84cc16" letter-spacing="4">PAYMENT ESCALATION</text>
+
+  <!-- Headline -->
+  <text x="184" y="272" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="800" font-size="110" letter-spacing="-4" fill="#fafafa">Invoice sent.</text>
+  <text x="184" y="398" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="800" font-size="110" letter-spacing="-4" fill="#fafafa">No reply.</text>
+  <text x="184" y="524" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="800" font-size="110" letter-spacing="-4" fill="#84cc16">Yet.</text>
+
+  <!-- Separator -->
+  <line x1="184" y1="578" x2="940" y2="578" stroke="#1e1e1e" stroke-width="1"/>
+
+  <!-- Body copy -->
+  <text x="184" y="644" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="400" font-size="35" fill="#71717a">From polite reminder to final notice &#8212;</text>
+  <text x="184" y="694" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="400" font-size="35" fill="#71717a">every step already written for you.</text>
+  <text x="184" y="744" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="400" font-size="35" fill="#71717a">No more awkward follow-ups.</text>
+
+  <!-- Bottom separator -->
+  <line x1="160" y1="958" x2="940" y2="958" stroke="#1a1a1a" stroke-width="1"/>
+
+  <!-- Wordmark -->
+  <text x="184" y="1022" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="800" font-size="52" letter-spacing="-2">
+    <tspan fill="#fafafa">Pushback</tspan><tspan fill="#84cc16">.</tspan>
+  </text>
+
+  <!-- URL -->
+  <text x="940" y="1022" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="400" font-size="26" fill="#3f3f46" text-anchor="end">pushback.to</text>
+</svg>

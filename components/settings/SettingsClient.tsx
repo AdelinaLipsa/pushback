@@ -67,6 +67,9 @@ export default function SettingsClient({ profile, nextBillingDate, isEmailUser }
   const [profession, setProfession] = useState<string>(profile.profession ?? '')
   const [professionSaving, setProfessionSaving] = useState(false)
   const [professionSaved, setProfessionSaved] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const isPro = profile.plan === 'pro'
 
@@ -83,6 +86,22 @@ export default function SettingsClient({ profile, nextBillingDate, isEmailUser }
     const url = await billingPortal()
     if (url) window.location.href = url
     else setPortalLoading(false)
+  }
+
+  async function handleDeleteAccount() {
+    setDeleteLoading(true)
+    setDeleteError(null)
+    const res = await fetch('/api/account/delete', { method: 'DELETE' })
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      setDeleteError(body.error ?? 'Something went wrong. Try again.')
+      setDeleteLoading(false)
+      return
+    }
+    // Sign out locally then go to homepage — auth user is already gone server-side
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    window.location.href = '/'
   }
 
   async function handlePasswordReset() {
@@ -326,17 +345,49 @@ export default function SettingsClient({ profile, nextBillingDate, isEmailUser }
             style={{ animationDelay: '120ms' }}
           >
             <CardLabel>Data &amp; Privacy</CardLabel>
-            <p className="text-xs text-text-muted leading-relaxed mb-4">
-              GDPR Article 17 — request permanent deletion of your account and all associated data.
-            </p>
-            <a
-              href={`mailto:hello@pushback.to?subject=Data%20deletion%20request&body=Please%20delete%20my%20account%20and%20all%20associated%20data.%0A%0AEmail%3A%20${encodeURIComponent(profile.email)}`}
-              className="inline-flex items-center gap-1.5 text-xs text-text-muted hover:text-text-secondary transition-colors"
-              style={{ textDecoration: 'none' }}
-            >
-              <Shield size={11} className="shrink-0" />
-              Request data deletion
-            </a>
+            {!deleteConfirm ? (
+              <>
+                <p className="text-xs text-text-muted leading-relaxed mb-4">
+                  Permanently deletes your account, all projects, contracts, and responses. This cannot be undone.
+                </p>
+                <button
+                  onClick={() => setDeleteConfirm(true)}
+                  className="inline-flex items-center gap-1.5 text-xs text-text-muted hover:text-red-400 transition-colors bg-transparent border-0 cursor-pointer p-0"
+                >
+                  <Shield size={11} className="shrink-0" />
+                  Delete account
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-xs leading-relaxed mb-4" style={{ color: '#ef4444' }}>
+                  This will permanently delete your account and all data. Your Pro subscription will be cancelled immediately. There is no undo.
+                </p>
+                {deleteError && (
+                  <p className="text-xs text-red-400 mb-3">{deleteError}</p>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleDeleteAccount}
+                    disabled={deleteLoading}
+                    className="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors cursor-pointer border-0"
+                    style={{
+                      backgroundColor: deleteLoading ? 'rgba(239,68,68,0.4)' : '#ef4444',
+                      color: '#fff',
+                    }}
+                  >
+                    {deleteLoading ? 'Deleting…' : 'Yes, delete everything'}
+                  </button>
+                  <button
+                    onClick={() => { setDeleteConfirm(false); setDeleteError(null) }}
+                    disabled={deleteLoading}
+                    className="text-xs text-text-muted hover:text-text-secondary transition-colors bg-transparent border-0 cursor-pointer px-2"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            )}
           </div>
 
         </div>

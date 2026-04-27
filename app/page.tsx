@@ -578,7 +578,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)' }} className="py-28">
+      <section id="pricing" style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)' }} className="py-28">
         <div className="max-w-4xl mx-auto px-6">
           <div data-animate style={{ marginBottom: '4rem', textAlign: 'center' }}>
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Pricing</p>
