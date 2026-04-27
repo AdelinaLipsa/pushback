@@ -36,6 +36,11 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
 
   const [situation, setSituation] = useState(initialSituation ?? '')
   const [extra, setExtra] = useState<Record<string, string>>(initialContextFields ?? {})
+  const [situationTouched, setSituationTouched] = useState(false)
+
+  const situationTrimmed = situation.trim()
+  const tooShort = situationTouched && situationTrimmed.length > 0 && situationTrimmed.length < 10
+  const submitDisabled = loading || situationTrimmed.length < 10
 
   useEffect(() => {
     if (initialContextFields) setExtra(initialContextFields)
@@ -89,15 +94,28 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
             What happened?
           </label>
           <textarea
-            required
             value={situation}
             onChange={e => setSituation(e.target.value)}
             placeholder={tool.situationPlaceholder ?? 'Describe what happened…'}
             rows={4}
-            style={{ ...inputStyle, resize: 'vertical' as const }}
-            onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
-            onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
+            maxLength={2000}
+            style={{
+              ...inputStyle,
+              resize: 'vertical' as const,
+              ...(tooShort && { borderColor: 'var(--urgency-high)' }),
+            }}
+            onFocus={e => { e.currentTarget.style.borderColor = tooShort ? 'var(--urgency-high)' : 'var(--brand-lime)' }}
+            onBlur={e => { setSituationTouched(true); e.currentTarget.style.borderColor = tooShort ? 'var(--urgency-high)' : 'var(--bg-border)' }}
           />
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.3rem' }}>
+            {tooShort
+              ? <span style={{ fontSize: '0.72rem', color: 'var(--urgency-high)' }}>Too short — add a bit more detail</span>
+              : <span />
+            }
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+              {situation.length}/2000
+            </span>
+          </div>
         </div>
 
         {tool.contextFields.map(field => (
@@ -120,12 +138,12 @@ export default function SituationPanel({ tool, onGenerate, onClose, loading, ini
 
         <button
           type="submit"
-          disabled={loading || !situation.trim()}
+          disabled={submitDisabled}
           style={{
             backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 700,
             padding: '0.85rem', borderRadius: '0.5rem', border: 'none',
-            cursor: loading || !situation.trim() ? 'not-allowed' : 'pointer',
-            fontSize: '0.95rem', opacity: loading || !situation.trim() ? 0.6 : 1,
+            cursor: submitDisabled ? 'not-allowed' : 'pointer',
+            fontSize: '0.95rem', opacity: submitDisabled ? 0.6 : 1,
             marginTop: '0.25rem',
           }}
         >
