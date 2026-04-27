@@ -70,8 +70,7 @@ export default function Footer() {
                 marginBottom: '1.75rem',
               }}
             >
-              Defense tools for freelancers who know their worth. Scope creep, late payments,
-              difficult clients — handled in seconds.
+              Contract analysis, 21 situation tools, payment tracking, and document generation. Everything you need to protect your work when a client pushes back.
             </p>
 
             <Link
@@ -91,7 +90,7 @@ export default function Footer() {
               }}
               className="hover:opacity-90 transition-opacity"
             >
-              Try it free
+              Run a free situation
               <span style={{ opacity: 0.6, fontSize: '0.9em' }}>→</span>
             </Link>
           </div>
