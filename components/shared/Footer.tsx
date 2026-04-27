@@ -122,7 +122,7 @@ export default function Footer() {
                 marginBottom: '1.25rem',
               }}
             >
-              Product
+              Quick links
             </h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
               {PRODUCT_LINKS.map(({ label, href }) => (
