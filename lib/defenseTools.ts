@@ -259,3 +259,24 @@ export const TOOL_LABELS: Record<string, string> = Object.fromEntries(
 )
 
 export const DEFENSE_TOOL_VALUES = DEFENSE_TOOLS.map(t => t.type) as [string, ...string[]]
+
+import type { DefenseTool } from '@/types'
+
+export const TOOL_CATEGORIES: { label: string; types: DefenseTool[] }[] = [
+  {
+    label: 'Payment',
+    types: ['payment_first', 'payment_second', 'payment_final', 'kill_fee', 'retroactive_discount', 'rush_fee_demand'],
+  },
+  {
+    label: 'Scope & Revisions',
+    types: ['scope_change', 'revision_limit', 'feedback_stall', 'moving_goalposts', 'post_handoff_request', 'delivery_signoff'],
+  },
+  {
+    label: 'Disputes',
+    types: ['dispute_response', 'chargeback_threat', 'review_threat', 'ip_dispute', 'disputed_hours'],
+  },
+  {
+    label: 'Client Behaviour',
+    types: ['ghost_client', 'discount_pressure', 'rate_increase_pushback', 'spec_work_pressure'],
+  },
+]

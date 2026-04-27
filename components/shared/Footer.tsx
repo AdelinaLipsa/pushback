@@ -1,20 +1,17 @@
 import Link from 'next/link'
 import { ShieldCheck } from 'lucide-react'
 
+
 const PRODUCT_LINKS = [
-  { label: 'Sign up free', href: '/signup' },
-  { label: 'How it works', href: '/how-it-works' },
-  { label: 'Pricing', href: '/#pricing' },
-  { label: 'Sign in', href: '/login' },
+  { label: 'Sign up free',  href: '/signup' },
+  { label: 'How it works',  href: '/how-it-works' },
+  { label: 'Pricing',       href: '/#pricing' },
+  { label: 'Sign in',       href: '/login' },
 ]
 
 const LEGAL_LINKS = [
-  { label: 'Privacy Policy', href: '/privacy' },
-  { label: 'Terms of Service', href: '/terms' },
-  {
-    label: 'Data deletion',
-    href: 'mailto:hello@pushback.to?subject=Data%20deletion%20request&body=Please%20delete%20my%20account%20and%20all%20associated%20data.',
-  },
+  { label: 'Privacy Policy',    href: '/privacy' },
+  { label: 'Terms of Service',  href: '/terms' },
 ]
 
 export default function Footer() {
@@ -93,6 +90,24 @@ export default function Footer() {
               Run a free situation
               <span style={{ opacity: 0.6, fontSize: '0.9em' }}>→</span>
             </Link>
+
+            {/* Product Hunt badge */}
+            <div style={{ marginTop: '1.25rem' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <a
+                href="https://www.producthunt.com/products/pushback?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-pushback"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  alt="Pushback - The freelancer's arsenal against difficult clients | Product Hunt"
+                  width={250}
+                  height={54}
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1133410&theme=dark&t=1777292235506"
+                  style={{ display: 'block' }}
+                />
+              </a>
+            </div>
           </div>
 
           {/* Product column */}
@@ -114,8 +129,8 @@ export default function Footer() {
                 <li key={label}>
                   <Link
                     href={href}
-                    style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', textDecoration: 'none' }}
-                    className="hover:text-white transition-colors"
+                    style={{ fontSize: '0.875rem', textDecoration: 'none' }}
+                    className="text-[var(--text-secondary)] hover:text-white transition-colors"
                   >
                     {label}
                   </Link>
@@ -143,8 +158,8 @@ export default function Footer() {
                 <li key={label}>
                   <Link
                     href={href}
-                    style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', textDecoration: 'none' }}
-                    className="hover:text-white transition-colors"
+                    style={{ fontSize: '0.875rem', textDecoration: 'none' }}
+                    className="text-[var(--text-secondary)] hover:text-white transition-colors"
                   >
                     {label}
                   </Link>

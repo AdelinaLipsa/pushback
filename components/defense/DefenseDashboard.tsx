@@ -10,7 +10,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { DefenseTool, DefenseToolMeta, DocumentType, RiskLevel } from '@/types'
-import { DEFENSE_TOOLS, URGENCY_COLORS } from '@/lib/defenseTools'
+import { DEFENSE_TOOLS, URGENCY_COLORS, TOOL_CATEGORIES } from '@/lib/defenseTools'
 import { btnStyles, inputStyle } from '@/lib/ui'
 import { startCheckout } from '@/lib/checkout'
 import { generateDefense, generateDocument, analyzeMessage } from '@/lib/api'
@@ -28,24 +28,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 const TOOL_MAP = Object.fromEntries(DEFENSE_TOOLS.map(t => [t.type, t])) as Record<DefenseTool, DefenseToolMeta>
 
-const CATEGORIES: { label: string; types: DefenseTool[] }[] = [
-  {
-    label: 'Payment',
-    types: ['payment_first', 'payment_second', 'payment_final', 'kill_fee', 'retroactive_discount', 'rush_fee_demand'],
-  },
-  {
-    label: 'Scope & Revisions',
-    types: ['scope_change', 'revision_limit', 'feedback_stall', 'moving_goalposts', 'post_handoff_request', 'delivery_signoff'],
-  },
-  {
-    label: 'Disputes',
-    types: ['dispute_response', 'chargeback_threat', 'review_threat', 'ip_dispute', 'disputed_hours'],
-  },
-  {
-    label: 'Client Behaviour',
-    types: ['ghost_client', 'discount_pressure', 'rate_increase_pushback', 'spec_work_pressure'],
-  },
-]
+const CATEGORIES = TOOL_CATEGORIES
 
 interface DefenseDashboardProps {
   projectId: string
