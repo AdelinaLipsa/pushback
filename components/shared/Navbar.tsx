@@ -42,7 +42,7 @@ function NavLink({ href, label, Icon, active }: { href: string; label: string; I
       className={[
         'flex items-center gap-2.5 pl-2.5 pr-3 py-2 rounded-lg text-sm no-underline transition-all duration-150 border-l-2',
         active
-          ? 'bg-bg-elevated text-text-primary border-brand-amber font-semibold'
+          ? 'bg-bg-elevated text-text-primary border-brand-lime font-semibold'
           : 'text-text-secondary border-transparent hover:bg-bg-elevated/60 hover:text-text-primary font-normal',
       ].join(' ')}
     >
@@ -85,7 +85,7 @@ export default function Navbar({ profile, isAdmin }: NavbarProps) {
         <div className="px-5 py-5 border-b border-bg-border">
           <Link href="/dashboard" className="flex items-center no-underline">
             <span className="font-extrabold text-xl text-text-primary tracking-tight">Pushback</span>
-            <span className="font-extrabold text-xl text-brand-amber">.</span>
+            <span className="font-extrabold text-xl text-brand-lime">.</span>
           </Link>
         </div>
 
@@ -149,7 +149,7 @@ export default function Navbar({ profile, isAdmin }: NavbarProps) {
         {/* User footer */}
         <div className="px-3 pb-4 pt-3 border-t border-bg-border space-y-1">
           <div className="flex items-center gap-3 px-2.5 py-2">
-            <div className="w-7 h-7 rounded-full bg-brand-amber/10 flex items-center justify-center text-brand-amber font-bold text-xs shrink-0">
+            <div className="w-7 h-7 rounded-full bg-brand-lime/10 flex items-center justify-center text-brand-lime font-bold text-xs shrink-0">
               {profile?.email?.[0]?.toUpperCase() ?? '?'}
             </div>
             <div className="flex-1 min-w-0">
@@ -182,7 +182,7 @@ export default function Navbar({ profile, isAdmin }: NavbarProps) {
               href={href}
               className={[
                 'flex-1 flex flex-col items-center gap-1 py-2 px-3 rounded-lg no-underline text-[10px] font-medium transition-colors duration-150',
-                active ? 'text-brand-amber' : 'text-text-muted hover:text-text-secondary',
+                active ? 'text-brand-lime' : 'text-text-muted hover:text-text-secondary',
               ].join(' ')}
             >
               <Icon size={20} strokeWidth={active ? 2 : 1.5} />

@@ -3,9 +3,9 @@ import { ShieldCheck } from 'lucide-react'
 
 const PRODUCT_LINKS = [
   { label: 'Sign up free', href: '/signup' },
-  { label: 'Sign in', href: '/login' },
-  { label: 'Pricing', href: '/#pricing' },
   { label: 'How it works', href: '/how-it-works' },
+  { label: 'Pricing', href: '/#pricing' },
+  { label: 'Sign in', href: '/login' },
 ]
 
 const LEGAL_LINKS = [

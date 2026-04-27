@@ -289,10 +289,9 @@ export default function PushbackHero() {
   const animateFrameFnRef = useRef<(() => void) | null>(null)
 
   const situations = [
-    "THEY CHANGED",
-    "THE BRIEF.",
-    "THEY WON'T PAY.",
-    "YOU NEED A POSITION.",
+    "YOUR WORK.",
+    "YOUR TERMS.",
+    "YOUR REPLY.",
   ]
 
   const createShader = (gl: WebGLRenderingContext, type: number, source: string) => {
@@ -492,7 +491,7 @@ export default function PushbackHero() {
               Again.
             </p>
             <p className="mb-6 text-sm leading-relaxed" style={{ color: "#fafafa", textShadow: "0 0 20px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9)" }}>
-              Pushback is the professional operating system for freelancers under pressure — 21 tools covering every situation where a client crosses a line. Contract analysis, payment escalation, dispute defense, scope enforcement. Know exactly where you stand. Know exactly what to say.
+              21 situation-specific tools for the moments a client crosses a line — scope creep, late payments, chargeback threats, dispute defense. Know exactly where you stand. Know exactly what to say.
             </p>
             <a
               href="/signup"
@@ -501,7 +500,7 @@ export default function PushbackHero() {
               onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.04, duration: 0.25, ease: "power2.out" })}
               onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" })}
             >
-              Get your position →
+              Get your first reply free →
             </a>
             <p className="mt-3 text-xs" style={{ color: "#d4d4d8", textShadow: "0 0 12px rgba(0,0,0,1), 0 1px 4px rgba(0,0,0,0.9)" }}>
               Free to start. No card required.

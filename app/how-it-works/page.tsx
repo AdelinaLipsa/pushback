@@ -342,7 +342,7 @@ export default function HowItWorksPage() {
       {/* CTA */}
       <div style={{ textAlign: 'center', padding: '0 1.5rem 7rem' }}>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginBottom: '1.5rem' }}>
-          Stop apologizing. Start responding like a professional.
+          Your next client situation is coming. Have the reply ready.
         </p>
         <Link
           href="/signup"

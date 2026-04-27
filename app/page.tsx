@@ -29,7 +29,7 @@ const TICKER_ITEMS = [
 const HOW_IT_WORKS_STEPS = [
   { num: '01', label: 'Paste the client message' },
   { num: '02', label: 'Pushback identifies the situation' },
-  { num: '03', label: 'Copy a professional reply' },
+  { num: '03', label: 'Send it. Word for word.' },
 ]
 
 function ToolCarousel() {
@@ -367,6 +367,11 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+          <div className="text-center mt-10" data-animate data-animate-delay="400">
+            <Link href="/how-it-works" style={{ color: 'var(--brand-lime)', fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none', letterSpacing: '0.01em' }} className="hover:opacity-80 transition-opacity">
+              See it in action →
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -376,10 +381,10 @@ export default function LandingPage() {
           <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>The arsenal</p>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
-              Every situation.<br />Already handled.
+              21 client situations.<br />Every one already handled.
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, maxWidth: '30ch' }}>
-              21 situations. Every one of them real. Scope creep, payment stonewalling, chargeback threats, rate pressure, IP disputes, ghost clients — this is not a list of edge cases. This is freelance work in 2025. You now have a prepared response to all of it.
+              Every one of them real. Scope creep, payment stonewalling, chargeback threats, rate pressure, IP disputes, ghost clients — this is not a list of edge cases. This is freelance work. You now have a prepared response to all of it.
             </p>
           </div>
         </div>
@@ -397,7 +402,7 @@ export default function LandingPage() {
               </h2>
               <div style={{ maxWidth: '32ch' }}>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.25rem' }}>
-                  Upload your contract once. Pushback reads every clause, flags what&apos;s risky, surfaces what&apos;s missing, and gives you the exact language to push back with.
+                  Upload your contract once. Pushback reads every clause, flags what&apos;s risky, surfaces missing protections, and hands you the exact language to respond with — referenced against your actual terms, not generic advice.
                 </p>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
                   {[
@@ -431,7 +436,7 @@ export default function LandingPage() {
                 Know who owes you<br />before you have to ask.
               </h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.5rem' }}>
-                Add a payment due date to any project. Pushback tracks it, flags overdue invoices on your dashboard, and pre-loads the right follow-up tool — so you never have to manually chase a late payment.
+                Add a due date. Pushback does the watching. When an invoice tips overdue, your dashboard flags it with the exact days elapsed and pre-loads the right follow-up — first notice, second chase, or final warning. You focus on the work.
               </p>
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {[
@@ -526,7 +531,7 @@ export default function LandingPage() {
                   <p style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)' }}>{doc.label}</p>
                 </div>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: 1.65, flex: 1 }}>{doc.desc}</p>
-                <p style={{ marginTop: '1.25rem', fontSize: '0.6rem', color: '#3f3f46', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Pro feature</p>
+                <p style={{ marginTop: '1.25rem', fontSize: '0.6rem', color: 'var(--brand-lime)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.7 }}>Pro</p>
               </div>
             ))}
           </div>
@@ -550,7 +555,7 @@ export default function LandingPage() {
                   {[
                     'Stance detection in under 3 seconds',
                     'Follow-up tailored to their exact response',
-                    'Full thread history kept per project',
+                    'Every exchange on record — nothing lost if they escalate later',
                     'Copy-ready — no editing needed',
                   ].map(item => (
                     <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
@@ -651,7 +656,7 @@ export default function LandingPage() {
                 padding: '0.8rem', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.875rem',
                 position: 'relative',
               }} className="hover:opacity-90 transition-opacity">
-                Get full access
+                Own every situation
               </Link>
             </div>
           </div>
