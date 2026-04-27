@@ -491,7 +491,7 @@ export default function PushbackHero() {
               Again.
             </p>
             <p className="mb-6 text-sm leading-relaxed" style={{ color: "#fafafa", textShadow: "0 0 20px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9)" }}>
-              21 situation-specific tools for the moments a client crosses a line — scope creep, late payments, chargeback threats, dispute defense. Know exactly where you stand. Know exactly what to say.
+              Pushback is a connected toolkit — contract analysis before you sign, 21 situation tools when clients push back, payment tracking that flags overdue invoices automatically, and a full paper trail if it ever escalates. Every tool in one place. Nothing improvised.
             </p>
             <a
               href="/signup"
@@ -500,7 +500,7 @@ export default function PushbackHero() {
               onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.04, duration: 0.25, ease: "power2.out" })}
               onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" })}
             >
-              Get your first reply free →
+              Run your first situation free →
             </a>
             <p className="mt-3 text-xs" style={{ color: "#d4d4d8", textShadow: "0 0 12px rgba(0,0,0,1), 0 1px 4px rgba(0,0,0,0.9)" }}>
               Free to start. No card required.
