@@ -20,6 +20,7 @@ export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const authError = searchParams.get('error')
+  const next = searchParams.get('next') ?? '/dashboard'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -35,7 +36,7 @@ export default function LoginPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/dashboard')
+      router.push(next)
       router.refresh()
     }
   }
@@ -46,7 +47,7 @@ export default function LoginPage() {
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
     })
     if (error) {
       setError(error.message)
