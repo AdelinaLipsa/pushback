@@ -12,10 +12,45 @@ const redis =
       })
     : null
 
+// Pages that require a session — redirect to /login if absent
+const PROTECTED_PAGES = [
+  '/dashboard',
+  '/arsenal',
+  '/contracts',
+  '/projects',
+  '/settings',
+  '/feedback',
+  '/analytics',
+  '/admin',
+  '/checkout',
+]
+
+// Auth pages — redirect to /dashboard if already signed in
+const AUTH_PAGES = ['/login', '/signup']
+
+// API prefixes excluded from auth enforcement (self-secured via other means)
+const PUBLIC_API_PREFIXES = [
+  '/api/webhooks/',   // Stripe — signature-verified
+  '/api/check-email', // Used during signup before account exists
+]
+
+function isProtectedPage(pathname: string): boolean {
+  return PROTECTED_PAGES.some(p => pathname === p || pathname.startsWith(p + '/'))
+}
+
+function isAuthPage(pathname: string): boolean {
+  return AUTH_PAGES.some(p => pathname === p || pathname.startsWith(p + '/'))
+}
+
+function isProtectedApi(pathname: string): boolean {
+  if (!pathname.startsWith('/api/')) return false
+  return !PUBLIC_API_PREFIXES.some(p => pathname.startsWith(p))
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Maintenance mode — bypass for /maintenance and /admin (admin stays accessible to turn it off)
+  // Maintenance mode — bypass for /maintenance, /admin, /auth
   const bypassMaintenance =
     pathname === '/maintenance' ||
     pathname.startsWith('/admin') ||
@@ -55,6 +90,8 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // Supabase session refresh — required for SSR auth. Must use mutable response reference.
+  // Never replace getUser() with getSession() — getSession() trusts the cookie without verification.
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -76,28 +113,28 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const isAuthRoute = pathname.startsWith('/login') ||
-    pathname.startsWith('/signup')
-  const isDashboardRoute = pathname.startsWith('/dashboard') ||
-    pathname.startsWith('/projects') ||
-    pathname.startsWith('/contracts') ||
-    pathname.startsWith('/settings')
-
-  if (!user && isDashboardRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
+  // Block unauthenticated API calls before they reach route handlers
+  if (isProtectedApi(pathname) && !user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  if (user && isAuthRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
+  // Redirect unauthenticated users from protected pages to login
+  if (isProtectedPage(pathname) && !user) {
+    const loginUrl = new URL('/login', request.url)
+    loginUrl.searchParams.set('next', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Redirect authenticated users away from login/signup
+  if (isAuthPage(pathname) && user) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   return supabaseResponse
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|api).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2?)$).*)',
+  ],
 }
