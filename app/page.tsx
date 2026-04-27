@@ -10,6 +10,7 @@ import Footer from '@/components/shared/Footer'
 import DemoAnimation from '@/components/hero/DemoAnimation'
 import ContractAnimation from '@/components/hero/ContractAnimation'
 import ReplyThreadAnimation from '@/components/hero/ReplyThreadAnimation'
+import ContractReveal from '@/components/hero/ContractReveal'
 
 const TICKER_ITEMS = [
   'Client wants free revisions',
@@ -329,7 +330,7 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-primary)', minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-primary)', minHeight: '100vh', overflow: 'clip' }}>
       <PushbackHero />
 
       {/* Ticker */}
@@ -343,6 +344,9 @@ export default function LandingPage() {
           ))}
         </div>
       </div>
+
+      {/* Contract reveal — scroll-driven frame animation */}
+      <ContractReveal />
 
       {/* How it works */}
       <section className="py-24 border-t border-[#1c1c1e]">

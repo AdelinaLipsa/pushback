@@ -94,6 +94,11 @@ export async function POST(request: Request) {
         { type: 'text', text: `Analyze this freelance contract and return the JSON analysis.${profCtx ? `\n\n${profCtx}` : ''}` }
       ]
     } else if (text) {
+      if (text.length > 50_000) {
+        await supabase.from('contracts').update({ status: 'error' }).eq('id', contract.id)
+        await supabase.from('user_profiles').update({ contracts_used: preIncrementCount }).eq('id', user.id)
+        return Response.json({ error: 'Contract text must be under 50,000 characters' }, { status: 400 })
+      }
       await supabase.from('contracts').update({ contract_text: text }).eq('id', contract.id)
       messageContent = [{ type: 'text', text: `${profCtx ? `${profCtx}\n\n` : ''}Analyze this freelance contract:\n\n${text}` }]
     } else {
