@@ -1,11 +1,18 @@
 export const maxDuration = 30
 
 import Anthropic from '@anthropic-ai/sdk'
+import { z } from 'zod'
 import { anthropic, CONTRACT_ANALYSIS_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { checkRateLimit, contractRateLimit } from '@/lib/rate-limit'
 import { professionContext } from '@/lib/profession'
 import { ContractAnalysis } from '@/types'
+
+const formSchema = z.object({
+  title: z.string().max(200).optional(),
+  project_id: z.string().uuid().nullable().optional(),
+  text: z.string().max(100_000).nullable().optional(),
+})
 
 // D-13: Inline JSON extraction helper — handles preamble-wrapped and markdown-fenced output
 function extractJson(rawText: string): ContractAnalysis {
@@ -46,9 +53,18 @@ export async function POST(request: Request) {
     supabase.from('user_profiles').select('profession').eq('id', user.id).single(),
   ])
   const file = formData.get('file') as File | null
-  const text = formData.get('text') as string | null
-  const title = (formData.get('title') as string) || 'Untitled contract'
-  const project_id = formData.get('project_id') as string | null
+
+  const parsed = formSchema.safeParse({
+    title: formData.get('title'),
+    project_id: formData.get('project_id') || null,
+    text: formData.get('text') || null,
+  })
+  if (!parsed.success) {
+    return Response.json({ error: parsed.error.issues[0]?.message ?? 'Invalid input' }, { status: 400 })
+  }
+  const text = parsed.data.text ?? null
+  const title = parsed.data.title || 'Untitled contract'
+  const project_id = parsed.data.project_id ?? null
 
   const profCtx = professionContext(profileData?.profession)
 
@@ -94,11 +110,6 @@ export async function POST(request: Request) {
         { type: 'text', text: `Analyze this freelance contract and return the JSON analysis.${profCtx ? `\n\n${profCtx}` : ''}` }
       ]
     } else if (text) {
-      if (text.length > 100_000) {
-        await supabase.from('contracts').update({ status: 'error' }).eq('id', contract.id)
-        await supabase.from('user_profiles').update({ contracts_used: preIncrementCount }).eq('id', user.id)
-        return Response.json({ error: 'Contract text must be under 100,000 characters' }, { status: 400 })
-      }
       await supabase.from('contracts').update({ contract_text: text }).eq('id', contract.id)
       messageContent = [{ type: 'text', text: `${profCtx ? `${profCtx}\n\n` : ''}Analyze this freelance contract:\n\n${text}` }]
     } else {
