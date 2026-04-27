@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { checkRateLimit, writesRateLimit } from '@/lib/rate-limit'
 import { anthropic } from '@/lib/anthropic'
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -23,6 +24,9 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const rateLimitResponse = await checkRateLimit(writesRateLimit, user.id)
+  if (rateLimitResponse) return rateLimitResponse
 
   // Fetch anthropic_file_id before deleting — row must exist to read it
   const { data: contract } = await supabase
