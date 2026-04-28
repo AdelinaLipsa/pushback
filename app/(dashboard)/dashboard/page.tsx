@@ -325,14 +325,18 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
   const params = await searchParams
 
-  const [{ data: projects }, { data: profile }] = await Promise.all([
+  const [{ data: projects, error: projectsError }, { data: profile }] = await Promise.all([
     supabase
       .from('projects')
-      .select('*, contracts(risk_score, risk_level), defense_responses(id, tool_type, created_at, was_sent)')
+      .select('*, contracts!projects_contract_id_fkey(risk_score, risk_level), defense_responses(id, tool_type, created_at, was_sent)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false }),
     supabase.from('user_profiles').select('*').eq('id', user.id).single(),
   ])
+
+  if (projectsError) {
+    console.error('[dashboard] projects query error:', projectsError)
+  }
 
   const showUpgrade = params.upgrade === '1' || params.upgraded === 'true'
   const isNewUser = params.welcome === '1'
@@ -370,6 +374,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   }
 
   // ---- Overview stats ----
+  const queryFailed = !!projectsError
   const totalProjects = projectList.length
   const allResponses = projectList.flatMap(p => p.defense_responses ?? [])
   const responsesSent = allResponses.filter(r => r.was_sent).length
@@ -495,7 +500,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
       {/* Recent projects / empty state */}
       <div className="fade-up" style={{ marginBottom: '2rem', animationDelay: '0.12s' }}>
-        {totalProjects === 0 ? (
+        {totalProjects === 0 && !queryFailed ? (
           <div style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             gap: '1rem', padding: '3rem 1.5rem', textAlign: 'center',
