@@ -91,23 +91,6 @@ export default function Footer() {
               <span style={{ opacity: 0.6, fontSize: '0.9em' }}>→</span>
             </Link>
 
-            {/* Product Hunt badge */}
-            <div style={{ marginTop: '1.25rem' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <a
-                href="https://www.producthunt.com/products/pushback?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-pushback"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img
-                  alt="Pushback - The freelancer's arsenal against difficult clients | Product Hunt"
-                  width={250}
-                  height={54}
-                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1133410&theme=dark&t=1777292235506"
-                  style={{ display: 'block' }}
-                />
-              </a>
-            </div>
           </div>
 
           {/* Product column */}
