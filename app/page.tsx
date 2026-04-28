@@ -601,7 +601,7 @@ export default function LandingPage() {
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>No card required</p>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.875rem', marginBottom: '2rem', flex: 1 }}>
-                {['1 defense tool response', '1 contract analysis', 'Access to all 21 tools', 'Copy-ready messages'].map(f => (
+                {['1 defense tool response', '1 contract analysis', 'Access to all 23 tools', 'Copy-ready messages'].map(f => (
                   <li key={f} style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <Check size={14} style={{ color: 'var(--brand-lime)', flexShrink: 0 }} />
                     {f}

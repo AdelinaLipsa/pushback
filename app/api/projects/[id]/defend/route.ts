@@ -40,6 +40,8 @@ const TOOL_GROUP_MAP: Record<DefenseTool, keyof typeof TOOL_CLAUSE_KEYWORDS> = {
   rush_fee_demand: 'dispute',
   spec_work_pressure: 'dispute',
   disputed_hours: 'payment',
+  red_flag: 'dispute',
+  intake: 'dispute',
 }
 
 function buildContractContext(
@@ -114,6 +116,8 @@ const PROMPT_TOOL_LABELS: Record<DefenseTool, string> = {
   post_handoff_request: 'POST-HANDOFF REQUEST — CLOSED PROJECT',
   review_threat: 'REVIEW / REPUTATION THREAT',
   disputed_hours: 'DISPUTED HOURS — TIME & MATERIALS',
+  red_flag: 'RED FLAG DETECTOR',
+  intake: 'PROJECT INTAKE QUESTIONNAIRE',
 }
 
 // WR-01: use shared DEFENSE_TOOL_VALUES for properly-typed enum (no `as DefenseTool` cast needed downstream)

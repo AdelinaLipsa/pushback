@@ -62,20 +62,50 @@ export async function generateCounterOffer(contractId: string) {
   return request<{ email: string }>(`/api/contracts/${contractId}/counter-offer`, { method: 'POST' })
 }
 
-export async function detectRedFlags(message: string) {
-  return request<{ analysis: RedFlagAnalysis }>('/api/red-flag', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message }),
-  })
+export type RedFlagResult = { upgradeRequired: true } | { analysis: RedFlagAnalysis } | null
+
+export async function detectRedFlags(message: string): Promise<RedFlagResult> {
+  try {
+    const res = await fetch('/api/red-flag', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message }),
+    })
+    const data = await res.json()
+    if (res.status === 403 && data.error === 'UPGRADE_REQUIRED') return { upgradeRequired: true }
+    if (res.status === 403 && data.error === 'PERIOD_LIMIT_REACHED') {
+      toast.error('Monthly limit reached — resets at your next billing date.')
+      return null
+    }
+    if (!res.ok) { toast.error(data?.error ?? 'Something went wrong.'); return null }
+    return data as { analysis: RedFlagAnalysis }
+  } catch {
+    toast.error('Network error — check your connection.')
+    return null
+  }
 }
 
-export async function generateIntake(description: string) {
-  return request<{ questionnaire: IntakeQuestionnaire }>('/api/intake', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ description }),
-  })
+export type IntakeResult = { upgradeRequired: true } | { questionnaire: IntakeQuestionnaire } | null
+
+export async function generateIntake(description: string): Promise<IntakeResult> {
+  try {
+    const res = await fetch('/api/intake', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description }),
+    })
+    const data = await res.json()
+    if (res.status === 403 && data.error === 'UPGRADE_REQUIRED') return { upgradeRequired: true }
+    if (res.status === 403 && data.error === 'PERIOD_LIMIT_REACHED') {
+      toast.error('Monthly limit reached — resets at your next billing date.')
+      return null
+    }
+    if (!res.ok) { toast.error(data?.error ?? 'Something went wrong.'); return null }
+    return data as { questionnaire: IntakeQuestionnaire }
+  } catch {
+    toast.error('Network error — check your connection.')
+    return null
+  }
 }
 
 // ─── Defense ────────────────────────────────────────────────────────────────

@@ -3,15 +3,18 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, BookOpen, HelpCircle, MessageSquare, AlertTriangle, ClipboardList, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, BookOpen, HelpCircle, MessageSquare, AlertTriangle, ClipboardList, Plus, type LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { startCheckout } from '@/lib/checkout'
 import { billingPortal } from '@/lib/api'
 import { UserProfile } from '@/types'
 
+type SidebarProject = { id: string; title: string; client_name: string }
+
 interface NavbarProps {
   profile: UserProfile | null
   isAdmin?: boolean
+  recentProjects: SidebarProject[]
 }
 
 const NAV_SECTIONS: { label: string; items: { href: string; label: string; Icon: LucideIcon }[] }[] = [
@@ -19,7 +22,6 @@ const NAV_SECTIONS: { label: string; items: { href: string; label: string; Icon:
     label: 'Workspace',
     items: [
       { href: '/dashboard', label: 'Dashboard', Icon: LayoutDashboard },
-      { href: '/projects', label: 'Projects', Icon: Briefcase },
       { href: '/contracts', label: 'Contracts', Icon: FileText },
       { href: '/analytics', label: 'Analytics', Icon: BarChart2 },
       { href: '/arsenal', label: 'Arsenal', Icon: BookOpen },
@@ -59,7 +61,24 @@ function NavLink({ href, label, Icon, active }: { href: string; label: string; I
   )
 }
 
-export default function Navbar({ profile, isAdmin }: NavbarProps) {
+function ProjectNavItem({ project, active }: { project: SidebarProject; active: boolean }) {
+  return (
+    <Link
+      href={`/projects/${project.id}`}
+      className={[
+        'flex items-center gap-2.5 pl-2.5 pr-3 py-2 rounded-lg text-sm no-underline transition-all duration-150 border-l-2',
+        active
+          ? 'bg-bg-elevated text-text-primary border-brand-lime font-semibold'
+          : 'text-text-secondary border-transparent hover:bg-bg-elevated/60 hover:text-text-primary font-normal',
+      ].join(' ')}
+    >
+      <Briefcase size={13} strokeWidth={active ? 2 : 1.5} className="shrink-0" />
+      <span className="truncate">{project.title}</span>
+    </Link>
+  )
+}
+
+export default function Navbar({ profile, isAdmin, recentProjects }: NavbarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [checkoutLoading, setCheckoutLoading] = useState(false)
@@ -99,7 +118,42 @@ export default function Navbar({ profile, isAdmin }: NavbarProps) {
         {/* Nav sections */}
         <nav className="flex-1 px-3 py-4 flex flex-col overflow-y-auto">
           <div className="space-y-5">
-            {NAV_SECTIONS.map(({ label, items }) => (
+            {NAV_SECTIONS.slice(0, 1).map(({ label, items }) => (
+              <div key={label}>
+                <p className="px-2.5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-text-muted select-none">{label}</p>
+                <div className="space-y-0.5">
+                  {items.map(({ href, label: itemLabel, Icon }) => (
+                    <NavLink key={href} href={href} label={itemLabel} Icon={Icon} active={isActive(href)} />
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Dynamic projects */}
+            <div>
+              <div className="flex items-center justify-between px-2.5 mb-2">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-text-muted select-none">Projects</p>
+                <Link href="/projects/new" className="text-text-muted hover:text-text-primary transition-colors duration-150" title="New project">
+                  <Plus size={12} strokeWidth={2} />
+                </Link>
+              </div>
+              <div className="space-y-0.5">
+                {recentProjects.length === 0 && (
+                  <p className="px-2.5 py-1 text-xs text-text-muted">No projects yet</p>
+                )}
+                {recentProjects.map(p => (
+                  <ProjectNavItem key={p.id} project={p} active={pathname.startsWith(`/projects/${p.id}`)} />
+                ))}
+                <Link
+                  href="/projects"
+                  className="flex items-center gap-2.5 pl-2.5 pr-3 py-1.5 rounded-lg text-xs no-underline text-text-muted hover:text-text-secondary transition-colors duration-150"
+                >
+                  All projects →
+                </Link>
+              </div>
+            </div>
+
+            {NAV_SECTIONS.slice(1).map(({ label, items }) => (
               <div key={label}>
                 <p className="px-2.5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-text-muted select-none">
                   {label}

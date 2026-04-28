@@ -9,11 +9,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
-    .from('user_profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
+  const [{ data: profile }, { data: recentProjects }] = await Promise.all([
+    supabase.from('user_profiles').select('*').eq('id', user.id).single(),
+    supabase.from('projects').select('id, title, client_name').eq('user_id', user.id).order('updated_at', { ascending: false }).limit(3),
+  ])
 
   const isAdmin = !!process.env.ADMIN_EMAIL && user.email === process.env.ADMIN_EMAIL
 
@@ -24,7 +23,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="dash-glow-a" />
         <div className="dash-glow-b" />
       </div>
-      <Navbar profile={profile as UserProfile | null} isAdmin={isAdmin} />
+      <Navbar profile={profile as UserProfile | null} isAdmin={isAdmin} recentProjects={recentProjects ?? []} />
       <main style={{ flex: 1, overflow: 'auto', paddingBottom: '4rem', position: 'relative', zIndex: 1 }} className="md:pb-0">
         {children}
       </main>
