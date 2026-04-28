@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 type EmailStatus = 'idle' | 'checking' | 'taken' | 'clear'
@@ -40,6 +41,9 @@ function PasswordStrength({ password }: { password: string }) {
 }
 
 export default function SignupPage() {
+  const searchParams = useSearchParams()
+  const rawNext = searchParams.get('next') ?? ''
+  const next = rawNext.startsWith('/') && !rawNext.includes('://') ? rawNext : ''
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -84,10 +88,13 @@ export default function SignupPage() {
     setError('')
     setLoading(true)
     const supabase = createClient()
+    const callbackUrl = next
+      ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+      : `${window.location.origin}/auth/callback`
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      options: { emailRedirectTo: callbackUrl },
     })
     if (error) {
       setError(error.message)
@@ -101,9 +108,12 @@ export default function SignupPage() {
     setError('')
     setLoading(true)
     const supabase = createClient()
+    const callbackUrl = next
+      ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+      : `${window.location.origin}/auth/callback`
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: callbackUrl },
     })
     if (error) {
       setError(error.message)
@@ -221,7 +231,7 @@ export default function SignupPage() {
 
         <p className="text-center mt-5 text-text-muted text-sm">
           Already have an account?{' '}
-          <Link href="/login" className="text-brand-lime font-medium no-underline">Sign in</Link>
+          <Link href={`/login${next ? `?next=${encodeURIComponent(next)}` : ''}`} className="text-brand-lime font-medium no-underline">Sign in</Link>
         </p>
       </div>
     </div>

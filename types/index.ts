@@ -114,6 +114,7 @@ export type Contract = {
   risk_level: RiskLevel | null
   analysis: ContractAnalysis | null
   status: string
+  contract_type: ContractType | null
   created_at: string
 }
 
@@ -138,6 +139,35 @@ export type MessageAnalysis = {
 }
 
 export type DocumentType = 'sow_amendment' | 'kill_fee_invoice' | 'dispute_package'
+
+export type ContractType = 'service_agreement' | 'nda'
+
+export type RedFlag = {
+  title: string
+  quote: string | null
+  severity: RiskLevel
+  what_it_means: string
+  question_to_ask: string
+}
+
+export type RedFlagAnalysis = {
+  risk_level: RiskLevel
+  verdict: string
+  proceed: 'yes' | 'caution' | 'no'
+  red_flags: RedFlag[]
+  green_flags: string[]
+}
+
+export type IntakeQuestion = {
+  question: string
+  why: string
+  category: 'scope' | 'payment' | 'rights' | 'timeline' | 'client'
+}
+
+export type IntakeQuestionnaire = {
+  project_summary: string
+  questions: IntakeQuestion[]
+}
 
 // 999.1: Reply threading — D-09 (separate table), D-13 (4-stance taxonomy)
 export type RiskSignal = 'backing_down' | 'doubling_down' | 'escalating' | 'unclear'

@@ -79,11 +79,12 @@ describe('POST /api/projects/[id]/analyze-message', () => {
     expect((await res.json()).error).toBe('UPGRADE_REQUIRED')
   })
 
-  it('returns 400 for message too short and decrements credit', async () => {
+  it('returns 400 for message too short without decrementing credit', async () => {
     const mock = setup()
     const res = await POST(makeRequest({ message: 'short' }), makeParams())
     expect(res.status).toBe(400)
-    expect(mock.rpc).toHaveBeenCalledWith('decrement_defense_responses', { uid: 'user-1' })
+    // Validation runs before the plan gate, so no credit is ever incremented — nothing to decrement
+    expect(mock.rpc).not.toHaveBeenCalledWith('decrement_defense_responses', { uid: 'user-1' })
   })
 
   it('returns 503 when Anthropic slot unavailable and decrements credit', async () => {

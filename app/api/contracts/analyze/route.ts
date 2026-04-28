@@ -3,7 +3,7 @@ export const maxDuration = 30
 import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
 import { after } from 'next/server'
-import { anthropic, CONTRACT_ANALYSIS_SYSTEM_PROMPT } from '@/lib/anthropic'
+import { anthropic, CONTRACT_ANALYSIS_SYSTEM_PROMPT, NDA_ANALYSIS_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase/server'
 import { checkRateLimit, contractRateLimit } from '@/lib/rate-limit'
 import { professionContext } from '@/lib/profession'
@@ -13,6 +13,7 @@ const formSchema = z.object({
   title: z.string().max(200).optional(),
   project_id: z.string().uuid().nullable().optional(),
   text: z.string().max(100_000).nullable().optional(),
+  contract_type: z.enum(['service_agreement', 'nda']).optional(),
 })
 
 // D-13: Inline JSON extraction helper — handles preamble-wrapped and markdown-fenced output
@@ -69,6 +70,8 @@ export async function POST(request: Request) {
   const text = parsed.data.text ?? null
   const title = parsed.data.title || 'Untitled contract'
   const project_id = parsed.data.project_id ?? null
+  const contract_type = parsed.data.contract_type ?? 'service_agreement'
+  const systemPrompt = contract_type === 'nda' ? NDA_ANALYSIS_SYSTEM_PROMPT : CONTRACT_ANALYSIS_SYSTEM_PROMPT
 
   // Validate inputs and read file bytes in request context (bytes unavailable inside after())
   let fileBytes: ArrayBuffer | null = null
@@ -100,7 +103,7 @@ export async function POST(request: Request) {
 
   const { data: contract } = await supabase
     .from('contracts')
-    .insert({ user_id: user.id, title, original_filename: file?.name ?? null, status: 'pending' })
+    .insert({ user_id: user.id, title, original_filename: file?.name ?? null, status: 'pending', contract_type } as any)
     .select()
     .single()
 
@@ -139,7 +142,7 @@ export async function POST(request: Request) {
         {
           model: 'claude-sonnet-4-6',
           max_tokens: 4096,
-          system: CONTRACT_ANALYSIS_SYSTEM_PROMPT,
+          system: systemPrompt,
           messages: [{ role: 'user', content: messageContent }]
         } as any,
         { headers: { 'anthropic-beta': 'files-api-2025-04-14' } }

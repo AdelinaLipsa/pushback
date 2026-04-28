@@ -34,6 +34,11 @@ export const checkEmailRateLimit = redis
   ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, '1 m'), prefix: 'pb:check-email' })
   : null
 
+// 10 tool requests per minute — red flag detector, intake questionnaire, counter-offer
+export const toolsRateLimit = redis
+  ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, '1 m'), prefix: 'pb:tools' })
+  : null
+
 export async function checkRateLimit(
   limiter: Ratelimit | null,
   identifier: string,

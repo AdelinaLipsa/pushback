@@ -11,12 +11,14 @@ const MIN_PASTE_CHARS = 100
 
 interface ContractUploaderProps {
   projectId?: string
+  defaultType?: 'service_agreement' | 'nda'
 }
 
-export default function ContractUploader({ projectId }: ContractUploaderProps) {
+export default function ContractUploader({ projectId, defaultType = 'service_agreement' }: ContractUploaderProps) {
   const router = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
   const [mode, setMode] = useState<'upload' | 'paste'>('upload')
+  const [contractType, setContractType] = useState<'service_agreement' | 'nda'>(defaultType)
   const [file, setFile] = useState<File | null>(null)
   const [text, setText] = useState('')
   const [title, setTitle] = useState('')
@@ -37,6 +39,7 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
 
     const formData = new FormData()
     formData.append('title', title || (file?.name ?? 'Untitled contract'))
+    formData.append('contract_type', contractType)
     if (projectId) formData.append('project_id', projectId)
     if (mode === 'upload' && file) formData.append('file', file)
     else formData.append('text', text.trim())
@@ -49,6 +52,34 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <div>
+        <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
+          Document type
+        </label>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          {([
+            { value: 'service_agreement', label: 'Service agreement / SOW' },
+            { value: 'nda', label: 'NDA / Non-compete' },
+          ] as const).map(({ value, label }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setContractType(value)}
+              style={{
+                padding: '0.5rem 1rem', borderRadius: '0.375rem',
+                border: `1px solid ${contractType === value ? 'var(--brand-lime)' : 'var(--bg-border)'}`,
+                backgroundColor: contractType === value ? 'rgba(163,230,53,0.08)' : 'transparent',
+                color: contractType === value ? 'var(--brand-lime)' : 'var(--text-muted)',
+                cursor: 'pointer', fontSize: '0.85rem', fontWeight: contractType === value ? 600 : 400,
+                transition: 'all 150ms ease',
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div>
         <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
           Contract name

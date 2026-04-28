@@ -1,5 +1,5 @@
 import { toast } from 'sonner'
-import type { DefenseTool } from '@/types'
+import type { DefenseTool, RedFlagAnalysis, IntakeQuestionnaire } from '@/types'
 
 async function request<T>(url: string, options?: RequestInit): Promise<T | null> {
   try {
@@ -56,6 +56,26 @@ export async function analyzeContract(formData: FormData) {
 
 export async function deleteContract(id: string) {
   return request<{ success: true }>(`/api/contracts/${id}`, { method: 'DELETE' })
+}
+
+export async function generateCounterOffer(contractId: string) {
+  return request<{ email: string }>(`/api/contracts/${contractId}/counter-offer`, { method: 'POST' })
+}
+
+export async function detectRedFlags(message: string) {
+  return request<{ analysis: RedFlagAnalysis }>('/api/red-flag', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message }),
+  })
+}
+
+export async function generateIntake(description: string) {
+  return request<{ questionnaire: IntakeQuestionnaire }>('/api/intake', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ description }),
+  })
 }
 
 // ─── Defense ────────────────────────────────────────────────────────────────

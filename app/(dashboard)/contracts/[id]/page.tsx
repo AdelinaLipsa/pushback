@@ -51,7 +51,7 @@ export default async function ContractPage({ params }: { params: Promise<{ id: s
       )}
 
       {contract.status === 'analyzed' && contract.analysis && (
-        <RiskReport analysis={contract.analysis as ContractAnalysis} />
+        <RiskReport analysis={contract.analysis as ContractAnalysis} contractId={contract.id} />
       )}
     </div>
   )

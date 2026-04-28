@@ -136,7 +136,7 @@ export default function LoginPage() {
 
         <p className="text-center mt-5 text-text-muted text-sm">
           Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-brand-lime font-medium no-underline">Sign up free</Link>
+          <Link href={`/signup${next !== '/dashboard' ? `?next=${encodeURIComponent(next)}` : ''}`} className="text-brand-lime font-medium no-underline">Sign up free</Link>
         </p>
       </div>
     </div>
