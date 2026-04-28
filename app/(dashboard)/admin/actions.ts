@@ -18,7 +18,8 @@ const redis =
 async function assertAdmin() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user || !process.env.ADMIN_EMAIL || user.email !== process.env.ADMIN_EMAIL) redirect('/dashboard')
+  const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase()
+  if (!user || !adminEmail || user.email?.toLowerCase() !== adminEmail) redirect('/dashboard')
   return createAdminSupabaseClient()
 }
 
@@ -61,9 +62,22 @@ export async function setMaintenanceMode(on: boolean): Promise<void> {
 
 export async function deleteUser(userId: string) {
   const admin = await assertAdmin()
-  await admin.from('defense_responses').delete().eq('user_id', userId)
-  await admin.from('contracts').delete().eq('user_id', userId)
-  await admin.from('user_profiles').delete().eq('id', userId)
+
+  const { error: e1 } = await admin.from('defense_responses').delete().eq('user_id', userId)
+  if (e1) throw new Error(`Failed to delete defense_responses: ${e1.message}`)
+
+  const { error: e2 } = await admin.from('contracts').delete().eq('user_id', userId)
+  if (e2) throw new Error(`Failed to delete contracts: ${e2.message}`)
+
+  const { error: e3 } = await admin.from('projects').delete().eq('user_id', userId)
+  if (e3) throw new Error(`Failed to delete projects: ${e3.message}`)
+
+  const { error: e4 } = await admin.from('feedback').delete().eq('user_id', userId)
+  if (e4) throw new Error(`Failed to delete feedback: ${e4.message}`)
+
+  const { error: e5 } = await admin.from('user_profiles').delete().eq('id', userId)
+  if (e5) throw new Error(`Failed to delete user_profiles: ${e5.message}`)
+
   const { error } = await admin.auth.admin.deleteUser(userId)
   if (error) throw new Error(error.message)
   revalidatePath('/admin')

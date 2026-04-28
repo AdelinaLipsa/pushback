@@ -22,8 +22,16 @@ export async function DELETE() {
     }
   }
 
-  // Delete auth user via admin client — cascades to all user data
   const admin = createAdminSupabaseClient()
+
+  // Explicitly delete application data before removing the auth user.
+  // Do not rely solely on DB cascades — not all tables may have them.
+  await admin.from('defense_responses').delete().eq('user_id', user.id)
+  await admin.from('contracts').delete().eq('user_id', user.id)
+  await admin.from('projects').delete().eq('user_id', user.id)
+  await admin.from('feedback').delete().eq('user_id', user.id)
+  await admin.from('user_profiles').delete().eq('id', user.id)
+
   const { error } = await admin.auth.admin.deleteUser(user.id)
   if (error) return Response.json({ error: error.message }, { status: 500 })
 

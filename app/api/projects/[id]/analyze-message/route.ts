@@ -40,6 +40,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const rateLimitResponse = await checkRateLimit(defendRateLimit, user.id)
   if (rateLimitResponse) return rateLimitResponse
 
+  // Parse and validate input before consuming a credit — avoids lost credits on bad requests
+  const body = await request.json().catch(() => null)
+  const parsed = classifySchema.safeParse(body)
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0]
+    return Response.json({ error: `${String(issue.path[0])}: ${issue.message}` }, { status: 400 })
+  }
+  const { message: clientMessage } = parsed.data
+
   // Atomic plan gate — shared RPC pool with defend route (D-03, D-04, DETECT-03)
   const { data: gateResult, error: gateError } = await supabase.rpc(
     'check_and_increment_defense_responses',
@@ -51,14 +60,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   try {
-    const body = await request.json()
-    const parsed = classifySchema.safeParse(body)
-    if (!parsed.success) {
-      const issue = parsed.error.issues[0]
-      await supabase.rpc('decrement_defense_responses', { uid: user.id })
-      return Response.json({ error: `${String(issue.path[0])}: ${issue.message}` }, { status: 400 })
-    }
-    const { message: clientMessage } = parsed.data
 
     const slotResponse = await acquireAnthropicSlot()
     if (slotResponse) {

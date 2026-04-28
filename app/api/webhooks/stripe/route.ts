@@ -107,6 +107,16 @@ export async function POST(request: Request) {
     }
   }
 
+  if (event.type === 'customer.subscription.updated') {
+    const subscription = event.data.object
+    const newStatus = subscription.status
+    const plan = (newStatus === 'active' || newStatus === 'trialing') ? 'pro' : 'free'
+    await supabase
+      .from('user_profiles')
+      .update({ plan })
+      .eq('stripe_subscription_id', subscription.id)
+  }
+
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object
     const { error } = await supabase
