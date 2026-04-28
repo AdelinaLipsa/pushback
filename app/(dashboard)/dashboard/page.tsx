@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { FolderPlus, ShieldCheck, FileText, Zap, DollarSign } from 'lucide-react'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { DefenseTool, Project } from '@/types'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
@@ -254,11 +255,11 @@ const PAYMENT_STATUS_STYLE: Record<NonNullable<RecentProject['paymentStatus']>, 
 }
 
 // ---- Overview stat tile ----
-function StatTile({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
+function StatTile({ label, value, sub, accentColor }: { label: string; value: string | number; sub?: string; accentColor?: string }) {
   return (
     <div style={{
       backgroundColor: 'var(--bg-surface)',
-      border: '1px solid var(--bg-border)',
+      border: `1px solid ${accentColor ? `${accentColor}30` : 'var(--bg-border)'}`,
       borderRadius: '0.75rem',
       padding: '1rem 1.125rem',
       display: 'flex',
@@ -268,7 +269,7 @@ function StatTile({ label, value, sub }: { label: string; value: string | number
       <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>
         {label}
       </span>
-      <span style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text-primary)', lineHeight: 1.1 }}>
+      <span style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', color: accentColor ?? 'var(--text-primary)', lineHeight: 1.1 }}>
         {value}
       </span>
       {sub && (
@@ -276,6 +277,45 @@ function StatTile({ label, value, sub }: { label: string; value: string | number
       )}
     </div>
   )
+}
+
+// ---- Next action suggestion ----
+interface NextAction {
+  title: string
+  description: string
+  href: string
+  cta: string
+}
+
+function computeNextAction(
+  projects: ProjectWithResponses[],
+  contractsAnalyzed: number,
+  responsesSent: number,
+): NextAction | null {
+  if (projects.length === 0) return null
+
+  const withoutContract = projects.filter(p => p.contracts?.risk_score === null || p.contracts?.risk_score === undefined)
+  if (withoutContract.length > 0) {
+    const p = withoutContract[0]
+    return {
+      title: 'Analyze a contract',
+      description: `${withoutContract.length} project${withoutContract.length > 1 ? 's' : ''} ${withoutContract.length > 1 ? 'have' : 'has'} no contract analyzed yet — catch red flags before you sign.`,
+      href: `/contracts/new?project_id=${p.id}`,
+      cta: 'Analyze now →',
+    }
+  }
+
+  if (responsesSent === 0) {
+    const p = projects[0]
+    return {
+      title: 'Send a defense response',
+      description: `Your arsenal is loaded with ${DEFENSE_TOOLS.length} tools. Use one on a live project to handle a difficult situation.`,
+      href: `/projects/${p.id}`,
+      cta: 'Open project →',
+    }
+  }
+
+  return null
 }
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ upgrade?: string; upgraded?: string; welcome?: string }> }) {
@@ -342,6 +382,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const outstandingValue = outstandingProjects.reduce((sum, p) => sum + (p.payment_amount ?? 0), 0)
 
   const recentProjects = computeRecentProjects(projectList, today)
+  const nextAction = computeNextAction(projectList, contractsAnalyzed, responsesSent)
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -362,110 +403,204 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
       {/* Overview tiles */}
       <div className="fade-up" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginBottom: '2rem', animationDelay: '0.03s' }}>
-        <StatTile label="Projects" value={totalProjects} sub={totalProjects === 1 ? '1 active' : `${totalProjects} total`} />
+        <StatTile
+          label="Projects"
+          value={totalProjects}
+          sub={totalProjects === 0 ? 'None yet' : totalProjects === 1 ? '1 active' : `${totalProjects} total`}
+        />
         <StatTile
           label="Outstanding"
-          value={outstandingCount}
-          sub={outstandingValue > 0 ? `$${outstandingValue.toLocaleString()} unpaid` : outstandingCount === 0 ? 'All clear' : 'No amounts set'}
+          value={outstandingValue > 0 ? `$${outstandingValue.toLocaleString()}` : outstandingCount}
+          sub={outstandingValue > 0 ? `${outstandingCount} unpaid invoice${outstandingCount !== 1 ? 's' : ''}` : outstandingCount === 0 ? 'All paid up' : 'No amounts set'}
+          accentColor={outstandingValue > 0 ? '#ef4444' : outstandingCount > 0 ? '#f59e0b' : undefined}
         />
-        <StatTile label="Responses sent" value={responsesSent} sub={`${allResponses.length} generated`} />
-        <StatTile label="Contracts" value={contractsAnalyzed} sub="analyzed" />
+        <StatTile
+          label="Responses sent"
+          value={responsesSent}
+          sub={allResponses.length > responsesSent ? `${allResponses.length - responsesSent} drafted` : responsesSent > 0 ? 'across all projects' : 'None sent yet'}
+          accentColor={responsesSent > 0 ? '#84cc16' : undefined}
+        />
+        <StatTile
+          label="Contracts"
+          value={contractsAnalyzed}
+          sub={contractsAnalyzed === 0 && totalProjects > 0 ? `${totalProjects - contractsAnalyzed} unanalyzed` : contractsAnalyzed > 0 ? 'analyzed' : 'None yet'}
+          accentColor={contractsAnalyzed === 0 && totalProjects > 0 ? '#f59e0b' : contractsAnalyzed > 0 ? '#84cc16' : undefined}
+        />
       </div>
 
       {/* Needs attention */}
-      {(attentionItems.length > 0 || topRiskItem) && (
+      {totalProjects > 0 && (
         <div className="fade-up" style={{ marginBottom: '2rem', animationDelay: '0.06s' }}>
           <h2 style={{ fontWeight: 600, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.75rem', color: 'var(--text-muted)' }}>
             Needs attention
           </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {attentionItems.map((item, i) => (
-              <div key={`${item.projectId}-${item.severity}-${i}`} className="fade-up" style={{ animationDelay: `${0.09 + i * 0.05}s` }}>
-                <AttentionAlert item={item} />
+          {attentionItems.length === 0 && !topRiskItem ? (
+            nextAction ? (
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
+                flexWrap: 'wrap',
+                padding: '0.875rem 1rem',
+                backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+                borderLeft: '3px solid #84cc16', borderRadius: '0.5rem',
+              }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <ShieldCheck size={13} style={{ color: '#84cc16', flexShrink: 0 }} />
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#84cc16', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                      All clear
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', marginLeft: '1.4rem' }}>
+                    <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{nextAction.title}:</span>{' '}
+                    {nextAction.description}
+                  </span>
+                </div>
+                <Link
+                  href={nextAction.href}
+                  style={{ color: 'var(--brand-lime)', fontSize: '0.82rem', fontWeight: 600, textDecoration: 'none', flexShrink: 0 }}
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  {nextAction.cta}
+                </Link>
               </div>
-            ))}
-            {topRiskItem && (
-              <div className="fade-up" style={{ animationDelay: `${0.09 + attentionItems.length * 0.05}s` }}>
-                <AttentionAlert item={topRiskItem} borderColorOverride={topRiskBorder ?? undefined} />
+            ) : (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '0.625rem',
+                padding: '0.875rem 1rem',
+                backgroundColor: 'var(--bg-surface)', border: '1px solid rgba(132,204,22,0.15)',
+                borderLeft: '3px solid #84cc16', borderRadius: '0.5rem',
+              }}>
+                <ShieldCheck size={15} style={{ color: '#84cc16', flexShrink: 0 }} />
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                  All clear — no overdue payments or client issues detected.
+                </span>
               </div>
-            )}
-          </div>
+            )
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {attentionItems.map((item, i) => (
+                <div key={`${item.projectId}-${item.severity}-${i}`} className="fade-up" style={{ animationDelay: `${0.09 + i * 0.05}s` }}>
+                  <AttentionAlert item={item} />
+                </div>
+              ))}
+              {topRiskItem && (
+                <div className="fade-up" style={{ animationDelay: `${0.09 + attentionItems.length * 0.05}s` }}>
+                  <AttentionAlert item={topRiskItem} borderColorOverride={topRiskBorder ?? undefined} />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
-      {/* Recent projects */}
-      {recentProjects.length > 0 && (
-        <div className="fade-up" style={{ marginBottom: '2rem', animationDelay: '0.12s' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-            <h2 style={{ fontWeight: 600, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', margin: 0 }}>
-              Recent projects
-            </h2>
-            <Link href="/projects" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textDecoration: 'none' }} className="hover:text-text-secondary transition-colors">
-              All projects →
+      {/* Recent projects / empty state */}
+      <div className="fade-up" style={{ marginBottom: '2rem', animationDelay: '0.12s' }}>
+        {totalProjects === 0 ? (
+          <div style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            gap: '1rem', padding: '3rem 1.5rem', textAlign: 'center',
+            backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+            borderRadius: '0.75rem',
+          }}>
+            <div style={{
+              width: '2.75rem', height: '2.75rem', borderRadius: '0.625rem',
+              backgroundColor: 'rgba(132,204,22,0.08)', border: '1px solid rgba(132,204,22,0.2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <FolderPlus size={20} style={{ color: 'var(--brand-lime)' }} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+              <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>
+                No projects yet
+              </span>
+              <span style={{ fontSize: '0.825rem', color: 'var(--text-muted)', maxWidth: '22rem', lineHeight: 1.5 }}>
+                Add a client project to track payments, send defense responses, and analyze contracts.
+              </span>
+            </div>
+            <Link
+              href="/projects/new"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                padding: '0.5rem 1.125rem',
+                backgroundColor: 'var(--brand-lime)', color: '#000',
+                borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.85rem',
+                textDecoration: 'none', transition: 'opacity 150ms ease',
+              }}
+              className="hover:opacity-90"
+            >
+              <FolderPlus size={14} />
+              New project
             </Link>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-            {recentProjects.map((p, i) => {
-              const payStyle = p.paymentStatus ? PAYMENT_STATUS_STYLE[p.paymentStatus] : null
-              const activityLabel = p.daysSinceActivity === 0
-                ? 'Today'
-                : p.daysSinceActivity === 1
-                  ? 'Yesterday'
-                  : `${p.daysSinceActivity}d ago`
-              return (
-                <Link
-                  key={p.id}
-                  href={`/projects/${p.id}`}
-                  className="fade-up hover:border-white/20 group"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '1rem',
-                    padding: '0.75rem 1rem',
-                    backgroundColor: 'var(--bg-surface)',
-                    border: '1px solid var(--bg-border)',
-                    borderRadius: '0.5rem',
-                    textDecoration: 'none',
-                    transition: 'border-color 150ms ease',
-                    animationDelay: `${0.14 + i * 0.05}s`,
-                  }}
-                >
-                  {/* Left: name + last tool */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', minWidth: 0 }}>
-                    <span style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {p.title}
-                    </span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                      {p.clientName}
-                      {p.lastToolLabel && (
-                        <> &middot; <span style={{ color: 'var(--text-secondary)' }}>{p.lastToolLabel}</span></>
-                      )}
-                    </span>
-                  </div>
-
-                  {/* Right: payment badge + time */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}>
-                    {payStyle && (
-                      <span style={{
-                        fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
-                        padding: '0.18rem 0.5rem', borderRadius: '9999px',
-                        color: payStyle.color,
-                        backgroundColor: `${payStyle.color}18`,
-                      }}>
-                        {payStyle.label}
+        ) : (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <h2 style={{ fontWeight: 600, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', margin: 0 }}>
+                Recent projects
+              </h2>
+              <Link href="/projects" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textDecoration: 'none' }} className="hover:text-text-secondary transition-colors">
+                All projects →
+              </Link>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+              {recentProjects.map((p, i) => {
+                const payStyle = p.paymentStatus ? PAYMENT_STATUS_STYLE[p.paymentStatus] : null
+                const activityLabel = p.daysSinceActivity === 0
+                  ? 'Today'
+                  : p.daysSinceActivity === 1
+                    ? 'Yesterday'
+                    : `${p.daysSinceActivity}d ago`
+                return (
+                  <Link
+                    key={p.id}
+                    href={`/projects/${p.id}`}
+                    className="fade-up hover:border-white/20 group"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '1rem',
+                      padding: '0.75rem 1rem',
+                      backgroundColor: 'var(--bg-surface)',
+                      border: '1px solid var(--bg-border)',
+                      borderRadius: '0.5rem',
+                      textDecoration: 'none',
+                      transition: 'border-color 150ms ease',
+                      animationDelay: `${0.14 + i * 0.05}s`,
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', minWidth: 0 }}>
+                      <span style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {p.title}
                       </span>
-                    )}
-                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', minWidth: '3.5rem', textAlign: 'right' }}>
-                      {activityLabel}
-                    </span>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      )}
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        {p.clientName}
+                        {p.lastToolLabel && (
+                          <> &middot; <span style={{ color: 'var(--text-secondary)' }}>{p.lastToolLabel}</span></>
+                        )}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}>
+                      {payStyle && (
+                        <span style={{
+                          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+                          padding: '0.18rem 0.5rem', borderRadius: '9999px',
+                          color: payStyle.color, backgroundColor: `${payStyle.color}18`,
+                        }}>
+                          {payStyle.label}
+                        </span>
+                      )}
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', minWidth: '3.5rem', textAlign: 'right' }}>
+                        {activityLabel}
+                      </span>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </>
+        )}
+      </div>
 
       {/* Arsenal CTA */}
       <div className="fade-up" style={{ animationDelay: '0.2s' }}>
