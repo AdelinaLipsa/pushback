@@ -491,7 +491,7 @@ export default function PushbackHero() {
               Again.
             </p>
             <p className="mb-6 text-sm leading-relaxed" style={{ color: "#fafafa", textShadow: "0 0 20px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9)" }}>
-              Pushback is a connected toolkit — contract analysis before you sign, 21 situation tools when clients push back, payment tracking that flags overdue invoices automatically, and a full paper trail if it ever escalates. Every tool in one place. Nothing improvised.
+              Pushback is a connected toolkit — contract analysis before you sign, 23 situation tools when clients push back, payment tracking that flags overdue invoices automatically, and a full paper trail if it ever escalates. Every tool in one place. Nothing improvised.
             </p>
             <a
               href="/signup"
