@@ -5,6 +5,7 @@ import FAQAccordion from '@/components/shared/FAQAccordion'
 import DemoAnimation from '@/components/hero/DemoAnimation'
 import ContractAnimation from '@/components/hero/ContractAnimation'
 import ReplyThreadAnimation from '@/components/hero/ReplyThreadAnimation'
+import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = {
   title: 'How It Works — Pushback',
@@ -55,12 +56,28 @@ const STEPS = [
   { n: '05', title: 'Follow through', desc: 'Mark it sent. If they push back again, paste their reply and Pushback drafts the follow-up.' },
 ]
 
-export default function HowItWorksPage() {
+export default async function HowItWorksPage() {
+  const supabase = await createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
     <div style={{ backgroundColor: 'var(--bg-base)', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
       <style>{`
         .hiw-logo:hover span:first-child { opacity: 0.75; }
         .hiw-logo span { transition: opacity 150ms ease; }
+
+        .hiw-back {
+          position: absolute;
+          left: 1.5rem;
+          color: var(--text-muted);
+          font-size: 0.8rem;
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 0.3rem;
+          transition: color 150ms ease;
+        }
+        .hiw-back:hover { color: var(--text-primary); }
 
         .hiw-btn-ghost {
           display: inline-block;
@@ -101,7 +118,12 @@ export default function HowItWorksPage() {
       <div className="dash-glow-b" />
 
       {/* Logo header */}
-      <div style={{ textAlign: 'center', padding: '2.5rem 1.5rem 0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2.5rem 1.5rem 0', position: 'relative' }}>
+        {user && (
+          <Link href="/dashboard" className="hiw-back">
+            ← Dashboard
+          </Link>
+        )}
         <Link href="/" className="hiw-logo" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.1rem', textDecoration: 'none' }}>
           <span style={{ fontWeight: 800, fontSize: '1.4rem', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Pushback</span>
           <span style={{ color: 'var(--brand-lime)', fontWeight: 800, fontSize: '1.4rem' }}>.</span>

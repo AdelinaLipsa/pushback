@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { createAdminSupabaseClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase/server'
 import { PLANS } from '@/lib/plans'
 import { UserTable } from './UserTable'
 import { MaintenanceToggle } from './MaintenanceToggle'
@@ -24,6 +23,7 @@ function StatCard({ label, value, sub, accent }: { label: string; value: string;
 }
 
 function pct(used: number, limit: number) {
+  if (limit === 0) return 0
   return Math.min(Math.round((used / limit) * 100), 100)
 }
 
@@ -43,7 +43,8 @@ function MiniBar({ value, max }: { value: number; max: number }) {
 export default async function AdminPage() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user || !process.env.ADMIN_EMAIL || user.email !== process.env.ADMIN_EMAIL) redirect('/dashboard')
+  const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase()
+  if (!user || !adminEmail || user.email?.toLowerCase() !== adminEmail) redirect('/dashboard')
 
   const admin = createAdminSupabaseClient()
   const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()

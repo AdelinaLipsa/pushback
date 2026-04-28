@@ -258,7 +258,7 @@ export const TOOL_LABELS: Record<string, string> = Object.fromEntries(
   DEFENSE_TOOLS.map(t => [t.type, t.label])
 )
 
-export const DEFENSE_TOOL_VALUES = DEFENSE_TOOLS.map(t => t.type) as [string, ...string[]]
+export const DEFENSE_TOOL_VALUES = DEFENSE_TOOLS.map(t => t.type) as [DefenseTool, ...DefenseTool[]]
 
 import type { DefenseTool } from '@/types'
 

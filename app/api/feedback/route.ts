@@ -36,7 +36,9 @@ export async function POST(request: Request) {
     parsed.data.message,
     parsed.data.category ?? null,
     user.email ?? user.id,
-  ).catch(() => {})
+  ).catch((err) => {
+    console.error('Feedback notification failed:', err)
+  })
 
   return Response.json({ ok: true })
 }

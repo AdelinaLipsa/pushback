@@ -29,12 +29,22 @@ export const writesRateLimit = redis
   ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(30, '1 m'), prefix: 'pb:writes' })
   : null
 
+// 10 email-check requests per minute per IP — prevents user enumeration
+export const checkEmailRateLimit = redis
+  ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, '1 m'), prefix: 'pb:check-email' })
+  : null
+
 export async function checkRateLimit(
   limiter: Ratelimit | null,
-  userId: string,
+  identifier: string,
 ): Promise<Response | null> {
-  if (!limiter) return null
-  const { success, limit, reset, remaining } = await limiter.limit(userId)
+  if (!limiter) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[rate-limit] Redis unavailable — rate limiting DISABLED for this request')
+    }
+    return null
+  }
+  const { success, limit, reset, remaining } = await limiter.limit(identifier)
   if (success) return null
   return Response.json(
     { error: 'Too many requests — please wait a moment before trying again.' },
@@ -43,7 +53,6 @@ export async function checkRateLimit(
       headers: {
         'X-RateLimit-Limit': String(limit),
         'X-RateLimit-Remaining': String(remaining),
-        'X-RateLimit-Reset': String(reset),
         'Retry-After': String(Math.ceil((reset - Date.now()) / 1000)),
       },
     },
@@ -59,8 +68,9 @@ const SLOT_TTL_SECONDS = 30 // safety expiry — covers max expected request dur
 
 export async function acquireAnthropicSlot(): Promise<Response | null> {
   if (!redis) return null
-  const count = await redis.incr(CONCURRENCY_KEY)
-  await redis.expire(CONCURRENCY_KEY, SLOT_TTL_SECONDS)
+  // Pipeline sends INCR + EXPIRE as a single HTTP request — avoids a dangling
+  // key with no TTL if the process crashes between the two commands.
+  const [count] = await redis.pipeline().incr(CONCURRENCY_KEY).expire(CONCURRENCY_KEY, SLOT_TTL_SECONDS).exec() as [number, number]
   if (count > MAX_CONCURRENCY) {
     await redis.decr(CONCURRENCY_KEY)
     return Response.json(

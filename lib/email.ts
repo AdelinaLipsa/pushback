@@ -121,7 +121,7 @@ function feedbackHtml(message: string, category: string | null, userEmail: strin
 export async function sendFeedbackNotification(message: string, category: string | null, userEmail: string): Promise<void> {
   const { error } = await resend.emails.send({
     from: FROM,
-    to: 'adelina.lipsa@gmail.com',
+    to: process.env.FEEDBACK_RECIPIENT_EMAIL || FROM,
     subject: `Pushback feedback${category ? ` [${category}]` : ''}: ${message.slice(0, 60)}${message.length > 60 ? '…' : ''}`,
     html: feedbackHtml(message, category, userEmail),
   })
