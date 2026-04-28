@@ -26,20 +26,39 @@ export async function POST(request: Request) {
   const rateLimitResponse = await checkRateLimit(toolsRateLimit, user.id)
   if (rateLimitResponse) return rateLimitResponse
 
+  const { data: gateResult, error: gateError } = await supabase.rpc('check_and_increment_defense_responses', { uid: user.id })
+  if (gateError) return Response.json({ error: 'Service temporarily unavailable' }, { status: 503 })
+  const gate = gateResult as { allowed: boolean; reason?: string } | null
+  if (!gate?.allowed) {
+    return Response.json({ error: gate?.reason ?? 'UPGRADE_REQUIRED' }, { status: 403 })
+  }
+
   const body = await request.json()
   const parsed = bodySchema.safeParse(body)
   if (!parsed.success) {
+    await supabase.rpc('decrement_defense_responses', { uid: user.id })
     return Response.json({ error: parsed.error.issues[0]?.message ?? 'Invalid input' }, { status: 400 })
   }
 
-  const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
-    system: INTAKE_QUESTIONNAIRE_SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: parsed.data.description }],
-  })
+  let raw: string
+  try {
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2048,
+      system: INTAKE_QUESTIONNAIRE_SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: parsed.data.description }],
+    })
+    raw = message.content[0].type === 'text' ? message.content[0].text : '{}'
+  } catch {
+    await supabase.rpc('decrement_defense_responses', { uid: user.id })
+    return Response.json({ error: 'AI generation failed — please try again' }, { status: 500 })
+  }
 
-  const raw = message.content[0].type === 'text' ? message.content[0].text : '{}'
-  const questionnaire = extractJson(raw)
-  return Response.json({ questionnaire })
+  try {
+    const questionnaire = extractJson(raw)
+    return Response.json({ questionnaire })
+  } catch {
+    await supabase.rpc('decrement_defense_responses', { uid: user.id })
+    return Response.json({ error: 'Unexpected response format — please try again' }, { status: 500 })
+  }
 }

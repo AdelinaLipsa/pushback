@@ -6,6 +6,8 @@ import { detectRedFlags } from '@/lib/api'
 import { RedFlagAnalysis, RedFlag, RiskLevel } from '@/types'
 import { inputStyle, btnCls } from '@/lib/ui'
 import { RISK_COLORS_RICH } from '@/lib/ui'
+import UpgradePrompt from '@/components/shared/UpgradePrompt'
+import { PLANS } from '@/lib/plans'
 
 const PROCEED_CONFIG = {
   yes: { label: 'Safe to proceed', color: 'var(--brand-lime)', bg: 'rgba(163,230,53,0.08)', border: 'rgba(163,230,53,0.2)' },
@@ -70,6 +72,7 @@ export default function RedFlagPage() {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<RedFlagAnalysis | null>(null)
+  const [showUpgrade, setShowUpgrade] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -78,7 +81,9 @@ export default function RedFlagPage() {
     setResult(null)
     const data = await detectRedFlags(message.trim())
     setLoading(false)
-    if (data) setResult(data.analysis)
+    if (!data) return
+    if ('upgradeRequired' in data) { setShowUpgrade(true); return }
+    setResult(data.analysis)
   }
 
   const proceedCfg = result ? PROCEED_CONFIG[result.proceed] : null
@@ -112,6 +117,8 @@ export default function RedFlagPage() {
           {loading ? 'Analyzing…' : 'Detect red flags →'}
         </button>
       </form>
+
+      {showUpgrade && <UpgradePrompt responsesUsed={PLANS.free.defense_responses} />}
 
       {result && (
         <div className="flex flex-col gap-6 fade-up">

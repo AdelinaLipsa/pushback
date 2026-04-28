@@ -418,7 +418,7 @@ export default async function HowItWorksPage() {
           The arsenal
         </p>
         <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.75rem', lineHeight: 1.1 }}>
-          21 tools. Every client nightmare covered.
+          23 tools. Every client nightmare covered.
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '2rem', maxWidth: '48ch', margin: '0 auto 2rem' }}>
           Payment chasing, scope disputes, chargeback threats, ghost clients — each situation has its own tool, built for that exact dynamic. Browse the full list to see what fits your situation.

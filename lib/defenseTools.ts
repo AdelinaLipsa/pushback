@@ -1,4 +1,5 @@
 import { DefenseToolMeta } from '@/types'
+import type { DefenseTool } from '@/types'
 
 export const DEFENSE_TOOLS: DefenseToolMeta[] = [
   {
@@ -245,6 +246,24 @@ export const DEFENSE_TOOLS: DefenseToolMeta[] = [
       { key: 'hourly_rate',      label: 'Hourly rate',               placeholder: 'e.g. 85',                                  type: 'number', required: false },
       { key: 'has_time_records', label: 'Time-tracking records?',    placeholder: 'e.g. yes — Toggl / spreadsheet / calendar', type: 'text',   required: false },
     ]
+  },
+  {
+    type: 'red_flag',
+    label: 'Red Flag Detector',
+    description: "Spot warning signs in a prospect's message before you accept the project",
+    icon: 'ScanSearch',
+    urgency: 'high',
+    situationPlaceholder: 'e.g. A new prospect just messaged asking for a full website redesign "ASAP" with a "flexible budget" and wants to see some ideas first before committing.',
+    contextFields: []
+  },
+  {
+    type: 'intake',
+    label: 'Project Intake Questions',
+    description: 'Generate the right discovery questions to ask before work begins',
+    icon: 'ClipboardList',
+    urgency: 'low',
+    situationPlaceholder: "e.g. I've just been hired to design a brand identity for a fintech startup. I know the basics but haven't had the discovery call yet.",
+    contextFields: []
   }
 ]
 
@@ -258,9 +277,12 @@ export const TOOL_LABELS: Record<string, string> = Object.fromEntries(
   DEFENSE_TOOLS.map(t => [t.type, t.label])
 )
 
-export const DEFENSE_TOOL_VALUES = DEFENSE_TOOLS.map(t => t.type) as [DefenseTool, ...DefenseTool[]]
-
-import type { DefenseTool } from '@/types'
+const PRE_ENGAGEMENT_TOOLS: DefenseTool[] = ['red_flag', 'intake']
+const _filteredTools = DEFENSE_TOOLS
+  .filter(t => !PRE_ENGAGEMENT_TOOLS.includes(t.type))
+  .map(t => t.type)
+if (_filteredTools.length === 0) throw new Error('DEFENSE_TOOL_VALUES is empty — check PRE_ENGAGEMENT_TOOLS')
+export const DEFENSE_TOOL_VALUES = _filteredTools as [DefenseTool, ...DefenseTool[]]
 
 export const TOOL_CATEGORIES: { label: string; types: DefenseTool[] }[] = [
   {
@@ -278,5 +300,9 @@ export const TOOL_CATEGORIES: { label: string; types: DefenseTool[] }[] = [
   {
     label: 'Client Behaviour',
     types: ['ghost_client', 'discount_pressure', 'rate_increase_pushback', 'spec_work_pressure'],
+  },
+  {
+    label: 'Pre-Engagement',
+    types: ['red_flag', 'intake'],
   },
 ]

@@ -5,6 +5,8 @@ import { Copy, Check } from 'lucide-react'
 import { generateIntake } from '@/lib/api'
 import { IntakeQuestionnaire, IntakeQuestion } from '@/types'
 import { inputStyle, btnCls } from '@/lib/ui'
+import UpgradePrompt from '@/components/shared/UpgradePrompt'
+import { PLANS } from '@/lib/plans'
 
 const CATEGORY_CONFIG: Record<IntakeQuestion['category'], { label: string; color: string; bg: string }> = {
   scope: { label: 'Scope', color: '#a78bfa', bg: 'rgba(167,139,250,0.1)' },
@@ -62,6 +64,7 @@ export default function IntakePage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<IntakeQuestionnaire | null>(null)
   const [allCopied, setAllCopied] = useState(false)
+  const [showUpgrade, setShowUpgrade] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -70,7 +73,9 @@ export default function IntakePage() {
     setResult(null)
     const data = await generateIntake(description.trim())
     setLoading(false)
-    if (data) setResult(data.questionnaire)
+    if (!data) return
+    if ('upgradeRequired' in data) { setShowUpgrade(true); return }
+    setResult(data.questionnaire)
   }
 
   async function handleCopyAll() {
@@ -120,6 +125,8 @@ export default function IntakePage() {
           {loading ? 'Generating…' : 'Generate questions →'}
         </button>
       </form>
+
+      {showUpgrade && <UpgradePrompt responsesUsed={PLANS.free.defense_responses} />}
 
       {result && (
         <div className="flex flex-col gap-6 fade-up">

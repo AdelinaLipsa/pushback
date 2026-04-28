@@ -7,7 +7,7 @@ export const PLANS = {
     features: [
       '1 defense response',
       '1 contract risk analysis',
-      'Access to all 21 tools',
+      'Access to all 23 tools',
       'No card required'
     ]
   },
@@ -22,7 +22,7 @@ export const PLANS = {
       '150 defense responses/month',
       '50 contract risk analyses/month',
       'Full response and contract history',
-      'All 21 tools — full arsenal access',
+      'All 23 tools — full arsenal access',
       'Project-level client notes',
       'Analytics and usage patterns',
       'Document generation (NDAs, proposals, scope agreements)'

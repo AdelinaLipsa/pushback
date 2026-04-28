@@ -22,6 +22,8 @@ export type DefenseTool =
   | 'post_handoff_request'
   | 'review_threat'
   | 'disputed_hours'
+  | 'red_flag'
+  | 'intake'
 
 export type ContextField = {
   key: string

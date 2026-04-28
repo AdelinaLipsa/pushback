@@ -52,6 +52,8 @@ export const RISK_WEIGHTS: Record<DefenseTool, number> = {
   payment_first: 3,
   spec_work_pressure: 3,
   delivery_signoff: 0,
+  red_flag: 0,
+  intake: 0,
 }
 
 // Independent additive contribution (NOT from sent responses) — applied when the
@@ -95,6 +97,9 @@ const SIGNAL_RULES: Record<DefenseTool, SignalRule | null> = {
   payment_final:          null,
   // Normal delivery — never a risk signal.
   delivery_signoff:       null,
+  // Pre-engagement tools — not project-level signals.
+  red_flag:               null,
+  intake:                 null,
 }
 
 export function computeClientRisk(
