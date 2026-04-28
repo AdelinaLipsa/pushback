@@ -2,8 +2,9 @@ export const maxDuration = 30
 
 import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
+import { after } from 'next/server'
 import { anthropic, CONTRACT_ANALYSIS_SYSTEM_PROMPT } from '@/lib/anthropic'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase/server'
 import { checkRateLimit, contractRateLimit } from '@/lib/rate-limit'
 import { professionContext } from '@/lib/profession'
 import { ContractAnalysis } from '@/types'
@@ -60,11 +61,40 @@ export async function POST(request: Request) {
     text: formData.get('text') || null,
   })
   if (!parsed.success) {
+    await supabase.from('user_profiles')
+      .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
+      .eq('id', user.id)
     return Response.json({ error: parsed.error.issues[0]?.message ?? 'Invalid input' }, { status: 400 })
   }
   const text = parsed.data.text ?? null
   const title = parsed.data.title || 'Untitled contract'
   const project_id = parsed.data.project_id ?? null
+
+  // Validate inputs and read file bytes in request context (bytes unavailable inside after())
+  let fileBytes: ArrayBuffer | null = null
+  let fileName: string | null = null
+
+  if (file) {
+    if (file.type !== 'application/pdf') {
+      await supabase.from('user_profiles')
+        .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
+        .eq('id', user.id)
+      return Response.json({ error: 'Only PDF files are supported' }, { status: 400 })
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      await supabase.from('user_profiles')
+        .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
+        .eq('id', user.id)
+      return Response.json({ error: 'File must be under 10 MB' }, { status: 400 })
+    }
+    fileBytes = await file.arrayBuffer()
+    fileName = file.name
+  } else if (!text) {
+    await supabase.from('user_profiles')
+      .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
+      .eq('id', user.id)
+    return Response.json({ error: 'No file or text provided' }, { status: 400 })
+  }
 
   const profCtx = professionContext(profileData?.profession)
 
@@ -75,98 +105,76 @@ export async function POST(request: Request) {
     .single()
 
   if (!contract) {
-    // Compensate — contract row could not be created, undo gate increment
-    await supabase
-      .from('user_profiles')
+    await supabase.from('user_profiles')
       .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
       .eq('id', user.id)
     return Response.json({ error: 'DB error' }, { status: 500 })
   }
 
-  try {
-    let messageContent: Anthropic.MessageParam['content']
+  // Capture for background closure — request context is unavailable inside after()
+  const contractId = contract.id
+  const userId = user.id
 
-    if (file) {
-      // File type and size validation (VALID-03) — before Anthropic Files API upload
-      if (file.type !== 'application/pdf') {
-        await supabase.from('contracts').update({ status: 'error' }).eq('id', contract.id)
-        await supabase.from('user_profiles').update({ contracts_used: preIncrementCount }).eq('id', user.id)
-        return Response.json({ error: 'Only PDF files are supported' }, { status: 400 })
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        await supabase.from('contracts').update({ status: 'error' }).eq('id', contract.id)
-        await supabase.from('user_profiles').update({ contracts_used: preIncrementCount }).eq('id', user.id)
-        return Response.json({ error: 'File must be under 10 MB' }, { status: 400 })
+  after(async () => {
+    const admin = createAdminSupabaseClient()
+    try {
+      let messageContent: Anthropic.MessageParam['content']
+
+      if (fileBytes && fileName) {
+        const fileUpload = await (anthropic.beta.files as any).upload(
+          { file: new File([fileBytes], fileName, { type: 'application/pdf' }) },
+          { headers: { 'anthropic-beta': 'files-api-2025-04-14' } }
+        )
+        await admin.from('contracts').update({ anthropic_file_id: fileUpload.id }).eq('id', contractId)
+        messageContent = [
+          { type: 'document', source: { type: 'file', file_id: fileUpload.id } } as any,
+          { type: 'text', text: `Analyze this freelance contract and return the JSON analysis.${profCtx ? `\n\n${profCtx}` : ''}` }
+        ]
+      } else {
+        await admin.from('contracts').update({ contract_text: text }).eq('id', contractId)
+        messageContent = [{ type: 'text', text: `${profCtx ? `${profCtx}\n\n` : ''}Analyze this freelance contract:\n\n${text}` }]
       }
 
-      const bytes = await file.arrayBuffer()
-      const fileUpload = await (anthropic.beta.files as any).upload(
-        { file: new File([bytes], file.name, { type: 'application/pdf' }) },
+      const message = await anthropic.messages.create(
+        {
+          model: 'claude-sonnet-4-6',
+          max_tokens: 4096,
+          system: CONTRACT_ANALYSIS_SYSTEM_PROMPT,
+          messages: [{ role: 'user', content: messageContent }]
+        } as any,
         { headers: { 'anthropic-beta': 'files-api-2025-04-14' } }
       )
-      await supabase.from('contracts').update({ anthropic_file_id: fileUpload.id }).eq('id', contract.id)
-      messageContent = [
-        { type: 'document', source: { type: 'file', file_id: fileUpload.id } } as any,
-        { type: 'text', text: `Analyze this freelance contract and return the JSON analysis.${profCtx ? `\n\n${profCtx}` : ''}` }
-      ]
-    } else if (text) {
-      await supabase.from('contracts').update({ contract_text: text }).eq('id', contract.id)
-      messageContent = [{ type: 'text', text: `${profCtx ? `${profCtx}\n\n` : ''}Analyze this freelance contract:\n\n${text}` }]
-    } else {
-      await supabase.from('contracts').update({ status: 'error' }).eq('id', contract.id)
-      await supabase.from('user_profiles').update({ contracts_used: preIncrementCount }).eq('id', user.id)
-      return Response.json({ error: 'No file or text provided' }, { status: 400 })
+
+      const rawText = message.content[0].type === 'text' ? message.content[0].text : '{}'
+      // RELY-02: use extractJson instead of bare JSON.parse — handles preamble and markdown wrapping
+      const analysis: ContractAnalysis = extractJson(rawText)
+
+      // Credit-safe update — check result before clearing pending status (D-03)
+      const { error: updateError } = await admin
+        .from('contracts')
+        .update({ analysis, risk_score: analysis.risk_score, risk_level: analysis.risk_level, status: 'analyzed' })
+        .eq('id', contractId)
+
+      if (updateError) {
+        // Compensating decrement — RPC already incremented, undo it
+        await admin.from('user_profiles')
+          .update({ contracts_used: preIncrementCount })
+          .eq('id', userId)
+        return
+      }
+
+      if (project_id) {
+        await admin.from('projects').update({ contract_id: contractId }).eq('id', project_id).eq('user_id', userId)
+      }
+    } catch (err) {
+      await admin.from('contracts').update({ status: 'error' }).eq('id', contractId)
+      // Compensating decrement — undo RPC increment on any unhandled error
+      await admin.from('user_profiles')
+        .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
+        .eq('id', userId)
+      console.error('Contract analysis error:', err)
     }
+  })
 
-    const message = await anthropic.messages.create(
-      {
-        model: 'claude-sonnet-4-6',
-        max_tokens: 4096,
-        system: CONTRACT_ANALYSIS_SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: messageContent }]
-      } as any,
-      { headers: { 'anthropic-beta': 'files-api-2025-04-14' } }
-    )
-
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : '{}'
-    // RELY-02: use extractJson instead of bare JSON.parse — handles preamble and markdown wrapping
-    const analysis: ContractAnalysis = extractJson(rawText)
-
-    // Credit-safe update — check result before returning (D-03)
-    const { error: updateError } = await supabase
-      .from('contracts')
-      .update({ analysis, risk_score: analysis.risk_score, risk_level: analysis.risk_level, status: 'analyzed' })
-      .eq('id', contract.id)
-
-    if (updateError) {
-      // Compensating decrement — RPC already incremented, undo it
-      await supabase
-        .from('user_profiles')
-        .update({ contracts_used: preIncrementCount })
-        .eq('id', user.id)
-      return Response.json({ error: 'Failed to save analysis — your credit was not used. Please try again.' }, { status: 500 })
-    }
-
-    if (project_id) {
-      await supabase.from('projects').update({ contract_id: contract.id }).eq('id', project_id).eq('user_id', user.id)
-    }
-
-    // Note: no manual contracts_used increment needed — RPC already handled it atomically
-
-    return Response.json({ contract: { ...contract, analysis, risk_score: analysis.risk_score, risk_level: analysis.risk_level } })
-  } catch (err) {
-    await supabase.from('contracts').update({ status: 'error' }).eq('id', contract.id)
-    // Compensating decrement — undo RPC increment on any unhandled error
-    await supabase
-      .from('user_profiles')
-      .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
-      .eq('id', user.id)
-    console.error('Contract analysis error:', err)
-    // D-13: distinguish malformed AI output from other failures
-    const isParseError = err instanceof Error && err.message === 'No valid JSON found in response'
-    return Response.json(
-      { error: isParseError ? 'Contract analysis returned malformed output — please try again' : 'Analysis failed' },
-      { status: 500 }
-    )
-  }
+  return Response.json({ contract: { id: contractId } })
 }

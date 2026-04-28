@@ -43,8 +43,7 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
 
     setLoading(true)
     const result = await analyzeContract(formData)
-    setLoading(false)
-    if (!result) return
+    if (!result) { setLoading(false); return }
     router.push(`/contracts/${result.contract.id}`)
   }
 
@@ -161,18 +160,13 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
           opacity: loading ? 0.7 : 1,
         }}
       >
-        {loading ? 'Analyzing contract…' : 'Analyze Contract →'}
+        {loading ? 'Submitting…' : 'Analyze Contract →'}
       </button>
 
       <p className="text-text-muted text-[0.75rem] text-center leading-relaxed">
         Your contract is never stored after analysis. We read it, flag the risks, delete it.
       </p>
 
-      {loading && (
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textAlign: 'center' }}>
-          Takes about 15–30 seconds. Reading every clause so you don&apos;t have to.
-        </p>
-      )}
     </form>
   )
 }

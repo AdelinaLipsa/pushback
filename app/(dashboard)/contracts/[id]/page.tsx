@@ -42,7 +42,7 @@ export default async function ContractPage({ params }: { params: Promise<{ id: s
         <p className="text-text-muted text-xs break-all mb-8">{contract.original_filename}</p>
       )}
 
-      {contract.status === 'pending' && <ContractPendingState />}
+      {contract.status === 'pending' && <ContractPendingState contractId={contract.id} />}
 
       {contract.status === 'error' && (
         <div className="text-urgency-high bg-urgency-high-dim rounded-xl px-5 py-4 text-sm">

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 const STEPS = ['Reading contract', 'Mapping clause types', 'Calculating risk score']
 
@@ -16,7 +17,11 @@ const SCAN_LINES = [
   { w: '55%', flagged: false },
 ]
 
-export default function ContractPendingState() {
+interface ContractPendingStateProps {
+  contractId: string
+}
+
+export default function ContractPendingState({ contractId }: ContractPendingStateProps) {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const stepRef = useRef(0)
@@ -31,15 +36,30 @@ export default function ContractPendingState() {
     }, 1200)
 
     // Poll for completion every 4 seconds
-    pollRef.current = setInterval(() => {
-      router.refresh()
-    }, 4000)
+    const checkStatus = async () => {
+      try {
+        const res = await fetch(`/api/contracts/${contractId}`)
+        if (!res.ok) return
+        const { contract } = await res.json()
+        if (contract.status === 'analyzed') {
+          toast.success('Contract analyzed — here are your results.')
+          router.refresh()
+        } else if (contract.status === 'error') {
+          toast.error('Analysis failed. Please try again.')
+          router.refresh()
+        }
+      } catch {
+        // network error — will retry on next interval
+      }
+    }
+
+    pollRef.current = setInterval(checkStatus, 4000)
 
     return () => {
       clearInterval(ivRef.current)
       clearInterval(pollRef.current)
     }
-  }, [router])
+  }, [router, contractId])
 
   const activeLines = step >= 1
 
