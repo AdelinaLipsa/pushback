@@ -63,10 +63,11 @@ export type ContractAnalysis = {
   risk_score: number
   risk_level: RiskLevel
   verdict: string
-  flagged_clauses: FlaggedClause[]
-  missing_protections: MissingProtection[]
-  positive_notes: string[]
-  negotiation_priority: string[]
+  // Pro-only fields — absent for free users (stored in contract_analysis_pro table)
+  flagged_clauses?: FlaggedClause[]
+  missing_protections?: MissingProtection[]
+  positive_notes?: string[]
+  negotiation_priority?: string[]
 }
 
 export type Plan = 'free' | 'pro'
@@ -117,6 +118,8 @@ export type Contract = {
   analysis: ContractAnalysis | null
   status: string
   contract_type: ContractType | null
+  project_id: string | null
+  projects?: { title: string } | null
   created_at: string
 }
 

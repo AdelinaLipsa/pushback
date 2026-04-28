@@ -1,11 +1,17 @@
+'use client'
+
+import { useState } from 'react'
+import { Lock, Loader2 } from 'lucide-react'
 import { ContractAnalysis, RiskLevel } from '@/types'
 import RiskScoreBadge from './RiskScoreBadge'
 import ClauseCard from './ClauseCard'
 import CounterOfferSection from './CounterOfferSection'
+import { startCheckout } from '@/lib/checkout'
 
 interface RiskReportProps {
   analysis: ContractAnalysis
   contractId?: string
+  isPro?: boolean
 }
 
 function SectionHeader({ label, count, countColor }: { label: string; count?: number; countColor?: string }) {
@@ -26,11 +32,18 @@ const SEV: Record<string, { border: string; badge: string }> = {
   LOW:      { border: 'border-l-urgency-low',    badge: 'bg-urgency-low/10 border border-urgency-low/30 text-urgency-low' },
 }
 
-export default function RiskReport({ analysis, contractId }: RiskReportProps) {
+export default function RiskReport({ analysis, contractId, isPro }: RiskReportProps) {
+  const [upgradeLoading, setUpgradeLoading] = useState(false)
+
+  const flaggedClauses = analysis.flagged_clauses ?? []
+  const missingProtections = analysis.missing_protections ?? []
+  const positiveNotes = analysis.positive_notes ?? []
+  const negotiationPriority = analysis.negotiation_priority ?? []
+
   return (
     <div className="flex flex-col gap-6">
 
-      {/* Summary — full width */}
+      {/* Summary — always visible */}
       <div className="fade-up bg-bg-surface border border-bg-border rounded-xl p-6 transition-all duration-200 hover:shadow-lg hover:shadow-black/20">
         <div className="flex items-center gap-3 mb-5 flex-wrap">
           <RiskScoreBadge score={analysis.risk_score} level={analysis.risk_level as RiskLevel} />
@@ -40,27 +53,54 @@ export default function RiskReport({ analysis, contractId }: RiskReportProps) {
         <p className="text-zinc-300 leading-[1.75] text-[0.9rem] m-0">{analysis.summary}</p>
       </div>
 
-      {/* Mosaic grid */}
+      {/* Clause details — Pro only */}
+      {!isPro && (
+        <div className="fade-up bg-bg-surface border border-bg-border rounded-xl p-6 flex items-start justify-between gap-6" style={{ animationDelay: '120ms' }}>
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Lock size={14} className="text-text-muted shrink-0" />
+              <p className="font-bold text-[0.9rem] m-0">Full analysis locked</p>
+            </div>
+            <p className="text-zinc-400 text-[0.82rem] leading-relaxed m-0">
+              {flaggedClauses.length > 0 && `${flaggedClauses.length} flagged clause${flaggedClauses.length !== 1 ? 's' : ''}`}
+              {flaggedClauses.length > 0 && missingProtections.length > 0 && ' · '}
+              {missingProtections.length > 0 && `${missingProtections.length} missing protection${missingProtections.length !== 1 ? 's' : ''}`}
+              {(flaggedClauses.length > 0 || missingProtections.length > 0) && ' — upgrade to see every clause, what to negotiate, and draft the counter-offer.'}
+            </p>
+          </div>
+          <button
+            onClick={() => startCheckout(setUpgradeLoading)}
+            disabled={upgradeLoading}
+            className="shrink-0 bg-brand-lime text-[#0a0a0a] font-bold text-[0.82rem] px-4 py-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-1.5"
+          >
+            {upgradeLoading ? <><Loader2 size={13} className="animate-spin" /> Loading…</> : 'Upgrade to Pro'}
+          </button>
+        </div>
+      )}
+
+      {/* Mosaic grid + counter-offer — Pro only */}
+      {isPro && (
+      <>
       <div className="fade-up grid grid-cols-[3fr_2fr] gap-6 items-start" style={{ animationDelay: '120ms' }}>
 
         {/* Left column: flagged clauses + missing protections */}
         <div className="flex flex-col gap-8">
-          {analysis.flagged_clauses.length > 0 && (
+          {flaggedClauses.length > 0 && (
             <section>
-              <SectionHeader label="Flagged clauses" count={analysis.flagged_clauses.length} countColor="var(--urgency-high)" />
+              <SectionHeader label="Flagged clauses" count={flaggedClauses.length} countColor="var(--urgency-high)" />
               <div className="flex flex-col gap-2">
-                {analysis.flagged_clauses.map((clause, i) => (
+                {flaggedClauses.map((clause, i) => (
                   <ClauseCard key={i} clause={clause} delay={i * 40} />
                 ))}
               </div>
             </section>
           )}
 
-          {analysis.missing_protections.length > 0 && (
+          {missingProtections.length > 0 && (
             <section>
-              <SectionHeader label="Missing protections" count={analysis.missing_protections.length} countColor="var(--urgency-medium)" />
+              <SectionHeader label="Missing protections" count={missingProtections.length} countColor="var(--urgency-medium)" />
               <div className="flex flex-col gap-3">
-                {analysis.missing_protections.map((p, i) => (
+                {missingProtections.map((p, i) => (
                   <div
                     key={i}
                     className="fade-up bg-bg-surface border border-bg-border border-l-[3px] border-l-urgency-medium rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/25"
@@ -83,11 +123,11 @@ export default function RiskReport({ analysis, contractId }: RiskReportProps) {
 
         {/* Right column: what's working + what to negotiate */}
         <div className="flex flex-col gap-8">
-          {analysis.positive_notes.length > 0 && (
+          {positiveNotes.length > 0 && (
             <section>
               <SectionHeader label="What's working for you" />
               <div className="flex flex-col gap-1.5">
-                {analysis.positive_notes.map((note, i) => (
+                {positiveNotes.map((note, i) => (
                   <div
                     key={i}
                     className="fade-up flex items-start gap-3 bg-bg-surface border border-bg-border border-l-[3px] border-l-brand-lime rounded-xl px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-lime/60 hover:shadow-md hover:shadow-black/20"
@@ -103,11 +143,11 @@ export default function RiskReport({ analysis, contractId }: RiskReportProps) {
             </section>
           )}
 
-          {analysis.negotiation_priority.length > 0 && (
+          {negotiationPriority.length > 0 && (
             <section>
               <SectionHeader label="What to negotiate" />
               <div className="flex flex-col gap-1.5">
-                {analysis.negotiation_priority.map((item, i) => {
+                {negotiationPriority.map((item, i) => {
                   const sevMatch = item.match(/^(CRITICAL|HIGH|MEDIUM|LOW)\s*[—–-]+\s*(.+)/)
                   const severity = sevMatch?.[1] ?? ''
                   const rest = sevMatch?.[2] ?? item
@@ -146,8 +186,10 @@ export default function RiskReport({ analysis, contractId }: RiskReportProps) {
         </div>
       </div>
 
-      {contractId && (analysis.flagged_clauses.length > 0 || analysis.missing_protections.length > 0) && (
-        <CounterOfferSection contractId={contractId} />
+      {contractId && (flaggedClauses.length > 0 || missingProtections.length > 0) && (
+        <CounterOfferSection contractId={contractId} isPro={true} />
+      )}
+      </>
       )}
     </div>
   )

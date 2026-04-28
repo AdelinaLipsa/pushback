@@ -70,6 +70,44 @@ export type Database = {
           }
         ]
       }
+      contract_analysis_pro: {
+        Row: {
+          contract_id: string
+          user_id: string
+          flagged_clauses: Json
+          missing_protections: Json
+          positive_notes: Json
+          negotiation_priority: Json
+          created_at: string | null
+        }
+        Insert: {
+          contract_id: string
+          user_id: string
+          flagged_clauses?: Json
+          missing_protections?: Json
+          positive_notes?: Json
+          negotiation_priority?: Json
+          created_at?: string | null
+        }
+        Update: {
+          contract_id?: string
+          user_id?: string
+          flagged_clauses?: Json
+          missing_protections?: Json
+          positive_notes?: Json
+          negotiation_priority?: Json
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_analysis_pro_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: true
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       defense_responses: {
         Row: {
           created_at: string | null

@@ -32,7 +32,7 @@ export default async function ProjectHistoryPage({ params }: { params: Promise<{
       <h1 style={{ fontWeight: 700, fontSize: '1.5rem', letterSpacing: '-0.02em', marginBottom: '0.35rem' }}>Message history</h1>
       <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '2rem' }}>{project.client_name}</p>
 
-      <ResponseHistory responses={visibleResponses} lockedCount={lockedCount} />
+      <ResponseHistory responses={visibleResponses} lockedCount={lockedCount} isPro={plan === 'pro'} />
     </div>
   )
 }

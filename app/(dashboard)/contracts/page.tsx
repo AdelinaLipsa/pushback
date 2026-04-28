@@ -11,7 +11,7 @@ export default async function ContractsPage() {
 
   const { data: contracts } = await supabase
     .from('contracts')
-    .select('*')
+    .select('*, projects(title)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 

@@ -50,11 +50,13 @@ function isProtectedApi(pathname: string): boolean {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Maintenance mode — bypass for /maintenance, /admin, /auth
+  // Maintenance mode — bypass for /maintenance, /admin, /auth, /login
+  // Login must be reachable so the admin can sign in and toggle maintenance off
   const bypassMaintenance =
     pathname === '/maintenance' ||
     pathname.startsWith('/admin') ||
-    pathname.startsWith('/auth')
+    pathname.startsWith('/auth') ||
+    pathname === '/login'
 
   if (!bypassMaintenance && redis) {
     try {

@@ -5,7 +5,7 @@ import { DefenseResponse } from '@/types'
 import type { ReplyThread } from '@/types'
 import CopyButton from '@/components/shared/CopyButton'
 import ReplyThreadCard from '@/components/defense/ReplyThreadCard'
-import { MessageSquarePlus } from 'lucide-react'
+import { MessageSquarePlus, Lock } from 'lucide-react'
 import { inputStyle, btnStyles } from '@/lib/ui'
 import { TOOL_LABELS } from '@/lib/defenseTools'
 import { startCheckout } from '@/lib/checkout'
@@ -13,9 +13,10 @@ import { startCheckout } from '@/lib/checkout'
 interface ResponseHistoryProps {
   responses: DefenseResponse[]
   lockedCount: number
+  isPro: boolean
 }
 
-export default function ResponseHistory({ responses, lockedCount }: ResponseHistoryProps) {
+export default function ResponseHistory({ responses, lockedCount, isPro }: ResponseHistoryProps) {
   const [expanded, setExpanded] = useState<string | null>(null)
   const [upgradeLoading, setUpgradeLoading] = useState(false)
   const [replyOpen, setReplyOpen] = useState<string | null>(null)
@@ -131,6 +132,21 @@ export default function ResponseHistory({ responses, lockedCount }: ResponseHist
                 <ReplyThreadCard thread={(localThreads[r.id] ?? r.reply_threads![0])!} />
               ) : (
                 <div style={{ marginTop: '1rem' }}>
+                  {!isPro ? (
+                    <button
+                      type="button"
+                      onClick={handleUpgrade}
+                      disabled={upgradeLoading}
+                      style={{
+                        background: 'none', border: 'none', cursor: 'pointer',
+                        color: 'var(--text-muted)', fontSize: '0.85rem', padding: '0.5rem 0',
+                        display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                      }}
+                    >
+                      <Lock size={14} aria-hidden={true} />
+                      {upgradeLoading ? 'Loading…' : 'Pro — analyze their reply'}
+                    </button>
+                  ) : (
                   <button
                     type="button"
                     onClick={() => setReplyOpen(replyOpen === r.id ? null : r.id)}
@@ -145,6 +161,7 @@ export default function ResponseHistory({ responses, lockedCount }: ResponseHist
                     <MessageSquarePlus size={16} aria-hidden={true} />
                     {replyOpen === r.id ? 'Cancel' : 'Paste their reply →'}
                   </button>
+                  )}
 
                   {replyOpen === r.id && (
                     <div className="fadeUp" style={{ marginTop: '0.75rem' }}>

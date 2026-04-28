@@ -4,6 +4,7 @@ import { anthropic, DOCUMENT_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { acquireAnthropicSlot, releaseAnthropicSlot, checkRateLimit, defendRateLimit } from '@/lib/rate-limit'
 import type { ContractAnalysis, DefenseResponse } from '@/types'
+import { mergeWithProAnalysis } from '@/lib/contractAnalysis'
 import { z } from 'zod'
 
 // Zod 4.x — typed tuple, not array. Mirrors DEFENSE_TOOL_VALUES pattern.
@@ -67,7 +68,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // Project fetch with IDOR guard + contracts.analysis + defense_responses (D-10)
     const { data: project } = await supabase
       .from('projects')
-      .select('id, title, client_name, project_value, currency, notes, contracts(analysis), defense_responses(tool_type, situation, response, created_at)')
+      .select('id, title, client_name, project_value, currency, notes, contracts(id, analysis), defense_responses(tool_type, situation, response, created_at)')
       .eq('id', id)
       .eq('user_id', user.id)
       .single()
@@ -77,10 +78,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return Response.json({ error: 'Not found' }, { status: 404 })
     }
 
-    // Normalize contracts join — Supabase returns object OR array (defend/route.ts pattern lines 189–191)
-    const contractAnalysis = Array.isArray(project.contracts)
-      ? (project.contracts[0]?.analysis as ContractAnalysis | null | undefined)
-      : ((project.contracts as { analysis: ContractAnalysis | null } | null)?.analysis ?? null)
+    // Normalize contracts join — Supabase returns object OR array
+    const contractRow = Array.isArray(project.contracts) ? project.contracts[0] : project.contracts as { id: string; analysis: unknown } | null
+    const contractId = contractRow?.id
+    const contractAnalysis = contractId
+      ? await mergeWithProAnalysis(supabase, contractId, contractRow?.analysis)
+      : null
 
     // Build project context block
     const projectLines = [
@@ -95,7 +98,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       ? [
           '\nCONTRACT ANALYSIS:',
           `Risk: ${contractAnalysis.risk_level} (${contractAnalysis.risk_score}/10) — ${contractAnalysis.verdict}`,
-          ...contractAnalysis.flagged_clauses.slice(0, 3).map(c => `• ${c.title}: ${c.plain_english}`),
+          ...(contractAnalysis.flagged_clauses ?? []).slice(0, 3).map(c => `• ${c.title}: ${c.plain_english}`),
         ].join('\n')
       : '\n(No contract attached — do not invent contract terms)'
 

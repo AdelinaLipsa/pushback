@@ -46,6 +46,11 @@ export async function POST(
   const rateLimitResponse = await checkRateLimit(defendRateLimit, user.id)
   if (rateLimitResponse) return rateLimitResponse
 
+  const { data: profile } = await supabase.from('user_profiles').select('plan').eq('id', user.id).single()
+  if (!profile || profile.plan !== 'pro') {
+    return Response.json({ error: 'PRO_REQUIRED' }, { status: 403 })
+  }
+
   // Atomic credit gate — same pool as defend + analyze-message (D-01)
   const { data: gateResult, error: gateError } = await supabase.rpc(
     'check_and_increment_defense_responses',

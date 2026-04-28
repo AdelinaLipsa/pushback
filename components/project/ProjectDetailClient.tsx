@@ -208,7 +208,7 @@ export default function ProjectDetailClient({ project, plan, responsesUsed, auto
       {/* History view */}
       {view === 'history' && (
         <div className="fade-up">
-          <ResponseHistory responses={historyResponses ?? []} lockedCount={lockedCount} />
+          <ResponseHistory responses={historyResponses ?? []} lockedCount={lockedCount} isPro={plan === 'pro'} />
         </div>
       )}
     </>

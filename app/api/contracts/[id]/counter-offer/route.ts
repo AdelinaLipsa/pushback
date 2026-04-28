@@ -1,7 +1,7 @@
 import { anthropic, COUNTER_OFFER_SYSTEM_PROMPT } from '@/lib/anthropic'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { checkRateLimit, toolsRateLimit } from '@/lib/rate-limit'
-import { ContractAnalysis } from '@/types'
+import { mergeWithProAnalysis } from '@/lib/contractAnalysis'
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerSupabaseClient()
@@ -10,6 +10,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const rateLimitResponse = await checkRateLimit(toolsRateLimit, user.id)
   if (rateLimitResponse) return rateLimitResponse
+
+  const { data: profile } = await supabase.from('user_profiles').select('plan').eq('id', user.id).single()
+  if (!profile || profile.plan !== 'pro') {
+    return Response.json({ error: 'PRO_REQUIRED' }, { status: 403 })
+  }
 
   // Counts against the shared defense_responses quota — same pool as defend/red-flag/intake
   const { data: gateResult, error: gateError } = await supabase.rpc(
@@ -23,11 +28,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const { id } = await params
   const { data: contract } = await supabase
-    .from('contracts')
-    .select('analysis, status')
-    .eq('id', id)
-    .eq('user_id', user.id)
-    .single()
+    .from('contracts').select('analysis, status').eq('id', id).eq('user_id', user.id).single()
 
   if (!contract) {
     await supabase.rpc('decrement_defense_responses', { uid: user.id })
@@ -39,7 +40,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   try {
-    const analysis = contract.analysis as ContractAnalysis
+    const analysis = await mergeWithProAnalysis(supabase, id, contract.analysis)
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 1024,

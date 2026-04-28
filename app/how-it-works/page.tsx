@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const FAQS = [
   {
     q: 'How many responses can I generate on the free plan?',
-    a: '1 AI-generated response and 1 contract analysis — enough to try the full flow end-to-end. Pro accounts get 150 responses and 50 contract analyses per month.',
+    a: '5 AI actions and 1 contract risk summary on the free plan — enough to see the tool in action. Pro accounts get 10 AI actions and 50 full contract analyses per month.',
   },
   {
     q: 'How is this different from asking ChatGPT?',
@@ -44,7 +44,7 @@ const FAQS = [
   },
   {
     q: 'What documents can Pushback generate?',
-    a: 'Three formal documents — an SOW amendment (scope changes mid-project), a dispute package (client escalates or threatens a chargeback), and a kill fee invoice (client cancels after work has started). Contract analysis also generates a counter-offer email with the exact changes to request. All pull your project details and contract terms automatically. Document generation is a Pro feature.',
+    a: 'Three formal documents — an SOW amendment (scope changes mid-project), a dispute package (client escalates or threatens a chargeback), and a kill fee invoice (client cancels after work has started). Contract analysis also generates a counter-offer email with the exact changes to request (Pro only). All pull your project details and contract terms automatically. Document generation and counter-offer email are Pro features.',
   },
 ]
 
@@ -53,7 +53,7 @@ const STEPS = [
   { n: '02', title: 'Upload your contract', desc: 'Paste it in once. Pushback analyzes it and references your actual clauses in every reply.' },
   { n: '03', title: 'Paste the client message', desc: 'Pushback reads what they sent, identifies the situation, and suggests the right tool.' },
   { n: '04', title: 'Generate and send', desc: 'Confirm the tool, generate a copy-ready reply. Edit if you want, then copy and send.' },
-  { n: '05', title: 'Follow through', desc: 'Mark it sent. If they push back again, paste their reply and Pushback drafts the follow-up.' },
+  { n: '05', title: 'Follow through', desc: 'Mark it sent. On Pro, paste their reply and Pushback reads their stance and drafts the right follow-up.' },
 ]
 
 export default async function HowItWorksPage() {
@@ -238,7 +238,7 @@ export default async function HowItWorksPage() {
           </div>
           <div style={{ textAlign: 'center' }}>
             <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Free plan</p>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>1 contract analysis included</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>1 risk summary included — full clause analysis requires Pro</p>
           </div>
           <div style={{ textAlign: 'center' }}>
             <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Privacy</p>
@@ -357,7 +357,7 @@ export default async function HowItWorksPage() {
           Client pushes back? Thread it. Escalate if needed.
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '3rem', textAlign: 'center', maxWidth: '52ch', margin: '0 auto 3rem' }}>
-          Paste their reply into your project history. Pushback reads their stance — backing down, doubling down, or escalating — and drafts the right follow-up. If it goes further, generate a formal document that makes your position airtight.
+          On Pro, paste their reply into your project history. Pushback reads their stance — backing down, doubling down, or escalating — and drafts the right follow-up. If it goes further, generate a formal document that makes your position airtight.
         </p>
         <ReplyThreadAnimation />
         <div style={{ marginTop: '2rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '3rem' }}>
@@ -370,8 +370,8 @@ export default async function HowItWorksPage() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Thread analysis lives on the response — no separate tab or page</p>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Pro feature</p>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Uses the same credit pool as response generation</p>
+            <p style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.2rem' }}>Pro plan only</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Reply threading and counter-offer email require a Pro subscription</p>
           </div>
         </div>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 600, textAlign: 'center', marginBottom: '1.5rem' }}>
@@ -409,7 +409,7 @@ export default async function HowItWorksPage() {
             </div>
           ))}
         </div>
-        <p style={{ color: '#3f3f46', fontSize: '0.75rem', textAlign: 'center', marginTop: '1.5rem' }}>Pro feature — uses the same credit pool as response generation</p>
+        <p style={{ color: '#3f3f46', fontSize: '0.75rem', textAlign: 'center', marginTop: '1.5rem' }}>Pro feature — included in all Pro subscriptions</p>
       </div>
 
       {/* Arsenal link */}
@@ -447,7 +447,7 @@ export default async function HowItWorksPage() {
         <Link href="/signup" className="hiw-btn-primary">
           Try it free
         </Link>
-        <p style={{ color: '#3f3f46', fontSize: '0.75rem', marginTop: '0.875rem' }}>No card required. 1 free response included.</p>
+        <p style={{ color: '#3f3f46', fontSize: '0.75rem', marginTop: '0.875rem' }}>No card required. 5 free AI actions included.</p>
       </div>
 
       <Footer />

@@ -6,6 +6,7 @@ import { checkRateLimit, defendRateLimit, acquireAnthropicSlot, releaseAnthropic
 import { DEFENSE_TOOLS, DEFENSE_TOOL_VALUES } from '@/lib/defenseTools'
 import { professionContext } from '@/lib/profession'
 import { DefenseTool, ContractAnalysis } from '@/types'
+import { mergeWithProAnalysis } from '@/lib/contractAnalysis'
 import { z } from 'zod'
 
 // Tool-type-to-clause keyword groupings (Phase 9 — D-05 through D-10)
@@ -55,15 +56,18 @@ function buildContractContext(
 
   const header = `Risk level: ${analysis.risk_level.charAt(0).toUpperCase() + analysis.risk_level.slice(1)} (${analysis.risk_score}/10) — ${analysis.verdict}`
 
+  const flaggedClauses = analysis.flagged_clauses ?? []
+  const missingProtections = analysis.missing_protections ?? []
+
   const matchedClauses = keywords.length > 0
-    ? analysis.flagged_clauses.filter(c =>
+    ? flaggedClauses.filter(c =>
         keywords.some(kw => c.title.toLowerCase().includes(kw))
       )
-    : analysis.flagged_clauses
+    : flaggedClauses
 
   const topClauses = matchedClauses.slice(0, 3).length > 0
     ? matchedClauses.slice(0, 3)
-    : analysis.flagged_clauses.slice(0, 3)
+    : flaggedClauses.slice(0, 3)
 
   const clauseLines = topClauses.map(c =>
     `• ${c.title}\n  → "${c.pushback_language}"`
@@ -71,13 +75,13 @@ function buildContractContext(
   const clauseTitlesUsed = topClauses.map(c => c.title)
 
   const matchedMissing = keywords.length > 0
-    ? analysis.missing_protections.filter(mp =>
+    ? missingProtections.filter(mp =>
         keywords.some(kw =>
           mp.title.toLowerCase().includes(kw) ||
           mp.why_you_need_it.toLowerCase().includes(kw)
         )
       )
-    : analysis.missing_protections
+    : missingProtections
   const topMissing = matchedMissing.slice(0, 2)
 
   const missingLines = topMissing.map(mp =>
@@ -179,7 +183,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const [{ data: project }, { data: profileData }] = await Promise.all([
       supabase
         .from('projects')
-        .select('id, title, client_name, project_value, currency, notes, contracts(analysis)')
+        .select('id, title, client_name, project_value, currency, notes, contracts(id, analysis)')
         .eq('id', id)
         .eq('user_id', user.id)
         .single(),
@@ -203,10 +207,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       project.notes ? `NOTES: ${project.notes}` : null,
     ].filter(Boolean).join('\n')
 
-    const contractAnalysis = Array.isArray(project.contracts)
-      ? project.contracts[0]?.analysis
-      : project.contracts?.analysis
-    const { contextBlock, clauseTitlesUsed } = buildContractContext(contractAnalysis ?? null, tool_type as DefenseTool)
+    const contractRow = Array.isArray(project.contracts) ? project.contracts[0] : project.contracts
+    const contractId = contractRow?.id as string | undefined
+    const contractAnalysis = contractId
+      ? await mergeWithProAnalysis(supabase, contractId, contractRow?.analysis)
+      : null
+    const { contextBlock, clauseTitlesUsed } = buildContractContext(contractAnalysis, tool_type as DefenseTool)
     const contractContext = contextBlock
       ? `\n\nCONTRACT CONTEXT:\n${contextBlock}`
       : '\n\n(No contract — do not reference or invent contract terms)'

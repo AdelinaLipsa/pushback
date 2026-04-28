@@ -4,7 +4,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import RiskReport from '@/components/contract/RiskReport'
 import ContractDeleteButton from '@/components/contract/ContractDeleteButton'
 import ContractPendingState from '@/components/contract/ContractPendingState'
-import { ContractAnalysis } from '@/types'
+import { mergeWithProAnalysis } from '@/lib/contractAnalysis'
 
 export default async function ContractPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -12,14 +12,15 @@ export default async function ContractPage({ params }: { params: Promise<{ id: s
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: contract } = await supabase
-    .from('contracts')
-    .select('*')
-    .eq('id', id)
-    .eq('user_id', user.id)
-    .single()
+  const [{ data: contract }, { data: profile }] = await Promise.all([
+    supabase.from('contracts').select('*').eq('id', id).eq('user_id', user.id).single(),
+    supabase.from('user_profiles').select('plan').eq('id', user.id).single(),
+  ])
 
   if (!contract) notFound()
+
+  const isPro = profile?.plan === 'pro'
+  const fullAnalysis = await mergeWithProAnalysis(supabase, id, contract.analysis)
 
   const showFilename = contract.original_filename && contract.original_filename !== contract.title
 
@@ -50,8 +51,8 @@ export default async function ContractPage({ params }: { params: Promise<{ id: s
         </div>
       )}
 
-      {contract.status === 'analyzed' && contract.analysis && (
-        <RiskReport analysis={contract.analysis as ContractAnalysis} contractId={contract.id} />
+      {contract.status === 'analyzed' && fullAnalysis && (
+        <RiskReport analysis={fullAnalysis} contractId={contract.id} isPro={isPro} />
       )}
     </div>
   )

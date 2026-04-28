@@ -1,18 +1,21 @@
 'use client'
 
 import { useState } from 'react'
-import { Mail, Copy, Check, Loader2 } from 'lucide-react'
+import { Mail, Copy, Check, Loader2, Lock } from 'lucide-react'
 import { generateCounterOffer } from '@/lib/api'
 import { btnCls } from '@/lib/ui'
+import { startCheckout } from '@/lib/checkout'
 
 interface CounterOfferSectionProps {
   contractId: string
+  isPro: boolean
 }
 
-export default function CounterOfferSection({ contractId }: CounterOfferSectionProps) {
+export default function CounterOfferSection({ contractId, isPro }: CounterOfferSectionProps) {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [upgradeLoading, setUpgradeLoading] = useState(false)
 
   async function handleGenerate() {
     setLoading(true)
@@ -30,6 +33,26 @@ export default function CounterOfferSection({ contractId }: CounterOfferSectionP
     } catch {
       // clipboard unavailable — fail silently
     }
+  }
+
+  if (!isPro) {
+    return (
+      <div className="fade-up bg-bg-surface border border-bg-border rounded-xl overflow-hidden">
+        <div className="px-6 py-5 flex items-center justify-between gap-4">
+          <div>
+            <h3 className="text-[0.68rem] font-bold uppercase tracking-[0.1em] text-zinc-200 m-0 mb-1">Counter-offer email</h3>
+            <p className="text-zinc-400 text-[0.825rem] m-0">Draft a professional negotiation email based on the flagged clauses above.</p>
+          </div>
+          <button
+            onClick={() => startCheckout(setUpgradeLoading)}
+            disabled={upgradeLoading}
+            className={btnCls.primary + ' shrink-0'}
+          >
+            {upgradeLoading ? <><Loader2 size={14} className="animate-spin" /> Loading…</> : <><Lock size={14} /> Upgrade to Pro</>}
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (

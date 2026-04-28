@@ -521,7 +521,7 @@ export default function LandingPage() {
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.25rem' }}>
                   Paste their reply and Pushback reads the room — backing down, doubling down, or escalating — then drafts the right follow-up for where the conversation actually is.
                 </p>
-                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.625rem', marginBottom: '1.25rem' }}>
                   {[
                     'Stance detection in under 3 seconds',
                     'Follow-up tailored to their exact response',
@@ -534,6 +534,7 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
+                <p style={{ fontSize: '0.6rem', color: 'var(--brand-lime)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.7 }}>Pro</p>
               </div>
             </div>
           </div>
@@ -567,7 +568,7 @@ export default function LandingPage() {
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>No card required</p>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.875rem', marginBottom: '2rem', flex: 1 }}>
-                {['1 defense tool response', '1 contract analysis', 'Access to all 23 tools', 'Copy-ready messages'].map(f => (
+                {PLANS.free.features.map(f => (
                   <li key={f} style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <Check size={14} style={{ color: 'var(--brand-lime)', flexShrink: 0 }} />
                     {f}

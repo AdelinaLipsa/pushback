@@ -38,7 +38,7 @@ export default function ContractsTable({ contracts }: Props) {
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ borderBottom: '1px solid var(--bg-border)' }}>
-            {['Contract', 'Risk', 'Status', 'Date'].map(col => (
+            {['Contract', 'Project', 'Risk', 'Status', 'Date'].map(col => (
               <th key={col} style={TH_STYLE}>{col}</th>
             ))}
           </tr>
@@ -64,6 +64,10 @@ export default function ContractsTable({ contracts }: Props) {
                   {contract.original_filename && (
                     <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>{contract.original_filename}</div>
                   )}
+                </td>
+
+                <td style={{ padding: '1rem 1.25rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                  {contract.projects?.title ?? <span style={{ color: 'var(--text-muted)' }}>—</span>}
                 </td>
 
                 <td style={{ padding: '1rem 1.25rem' }}>

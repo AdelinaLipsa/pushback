@@ -152,11 +152,30 @@ export async function POST(request: Request) {
       // RELY-02: use extractJson instead of bare JSON.parse — handles preamble and markdown wrapping
       const analysis: ContractAnalysis = extractJson(rawText)
 
+      // Split analysis: base fields in contracts table, pro fields in contract_analysis_pro (plan-gated RLS)
+      const baseAnalysis = {
+        summary: analysis.summary,
+        risk_score: analysis.risk_score,
+        risk_level: analysis.risk_level,
+        verdict: analysis.verdict,
+      }
+
       // Credit-safe update — check result before clearing pending status (D-03)
       const { error: updateError } = await admin
         .from('contracts')
-        .update({ analysis, risk_score: analysis.risk_score, risk_level: analysis.risk_level, status: 'analyzed' })
+        .update({ analysis: baseAnalysis, risk_score: analysis.risk_score, risk_level: analysis.risk_level, status: 'analyzed' })
         .eq('id', contractId)
+
+      if (!updateError) {
+        await (admin as any).from('contract_analysis_pro').upsert({
+          contract_id: contractId,
+          user_id: userId,
+          flagged_clauses: analysis.flagged_clauses ?? [],
+          missing_protections: analysis.missing_protections ?? [],
+          positive_notes: analysis.positive_notes ?? [],
+          negotiation_priority: analysis.negotiation_priority ?? [],
+        })
+      }
 
       if (updateError) {
         // Compensating decrement — RPC already incremented, undo it
