@@ -164,7 +164,7 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
       </button>
 
       <p className="text-text-muted text-[0.75rem] text-center leading-relaxed">
-        Your contract is never stored after analysis. We read it, flag the risks, delete it.
+        Your contract is analyzed securely and only you can access the results.
       </p>
 
     </form>
