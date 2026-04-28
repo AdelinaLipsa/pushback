@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { DefenseTool, Project } from '@/types'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
-import ProjectCard from '@/components/project/ProjectCard'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
 import ArsenalQuickDeploy from '@/components/defense/ArsenalQuickDeploy'
 import { computeClientRisk, LEVEL_LABELS, CLIENT_RISK_COLORS } from '@/lib/clientRisk'
@@ -298,105 +297,53 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
       )}
 
-      {/* Two-column command center: Arsenal left, Projects right */}
-      <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
-
-        {/* Left: Arsenal */}
-        <div className="fade-up" style={{ flex: 1, minWidth: 0, animationDelay: '0.1s' }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '1rem' }}>
-            <h2 style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.01em' }}>Arsenal</h2>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-              {DEFENSE_TOOLS.length} tools ready
-            </span>
-          </div>
-          <ArsenalQuickDeploy
-            projects={(projects ?? []).map(p => ({ id: p.id, title: p.title, client_name: p.client_name }))}
-          />
-          <Link
-            href="/arsenal"
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              marginTop: '0.875rem', padding: '0.75rem 1rem',
-              backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-              borderRadius: '0.625rem', textDecoration: 'none',
-              transition: 'border-color 150ms ease',
-            }}
-            className="hover:border-white/20 group"
-          >
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-              Not sure which tool fits?{' '}
-              <span style={{ color: 'var(--brand-lime)', fontWeight: 600 }}>Browse the full arsenal</span>
-              {' '}— every situation mapped with when to use it.
-            </span>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: '1rem', flexShrink: 0, transition: 'color 150ms ease' }} className="group-hover:text-text-secondary">→</span>
-          </Link>
-          <Link
-            href="/how-it-works"
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              marginTop: '0.5rem', padding: '0.75rem 1rem',
-              backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-              borderRadius: '0.625rem', textDecoration: 'none',
-              transition: 'border-color 150ms ease',
-            }}
-            className="hover:border-white/20 group"
-          >
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-              New here?{' '}
-              <span style={{ color: 'var(--brand-lime)', fontWeight: 600 }}>See how it works</span>
-              {' '}— the full walkthrough with animations.
-            </span>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: '1rem', flexShrink: 0, transition: 'color 150ms ease' }} className="group-hover:text-text-secondary">→</span>
-          </Link>
+      {/* Arsenal — full width */}
+      <div className="fade-up" style={{ animationDelay: '0.1s' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '1rem' }}>
+          <h2 style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.01em' }}>Arsenal</h2>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+            {DEFENSE_TOOLS.length} tools ready
+          </span>
         </div>
-
-        {/* Right: Projects */}
-        <div className="slide-in-right" style={{ width: '300px', flexShrink: 0, animationDelay: '0.15s' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-            <h2 style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.01em' }}>Projects</h2>
-            <Link
-              href="/projects/new"
-              style={{
-                backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 600,
-                padding: '0.4rem 0.875rem', borderRadius: '0.5rem', textDecoration: 'none',
-                fontSize: '0.8rem',
-              }}
-              className="hover:opacity-90 transition-opacity"
-            >
-              New →
-            </Link>
-          </div>
-
-          {!projects || projects.length === 0 ? (
-            <div style={{
-              backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-              borderRadius: '0.875rem', padding: '2rem 1.25rem', textAlign: 'center',
-            }}>
-              <p style={{ fontWeight: 600, fontSize: '0.95rem', marginBottom: '0.4rem' }}>No projects yet</p>
-              <p style={{ color: 'var(--text-secondary)', marginBottom: '1.25rem', fontSize: '0.85rem' }}>
-                Add a client project to deploy tools.
-              </p>
-              <Link
-                href="/projects/new"
-                style={{
-                  backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', fontWeight: 600,
-                  padding: '0.55rem 1.1rem', borderRadius: '0.5rem', textDecoration: 'none', fontSize: '0.85rem',
-                }}
-              >
-                Add project →
-              </Link>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-              {(projects as Project[]).map((project, i) => (
-                <div key={project.id} className="fade-up" style={{ animationDelay: `${0.08 + i * 0.06}s` }}>
-                  <ProjectCard project={project} />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
+        <ArsenalQuickDeploy
+          projects={(projects ?? []).map(p => ({ id: p.id, title: p.title, client_name: p.client_name }))}
+        />
+        <Link
+          href="/arsenal"
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            marginTop: '0.875rem', padding: '0.75rem 1rem',
+            backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+            borderRadius: '0.625rem', textDecoration: 'none',
+            transition: 'border-color 150ms ease',
+          }}
+          className="hover:border-white/20 group"
+        >
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            Not sure which tool fits?{' '}
+            <span style={{ color: 'var(--brand-lime)', fontWeight: 600 }}>Browse the full arsenal</span>
+            {' '}— every situation mapped with when to use it.
+          </span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: '1rem', flexShrink: 0, transition: 'color 150ms ease' }} className="group-hover:text-text-secondary">→</span>
+        </Link>
+        <Link
+          href="/how-it-works"
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            marginTop: '0.5rem', padding: '0.75rem 1rem',
+            backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+            borderRadius: '0.625rem', textDecoration: 'none',
+            transition: 'border-color 150ms ease',
+          }}
+          className="hover:border-white/20 group"
+        >
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            New here?{' '}
+            <span style={{ color: 'var(--brand-lime)', fontWeight: 600 }}>See how it works</span>
+            {' '}— the full walkthrough with animations.
+          </span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: '1rem', flexShrink: 0, transition: 'color 150ms ease' }} className="group-hover:text-text-secondary">→</span>
+        </Link>
       </div>
     </div>
   )
