@@ -1,9 +1,11 @@
 import { ContractAnalysis, RiskLevel } from '@/types'
 import RiskScoreBadge from './RiskScoreBadge'
 import ClauseCard from './ClauseCard'
+import CounterOfferSection from './CounterOfferSection'
 
 interface RiskReportProps {
   analysis: ContractAnalysis
+  contractId?: string
 }
 
 function SectionHeader({ label, count, countColor }: { label: string; count?: number; countColor?: string }) {
@@ -24,7 +26,7 @@ const SEV: Record<string, { border: string; badge: string }> = {
   LOW:      { border: 'border-l-urgency-low',    badge: 'bg-urgency-low/10 border border-urgency-low/30 text-urgency-low' },
 }
 
-export default function RiskReport({ analysis }: RiskReportProps) {
+export default function RiskReport({ analysis, contractId }: RiskReportProps) {
   return (
     <div className="flex flex-col gap-6">
 
@@ -143,6 +145,10 @@ export default function RiskReport({ analysis }: RiskReportProps) {
           )}
         </div>
       </div>
+
+      {contractId && (analysis.flagged_clauses.length > 0 || analysis.missing_protections.length > 0) && (
+        <CounterOfferSection contractId={contractId} />
+      )}
     </div>
   )
 }

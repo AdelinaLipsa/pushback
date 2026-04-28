@@ -34,6 +34,8 @@ export async function GET(request: Request) {
     })
   }
 
-  const destination = isNewUser ? '/dashboard?welcome=1' : next
+  // New users land on the welcome dashboard — unless they came from a specific
+  // destination (e.g. /checkout), in which case honour it so the payment flow completes.
+  const destination = isNewUser && !next ? '/dashboard?welcome=1' : (next || '/dashboard')
   return NextResponse.redirect(`${origin}${destination}`)
 }

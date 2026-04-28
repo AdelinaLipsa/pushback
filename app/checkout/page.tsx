@@ -6,7 +6,7 @@ import CheckoutForm, { PlanSummary } from './CheckoutForm'
 export default async function CheckoutPage() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  if (!user) redirect('/login?next=/checkout')
 
   const { data: profile } = await supabase.from('user_profiles').select('plan').eq('id', user.id).single()
   if (profile?.plan === 'pro') redirect('/dashboard')

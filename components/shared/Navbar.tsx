@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, BookOpen, HelpCircle, MessageSquare, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, FileText, Settings, BarChart2, ArrowUpCircle, CreditCard, ShieldCheck, LogOut, BookOpen, HelpCircle, MessageSquare, AlertTriangle, ClipboardList, type LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { startCheckout } from '@/lib/checkout'
 import { billingPortal } from '@/lib/api'
@@ -23,6 +23,13 @@ const NAV_SECTIONS: { label: string; items: { href: string; label: string; Icon:
       { href: '/contracts', label: 'Contracts', Icon: FileText },
       { href: '/analytics', label: 'Analytics', Icon: BarChart2 },
       { href: '/arsenal', label: 'Arsenal', Icon: BookOpen },
+    ],
+  },
+  {
+    label: 'Tools',
+    items: [
+      { href: '/red-flag', label: 'Red Flag Detector', Icon: AlertTriangle },
+      { href: '/intake', label: 'Intake Questions', Icon: ClipboardList },
     ],
   },
   {
