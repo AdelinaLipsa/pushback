@@ -4,10 +4,12 @@ import { FolderPlus, ShieldCheck, FileText, Zap, DollarSign } from 'lucide-react
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { DefenseTool, Project } from '@/types'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
+import { PLANS } from '@/lib/plans'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
 import { computeClientRisk, LEVEL_LABELS, CLIENT_RISK_COLORS } from '@/lib/clientRisk'
 import WelcomeToast from '@/components/shared/WelcomeToast'
 import OnboardingModal from '@/components/shared/OnboardingModal'
+import QuotaBar from '@/components/dashboard/QuotaBar'
 
 // ---- Attention alert types ----
 
@@ -43,7 +45,7 @@ function calendarDaysBetween(from: Date, to: Date): number {
 }
 
 type ProjectWithResponses = Project & {
-  contracts?: { risk_score: number | null; risk_level: string | null } | null
+  contracts?: { id: string; risk_score: number | null; risk_level: string | null; title: string | null; status: string | null; created_at: string } | null
   defense_responses?: Array<{ id: string; tool_type: DefenseTool; created_at: string; was_sent: boolean }> | null
 }
 
@@ -198,60 +200,107 @@ const TOOL_LABELS: Record<string, string> = Object.fromEntries(
   DEFENSE_TOOLS.map(t => [t.type, t.label])
 )
 
-// ---- Recent projects ----
-interface RecentProject {
+// ---- Relative time ----
+function relativeTime(date: Date, now: Date): string {
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+  if (seconds < 60) return 'Just now'
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days === 1) return 'Yesterday'
+  if (days < 30) return `${days}d ago`
+  return `${Math.floor(days / 30)}mo ago`
+}
+
+// ---- Activity stream ----
+interface ActivityEvent {
   id: string
-  title: string
-  clientName: string
-  lastToolLabel: string | null
-  daysSinceActivity: number
-  paymentStatus: 'paid' | 'overdue' | 'pending' | null
+  type: 'response' | 'contract'
+  label: string
+  projectId: string
+  projectTitle: string
+  createdAt: Date
+  wasSent: boolean
+  href: string
 }
 
-function computeRecentProjects(projects: ProjectWithResponses[], today: Date): RecentProject[] {
-  return projects
-    .map(p => {
-      const responses = p.defense_responses ?? []
-      const lastResponse = responses
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
-
-      const lastActivity = lastResponse
-        ? new Date(lastResponse.created_at)
-        : new Date(p.created_at)
-
-      const daysSince = calendarDaysBetween(lastActivity, today)
-
-      let paymentStatus: RecentProject['paymentStatus'] = null
-      if (p.payment_amount !== null || p.payment_due_date !== null) {
-        if (p.payment_received_at) {
-          paymentStatus = 'paid'
-        } else if (p.payment_due_date) {
-          const due = new Date(p.payment_due_date)
-          paymentStatus = due < today ? 'overdue' : 'pending'
-        } else {
-          paymentStatus = 'pending'
-        }
-      }
-
-      return {
-        id: p.id,
-        title: p.title,
-        clientName: p.client_name,
-        lastToolLabel: lastResponse ? (TOOL_LABELS[lastResponse.tool_type] ?? null) : null,
-        daysSinceActivity: daysSince,
-        paymentStatus,
-        _sortKey: lastActivity.getTime(),
-      }
-    })
-    .sort((a, b) => b._sortKey - a._sortKey)
-    .slice(0, 4)
-    .map(({ _sortKey: _, ...rest }) => rest)
+function computeActivityStream(projects: ProjectWithResponses[]): ActivityEvent[] {
+  const events: ActivityEvent[] = []
+  for (const p of projects) {
+    for (const r of p.defense_responses ?? []) {
+      events.push({
+        id: r.id,
+        type: 'response',
+        label: TOOL_LABELS[r.tool_type] ?? r.tool_type,
+        projectId: p.id,
+        projectTitle: p.title,
+        createdAt: new Date(r.created_at),
+        wasSent: r.was_sent,
+        href: `/projects/${p.id}`,
+      })
+    }
+    const c = p.contracts
+    if (c && c.status === 'analyzed') {
+      events.push({
+        id: `contract-${p.id}`,
+        type: 'contract',
+        label: 'Contract analyzed',
+        projectId: p.id,
+        projectTitle: p.title,
+        createdAt: new Date(c.created_at),
+        wasSent: false,
+        href: `/projects/${p.id}`,
+      })
+    }
+  }
+  return events.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 10)
 }
 
-const PAYMENT_STATUS_STYLE: Record<NonNullable<RecentProject['paymentStatus']>, { label: string; color: string }> = {
-  paid:    { label: 'Paid',    color: '#84cc16' },
-  overdue: { label: 'Overdue', color: '#ef4444' },
-  pending: { label: 'Pending', color: '#f59e0b' },
+// ---- Payment pipeline ----
+type PipelineUrgency = 'red' | 'amber' | 'muted'
+
+interface PipelineItem {
+  id: string
+  projectId: string
+  projectTitle: string
+  toolLabel: string
+  createdAt: Date
+  urgency: PipelineUrgency
+}
+
+const PIPELINE_TOOLS = new Set(['payment_first', 'payment_second', 'payment_final'])
+const PIPELINE_URGENCY: Record<string, PipelineUrgency> = {
+  payment_final: 'red',
+  payment_second: 'amber',
+  payment_first: 'muted',
+}
+const URGENCY_ORDER: Record<PipelineUrgency, number> = { red: 0, amber: 1, muted: 2 }
+
+function computePaymentPipeline(projects: ProjectWithResponses[]): PipelineItem[] {
+  const perProject = new Map<string, PipelineItem>()
+  for (const p of projects) {
+    if (p.payment_received_at) continue
+    for (const r of p.defense_responses ?? []) {
+      if (!PIPELINE_TOOLS.has(r.tool_type)) continue
+      const urgency = PIPELINE_URGENCY[r.tool_type] ?? 'muted'
+      const existing = perProject.get(p.id)
+      if (!existing || URGENCY_ORDER[urgency] < URGENCY_ORDER[existing.urgency]) {
+        perProject.set(p.id, {
+          id: r.id,
+          projectId: p.id,
+          projectTitle: p.title,
+          toolLabel: TOOL_LABELS[r.tool_type] ?? r.tool_type,
+          createdAt: new Date(r.created_at),
+          urgency,
+        })
+      }
+    }
+  }
+  return [...perProject.values()]
+    .sort((a, b) => URGENCY_ORDER[a.urgency] - URGENCY_ORDER[b.urgency])
+    .slice(0, 6)
 }
 
 // ---- Overview stat tile ----
@@ -328,7 +377,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const [{ data: projects, error: projectsError }, { data: profile }] = await Promise.all([
     supabase
       .from('projects')
-      .select('*, contracts!projects_contract_id_fkey(risk_score, risk_level), defense_responses(id, tool_type, created_at, was_sent)')
+      .select('*, contracts!projects_contract_id_fkey(id, risk_score, risk_level, title, status, created_at), defense_responses(id, tool_type, created_at, was_sent)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false }),
     supabase.from('user_profiles').select('*').eq('id', user.id).single(),
@@ -386,8 +435,15 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const outstandingCount = outstandingProjects.length
   const outstandingValue = outstandingProjects.reduce((sum, p) => sum + (p.payment_amount ?? 0), 0)
 
-  const recentProjects = computeRecentProjects(projectList, today)
   const nextAction = computeNextAction(projectList, contractsAnalyzed, responsesSent)
+  const activityEvents = computeActivityStream(projectList)
+  const pipelineItems = computePaymentPipeline(projectList)
+
+  const isPro = profile?.plan === 'pro'
+  const responsesUsed = isPro ? (profile?.period_responses_used ?? 0) : (profile?.defense_responses_used ?? 0)
+  const contractsUsed = isPro ? (profile?.period_contracts_used ?? 0) : (profile?.contracts_used ?? 0)
+  const responsesLimit = isPro ? PLANS.pro.defense_responses : PLANS.free.defense_responses
+  const contractsLimit = isPro ? PLANS.pro.contracts : PLANS.free.contracts
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -498,9 +554,9 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
       )}
 
-      {/* Recent projects / empty state */}
-      <div className="fade-up" style={{ marginBottom: '2rem', animationDelay: '0.12s' }}>
-        {totalProjects === 0 && !queryFailed ? (
+      {/* Main content: empty state (full-width) or two-column layout */}
+      {totalProjects === 0 && !queryFailed ? (
+        <div className="fade-up" style={{ marginBottom: '2rem', animationDelay: '0.12s' }}>
           <div style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             gap: '1rem', padding: '3rem 1.5rem', textAlign: 'center',
@@ -537,75 +593,125 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               New project
             </Link>
           </div>
-        ) : (
-          <>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: '1.25rem', marginBottom: '2rem', alignItems: 'start' }}>
+
+          {/* Left: Activity stream */}
+          <div className="fade-up" style={{ animationDelay: '0.12s' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
               <h2 style={{ fontWeight: 600, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', margin: 0 }}>
-                Recent projects
+                Activity
               </h2>
               <Link href="/projects" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textDecoration: 'none' }} className="hover:text-text-secondary transition-colors">
                 All projects →
               </Link>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-              {recentProjects.map((p, i) => {
-                const payStyle = p.paymentStatus ? PAYMENT_STATUS_STYLE[p.paymentStatus] : null
-                const activityLabel = p.daysSinceActivity === 0
-                  ? 'Today'
-                  : p.daysSinceActivity === 1
-                    ? 'Yesterday'
-                    : `${p.daysSinceActivity}d ago`
-                return (
+            {activityEvents.length === 0 ? (
+              <div style={{
+                padding: '1.5rem 1rem',
+                backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+                borderRadius: '0.5rem', textAlign: 'center',
+                fontSize: '0.825rem', color: 'var(--text-muted)',
+              }}>
+                No activity yet — use a defense tool to get started
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                {activityEvents.map((event, i) => (
                   <Link
-                    key={p.id}
-                    href={`/projects/${p.id}`}
-                    className="fade-up hover:border-white/20 group"
+                    key={event.id}
+                    href={event.href}
+                    className="fade-up hover:border-white/20"
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: '1rem',
-                      padding: '0.75rem 1rem',
-                      backgroundColor: 'var(--bg-surface)',
-                      border: '1px solid var(--bg-border)',
-                      borderRadius: '0.5rem',
-                      textDecoration: 'none',
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      padding: '0.625rem 0.875rem',
+                      backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+                      borderRadius: '0.5rem', textDecoration: 'none',
                       transition: 'border-color 150ms ease',
-                      animationDelay: `${0.14 + i * 0.05}s`,
+                      animationDelay: `${0.14 + i * 0.04}s`,
                     }}
                   >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', minWidth: 0 }}>
-                      <span style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {p.title}
+                    {/* Dot indicator: filled = response sent, outline = else */}
+                    <div style={{
+                      width: '7px', height: '7px', borderRadius: '9999px', flexShrink: 0,
+                      backgroundColor: event.type === 'response' && event.wasSent ? '#84cc16' : 'transparent',
+                      border: event.type === 'response' && event.wasSent ? 'none' : '1.5px solid var(--text-muted)',
+                    }} />
+                    <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '0.05rem' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {event.label}
                       </span>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                        {p.clientName}
-                        {p.lastToolLabel && (
-                          <> &middot; <span style={{ color: 'var(--text-secondary)' }}>{p.lastToolLabel}</span></>
-                        )}
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexShrink: 0 }}>
-                      {payStyle && (
-                        <span style={{
-                          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
-                          padding: '0.18rem 0.5rem', borderRadius: '9999px',
-                          color: payStyle.color, backgroundColor: `${payStyle.color}18`,
-                        }}>
-                          {payStyle.label}
-                        </span>
-                      )}
-                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', minWidth: '3.5rem', textAlign: 'right' }}>
-                        {activityLabel}
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {event.projectTitle}
                       </span>
                     </div>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
+                      {relativeTime(event.createdAt, today)}
+                    </span>
                   </Link>
-                )
-              })}
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right sidebar: QuotaBar + Pipeline */}
+          <div className="fade-up" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', animationDelay: '0.15s' }}>
+            <QuotaBar
+              plan={(profile?.plan ?? 'free') as 'free' | 'pro'}
+              responsesUsed={responsesUsed}
+              responsesLimit={responsesLimit}
+              contractsUsed={contractsUsed}
+              contractsLimit={contractsLimit}
+            />
+
+            {/* Payment pipeline */}
+            <div style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--bg-border)',
+              borderRadius: '0.75rem',
+              padding: '0.875rem 1rem',
+              display: 'flex', flexDirection: 'column', gap: '0.625rem',
+            }}>
+              <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>
+                Payment pipeline
+              </span>
+              {pipelineItems.length === 0 ? (
+                <span style={{ fontSize: '0.775rem', color: 'var(--text-muted)' }}>No outstanding invoices</span>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                  {pipelineItems.map(item => {
+                    const dotColor = item.urgency === 'red' ? '#ef4444' : item.urgency === 'amber' ? '#f59e0b' : 'var(--text-muted)'
+                    return (
+                      <Link
+                        key={item.id}
+                        href={`/projects/${item.projectId}`}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: '0.5rem',
+                          textDecoration: 'none',
+                          padding: '0.25rem 0',
+                        }}
+                        className="group"
+                      >
+                        <div style={{ width: '6px', height: '6px', borderRadius: '9999px', backgroundColor: dotColor, flexShrink: 0 }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: '0.775rem', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {item.projectTitle}
+                          </div>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>{item.toolLabel}</div>
+                        </div>
+                        <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>
+                          {relativeTime(item.createdAt, today)}
+                        </span>
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
             </div>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
 
       {/* Arsenal CTA */}
       <div className="fade-up" style={{ animationDelay: '0.2s' }}>
