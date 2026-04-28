@@ -46,13 +46,9 @@ export async function POST(request: Request) {
   if (gateError || !gate?.allowed) {
     return Response.json({ error: gate?.reason ?? 'UPGRADE_REQUIRED' }, { status: 403 })
   }
-  // Store pre-increment counts for compensating decrements on failure (D-03 credit-safe)
-  const preIncrementCount = gate.current_count
-  const prePeriodCount = gate.period_count
-
   const [formData, { data: profileData }] = await Promise.all([
     request.formData(),
-    supabase.from('user_profiles').select('profession').eq('id', user.id).single(),
+    supabase.from('user_profiles').select('profession, plan').eq('id', user.id).single(),
   ])
   const file = formData.get('file') as File | null
 
@@ -62,9 +58,7 @@ export async function POST(request: Request) {
     text: formData.get('text') || null,
   })
   if (!parsed.success) {
-    await supabase.from('user_profiles')
-      .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
-      .eq('id', user.id)
+    await supabase.rpc('decrement_contracts', { uid: user.id })
     return Response.json({ error: parsed.error.issues[0]?.message ?? 'Invalid input' }, { status: 400 })
   }
   const text = parsed.data.text ?? null
@@ -79,23 +73,17 @@ export async function POST(request: Request) {
 
   if (file) {
     if (file.type !== 'application/pdf') {
-      await supabase.from('user_profiles')
-        .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
-        .eq('id', user.id)
+      await supabase.rpc('decrement_contracts', { uid: user.id })
       return Response.json({ error: 'Only PDF files are supported' }, { status: 400 })
     }
     if (file.size > 10 * 1024 * 1024) {
-      await supabase.from('user_profiles')
-        .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
-        .eq('id', user.id)
+      await supabase.rpc('decrement_contracts', { uid: user.id })
       return Response.json({ error: 'File must be under 10 MB' }, { status: 400 })
     }
     fileBytes = await file.arrayBuffer()
     fileName = file.name
   } else if (!text) {
-    await supabase.from('user_profiles')
-      .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
-      .eq('id', user.id)
+    await supabase.rpc('decrement_contracts', { uid: user.id })
     return Response.json({ error: 'No file or text provided' }, { status: 400 })
   }
 
@@ -108,9 +96,7 @@ export async function POST(request: Request) {
     .single()
 
   if (!contract) {
-    await supabase.from('user_profiles')
-      .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
-      .eq('id', user.id)
+    await supabase.rpc('decrement_contracts', { uid: user.id })
     return Response.json({ error: 'DB error' }, { status: 500 })
   }
 
@@ -163,10 +149,18 @@ export async function POST(request: Request) {
       // Credit-safe update — check result before clearing pending status (D-03)
       const { error: updateError } = await admin
         .from('contracts')
-        .update({ analysis: baseAnalysis, risk_score: analysis.risk_score, risk_level: analysis.risk_level, status: 'analyzed' })
+        .update({ analysis: baseAnalysis, risk_score: Math.round(analysis.risk_score), risk_level: analysis.risk_level, status: 'analyzed' })
         .eq('id', contractId)
 
-      if (!updateError) {
+      if (updateError) {
+        // Compensating decrement — atomic RPC, not an absolute write (C-04)
+        await admin.rpc('decrement_contracts', { uid: userId })
+        return
+      }
+
+      // C-02: only write pro analysis for pro users — free users can never read it
+      // and we'd pay Anthropic for data they can't access
+      if (profileData?.plan === 'pro') {
         await (admin as any).from('contract_analysis_pro').upsert({
           contract_id: contractId,
           user_id: userId,
@@ -177,23 +171,12 @@ export async function POST(request: Request) {
         })
       }
 
-      if (updateError) {
-        // Compensating decrement — RPC already incremented, undo it
-        await admin.from('user_profiles')
-          .update({ contracts_used: preIncrementCount })
-          .eq('id', userId)
-        return
-      }
-
       if (project_id) {
         await admin.from('projects').update({ contract_id: contractId }).eq('id', project_id).eq('user_id', userId)
       }
     } catch (err) {
       await admin.from('contracts').update({ status: 'error' }).eq('id', contractId)
-      // Compensating decrement — undo RPC increment on any unhandled error
-      await admin.from('user_profiles')
-        .update({ contracts_used: preIncrementCount, period_contracts_used: prePeriodCount })
-        .eq('id', userId)
+      await admin.rpc('decrement_contracts', { uid: userId })
       console.error('Contract analysis error:', err)
     }
   })

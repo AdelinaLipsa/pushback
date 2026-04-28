@@ -27,6 +27,16 @@ export async function POST(request: Request) {
     if (!userId) return Response.json({ received: true })
     if (!session.subscription) return Response.json({ received: true })
 
+    // Idempotency guard: skip if this subscription is already recorded
+    const { data: existing } = await supabase
+      .from('user_profiles')
+      .select('stripe_subscription_id')
+      .eq('id', userId)
+      .single()
+    if (existing?.stripe_subscription_id === session.subscription) {
+      return Response.json({ received: true })
+    }
+
     const { error } = await supabase
       .from('user_profiles')
       .update({ plan: 'pro', stripe_customer_id: session.customer as string, stripe_subscription_id: session.subscription as string })
@@ -81,8 +91,9 @@ export async function POST(request: Request) {
   }
 
   if (event.type === 'invoice.paid') {
-    const invoice = event.data.object as unknown as { subscription: string | { id: string } | null }
+    const invoice = event.data.object as unknown as { subscription: string | { id: string } | null; period_end?: number }
     const subscriptionId = typeof invoice.subscription === 'string' ? invoice.subscription : invoice.subscription?.id
+    const periodEnd = invoice.period_end ? new Date(invoice.period_end * 1000).toISOString() : null
     if (subscriptionId) {
       const { data: profileData } = await supabase
         .from('user_profiles')
@@ -90,7 +101,8 @@ export async function POST(request: Request) {
         .eq('stripe_subscription_id', subscriptionId)
         .single()
       if (profileData?.id) {
-        await supabase.rpc('reset_period_usage', { uid: profileData.id })
+        // Pass period_end so the RPC skips duplicate resets for the same billing period
+        await supabase.rpc('reset_period_usage', { uid: profileData.id, new_period_end: periodEnd })
       }
     }
   }

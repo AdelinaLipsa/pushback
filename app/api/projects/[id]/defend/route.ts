@@ -265,7 +265,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const newPeriodCount = (gate?.period_count ?? 0) + 1
-    const usageWarning = newPeriodCount >= 120 ? `${newPeriodCount} of 150 responses used this period` : undefined
+    const usageWarning = newPeriodCount >= 8 ? `${newPeriodCount} of 10 responses used this period` : undefined
     return Response.json({ response, id: saved.id, contract_clauses_used: clauseTitlesUsed, usage_warning: usageWarning })
   } catch (err) {
     console.error('Defend route error:', err)

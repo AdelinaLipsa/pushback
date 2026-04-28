@@ -28,13 +28,24 @@ export async function DELETE() {
 
   const admin = createAdminSupabaseClient()
 
-  // Explicitly delete application data before removing the auth user.
-  // Do not rely solely on DB cascades — not all tables may have them.
-  await admin.from('defense_responses').delete().eq('user_id', user.id)
-  await admin.from('contracts').delete().eq('user_id', user.id)
-  await admin.from('projects').delete().eq('user_id', user.id)
-  await admin.from('feedback').delete().eq('user_id', user.id)
-  await admin.from('user_profiles').delete().eq('id', user.id)
+  // Delete application data before removing the auth user.
+  // Order matters: defense_responses first (reply_threads cascade from it),
+  // then contracts (contract_analysis_pro cascades from it), then projects.
+  // user_profiles is intentionally NOT deleted here — auth.admin.deleteUser
+  // triggers the ON DELETE CASCADE from auth.users, so user_profiles disappears
+  // atomically with the auth record (eliminates the window where a session is
+  // valid but the profile row is gone).
+  const { error: drErr } = await admin.from('defense_responses').delete().eq('user_id', user.id)
+  if (drErr) return Response.json({ error: 'Failed to delete account data' }, { status: 500 })
+
+  const { error: cErr } = await admin.from('contracts').delete().eq('user_id', user.id)
+  if (cErr) return Response.json({ error: 'Failed to delete account data' }, { status: 500 })
+
+  const { error: pErr } = await admin.from('projects').delete().eq('user_id', user.id)
+  if (pErr) return Response.json({ error: 'Failed to delete account data' }, { status: 500 })
+
+  const { error: fErr } = await admin.from('feedback').delete().eq('user_id', user.id)
+  if (fErr) return Response.json({ error: 'Failed to delete account data' }, { status: 500 })
 
   const { error } = await admin.auth.admin.deleteUser(user.id)
   if (error) return Response.json({ error: error.message }, { status: 500 })

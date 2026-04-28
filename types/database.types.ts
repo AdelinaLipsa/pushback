@@ -335,7 +335,8 @@ export type Database = {
         Returns: Json
       }
       decrement_defense_responses: { Args: { uid: string }; Returns: undefined }
-      reset_period_usage: { Args: { uid: string }; Returns: undefined }
+      decrement_contracts: { Args: { uid: string }; Returns: undefined }
+      reset_period_usage: { Args: { uid: string; new_period_end?: string | null }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

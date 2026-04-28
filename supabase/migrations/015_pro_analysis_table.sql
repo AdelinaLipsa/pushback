@@ -32,7 +32,8 @@ SELECT
   COALESCE(c.analysis->'positive_notes', '[]'::jsonb),
   COALESCE(c.analysis->'negotiation_priority', '[]'::jsonb)
 FROM public.contracts c
-WHERE c.status = 'analyzed' AND c.analysis IS NOT NULL;
+WHERE c.status = 'analyzed' AND c.analysis IS NOT NULL
+ON CONFLICT (contract_id) DO NOTHING;
 
 -- Strip pro fields from contracts.analysis — base fields only remain
 UPDATE public.contracts
