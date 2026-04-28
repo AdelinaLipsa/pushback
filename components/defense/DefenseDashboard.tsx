@@ -6,7 +6,7 @@ import Link from 'next/link'
 import {
   Layers, Clock, AlertTriangle, Ban, RefreshCw, XCircle, CheckCircle2, ShieldAlert,
   EyeOff, Hourglass, Shuffle, TrendingDown, TrendingUp, Zap, Copyright, CreditCard,
-  Eye, PackageOpen, Star, Receipt, Timer,
+  Eye, PackageOpen, Star, Receipt, Timer, ScanSearch, ClipboardList,
   type LucideIcon,
 } from 'lucide-react'
 import { DefenseTool, DefenseToolMeta, DocumentType, RiskLevel } from '@/types'
@@ -23,7 +23,7 @@ import UpgradePrompt from '@/components/shared/UpgradePrompt'
 const ICON_MAP: Record<string, LucideIcon> = {
   Layers, Clock, AlertTriangle, Ban, RefreshCw, XCircle, CheckCircle2, ShieldAlert,
   EyeOff, Hourglass, Shuffle, TrendingDown, TrendingUp, Zap, Copyright, CreditCard,
-  Eye, PackageOpen, Star, Receipt, Timer,
+  Eye, PackageOpen, Star, Receipt, Timer, ScanSearch, ClipboardList,
 }
 
 const TOOL_MAP = Object.fromEntries(DEFENSE_TOOLS.map(t => [t.type, t])) as Record<DefenseTool, DefenseToolMeta>

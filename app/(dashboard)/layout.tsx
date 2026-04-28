@@ -11,7 +11,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const [{ data: profile }, { data: recentProjects }] = await Promise.all([
     supabase.from('user_profiles').select('*').eq('id', user.id).single(),
-    supabase.from('projects').select('id, title, client_name').eq('user_id', user.id).order('updated_at', { ascending: false }).limit(3),
+    supabase.from('projects').select('id, title, client_name').eq('user_id', user.id).order('created_at', { ascending: false }).limit(3),
   ])
 
   const isAdmin = !!process.env.ADMIN_EMAIL && user.email === process.env.ADMIN_EMAIL

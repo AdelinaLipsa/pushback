@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   Layers, Clock, AlertTriangle, Ban, RefreshCw, XCircle, CheckCircle2, ShieldAlert,
   EyeOff, Hourglass, Shuffle, TrendingDown, TrendingUp, Zap, Copyright, CreditCard,
-  Eye, PackageOpen, Star, Receipt, X, ChevronRight,
+  Eye, PackageOpen, Star, Receipt, Timer, ScanSearch, ClipboardList, X, ChevronRight,
   type LucideIcon,
 } from 'lucide-react'
 import { DEFENSE_TOOLS, URGENCY_COLORS, TOOL_CATEGORIES } from '@/lib/defenseTools'
@@ -14,7 +14,7 @@ import { DefenseTool, DefenseToolMeta } from '@/types'
 const ICON_MAP: Record<string, LucideIcon> = {
   Layers, Clock, AlertTriangle, Ban, RefreshCw, XCircle, CheckCircle2, ShieldAlert,
   EyeOff, Hourglass, Shuffle, TrendingDown, TrendingUp, Zap, Copyright, CreditCard,
-  Eye, PackageOpen, Star, Receipt,
+  Eye, PackageOpen, Star, Receipt, Timer, ScanSearch, ClipboardList,
 }
 
 const TOOL_MAP = Object.fromEntries(DEFENSE_TOOLS.map(t => [t.type, t])) as Record<DefenseTool, DefenseToolMeta>
