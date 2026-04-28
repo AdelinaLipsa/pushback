@@ -20,7 +20,7 @@ const FAQS = [
   },
   {
     q: 'How is this different from asking ChatGPT?',
-    a: 'Pushback has 21 situation-specific tools built for client disputes — not a general-purpose chat. It knows your contract, tracks your project history, and drafts responses that reference your actual terms. The output is copy-ready, not a draft you need to rewrite.',
+    a: 'Pushback has 23 situation-specific tools built for client disputes and pre-engagement screening — not a general-purpose chat. It knows your contract, tracks your project history, and drafts responses that reference your actual terms. The output is copy-ready, not a draft you need to rewrite.',
   },
   {
     q: 'Where do my client messages and contracts go?',
@@ -44,7 +44,7 @@ const FAQS = [
   },
   {
     q: 'What documents can Pushback generate?',
-    a: 'Three: an SOW amendment (when scope changes mid-project), a dispute package (when a client escalates or threatens a chargeback), and a kill fee invoice (when a client cancels after work has started). Each pulls your project details and contract terms automatically. Document generation is a Pro feature.',
+    a: 'Three formal documents — an SOW amendment (scope changes mid-project), a dispute package (client escalates or threatens a chargeback), and a kill fee invoice (client cancels after work has started). Contract analysis also generates a counter-offer email with the exact changes to request. All pull your project details and contract terms automatically. Document generation is a Pro feature.',
   },
 ]
 
@@ -287,9 +287,9 @@ export default async function HowItWorksPage() {
         `}</style>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.25rem' }}>
           <div className="hiw-stat-card">
-            <p style={{ color: 'var(--brand-lime)', fontFamily: 'var(--font-mono)', fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '0.3rem' }}>21</p>
-            <p style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.4rem' }}>Defense tools</p>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: 1.6 }}>Situation-specific, not generic. Payment, scope, disputes, client behaviour — each tool is built for exactly one problem.</p>
+            <p style={{ color: 'var(--brand-lime)', fontFamily: 'var(--font-mono)', fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '0.3rem' }}>23</p>
+            <p style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.4rem' }}>Situations covered</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: 1.6 }}>Payment, scope, disputes, client behaviour, and pre-engagement screening — each tool is built for exactly one problem.</p>
           </div>
           <div className="hiw-stat-card">
             <p style={{ color: 'var(--brand-lime)', fontFamily: 'var(--font-mono)', fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '0.3rem' }}>Auto</p>
@@ -421,7 +421,7 @@ export default async function HowItWorksPage() {
           23 tools. Every client nightmare covered.
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '2rem', maxWidth: '48ch', margin: '0 auto 2rem' }}>
-          Payment chasing, scope disputes, chargeback threats, ghost clients — each situation has its own tool, built for that exact dynamic. Browse the full list to see what fits your situation.
+          Payment chasing, scope disputes, chargeback threats, ghost clients, red flag detection before you even take the project — each situation has its own tool, built for that exact dynamic. Browse the full list to see what fits your situation.
         </p>
         <Link href="/arsenal" className="hiw-btn-ghost">
           Browse the arsenal →

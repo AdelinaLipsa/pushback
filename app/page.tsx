@@ -25,6 +25,8 @@ const TICKER_ITEMS = [
   'They want source files you didn\'t include',
   '"This took you less time than expected"',
   'Rush delivery, no rush fee',
+  'New prospect — every answer raises a flag',
+  '"Can you show us some concepts first?"',
 ]
 
 const HOW_IT_WORKS_STEPS = [
@@ -385,10 +387,10 @@ export default function LandingPage() {
           <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>The arsenal</p>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
-              21 client situations.<br />A prepared response for each one.
+              23 situations.<br />A prepared response for each one.
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, maxWidth: '30ch' }}>
-              Scope creep. Payment stonewalling. Chargeback threats. Rate pressure. IP disputes. Ghost clients. This is not a worst-case scenario list — this is a Tuesday in freelance work. You now have a prepared response to every one of them.
+              Scope creep. Payment stonewalling. Chargeback threats. Rate pressure. IP disputes. Ghost clients. Red flag prospects. This is not a worst-case scenario list — this is a Tuesday in freelance work. You now have a prepared response to every one of them.
             </p>
           </div>
         </div>
@@ -414,6 +416,8 @@ export default function LandingPage() {
                     'Missing protections you should demand',
                     'Priority list of what to negotiate',
                     'Exact pushback language, ready to copy',
+                    'NDA & non-compete analysis supported',
+                    'Counter-offer email generated in one click',
                   ].map(item => (
                     <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
                       <Check size={13} style={{ color: 'var(--brand-lime)', flexShrink: 0, marginTop: '0.2rem' }} />
