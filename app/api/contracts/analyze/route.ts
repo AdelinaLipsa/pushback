@@ -103,7 +103,7 @@ export async function POST(request: Request) {
 
   const { data: contract } = await supabase
     .from('contracts')
-    .insert({ user_id: user.id, title, original_filename: file?.name ?? null, status: 'pending', contract_type } as any)
+    .insert({ user_id: user.id, title, original_filename: file?.name ?? null, status: 'pending', contract_type, project_id } as any)
     .select()
     .single()
 

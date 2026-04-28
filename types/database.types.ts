@@ -19,9 +19,11 @@ export type Database = {
           analysis: Json | null
           anthropic_file_id: string | null
           contract_text: string | null
+          contract_type: string | null
           created_at: string | null
           id: string
           original_filename: string | null
+          project_id: string | null
           risk_level: string | null
           risk_score: number | null
           status: string | null
@@ -32,9 +34,11 @@ export type Database = {
           analysis?: Json | null
           anthropic_file_id?: string | null
           contract_text?: string | null
+          contract_type?: string | null
           created_at?: string | null
           id?: string
           original_filename?: string | null
+          project_id?: string | null
           risk_level?: string | null
           risk_score?: number | null
           status?: string | null
@@ -45,16 +49,26 @@ export type Database = {
           analysis?: Json | null
           anthropic_file_id?: string | null
           contract_text?: string | null
+          contract_type?: string | null
           created_at?: string | null
           id?: string
           original_filename?: string | null
+          project_id?: string | null
           risk_level?: string | null
           risk_score?: number | null
           status?: string | null
           title?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "contracts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       defense_responses: {
         Row: {
