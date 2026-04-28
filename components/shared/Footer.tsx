@@ -67,7 +67,7 @@ export default function Footer() {
                 marginBottom: '1.75rem',
               }}
             >
-              Contract analysis, 21 situation tools, payment tracking, and document generation. Everything you need to protect your work when a client pushes back.
+              Contract analysis, 23 situation tools, payment tracking, and document generation. Everything you need to protect your work when a client pushes back.
             </p>
 
             <Link

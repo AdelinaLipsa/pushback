@@ -400,36 +400,35 @@ export default function LandingPage() {
       {/* ── CONTRACT ANALYSIS ── */}
       <section style={{ borderTop: '1px solid #1c1c1e' }} className="py-28">
         <div className="max-w-5xl mx-auto px-6">
-          <div data-animate style={{ marginBottom: '3.5rem' }}>
-            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Contract analysis</p>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
-              <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div data-animate>
+              <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Contract analysis</p>
+              <h2 style={{ fontWeight: 800, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: '1.25rem' }}>
                 Know what you&apos;re signing<br />before you sign it.
               </h2>
-              <div style={{ maxWidth: '32ch' }}>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.25rem' }}>
-                  Every analysis is specific to your contract — not generic legal advice, not a template warning. Upload once. Pushback reads every clause, flags what&apos;s risky, surfaces missing protections, and gives you the exact language to push back with before you sign.
-                </p>
-                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-                  {[
-                    'Risk score with clause-by-clause breakdown',
-                    'Missing protections you should demand',
-                    'Priority list of what to negotiate',
-                    'Exact pushback language, ready to copy',
-                    'NDA & non-compete analysis supported',
-                    'Counter-offer email generated in one click',
-                  ].map(item => (
-                    <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                      <Check size={13} style={{ color: 'var(--brand-lime)', flexShrink: 0, marginTop: '0.2rem' }} />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.5rem' }}>
+                Every analysis is specific to your contract — not generic legal advice, not a template warning. Upload once. Pushback reads every clause, flags what&apos;s risky, surfaces missing protections, and gives you the exact language to push back with before you sign.
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {[
+                  { color: '#84cc16', label: 'Risk score', desc: 'clause-by-clause breakdown' },
+                  { color: '#ef4444', label: 'Missing protections', desc: 'surfaces what you should demand' },
+                  { color: '#f59e0b', label: 'Counter-offer email', desc: 'generated in one click from the analysis' },
+                  { color: '#a78bfa', label: 'NDA & non-compete', desc: 'specialized analysis supported' },
+                ].map(({ color, label, desc }) => (
+                  <li key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '2px', backgroundColor: color, flexShrink: 0, marginTop: '0.35rem' }} />
+                    <div>
+                      <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)' }}>{label}</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}> — {desc}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-          <div data-animate data-animate-delay="150">
-            <ContractAnimation />
+            <div data-animate data-animate-delay="150" data-animate-from="right">
+              <ContractAnimation />
+            </div>
           </div>
         </div>
       </section>
