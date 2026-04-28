@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { PROFESSIONS } from '@/lib/profession'
+import { checkRateLimit, writesRateLimit } from '@/lib/rate-limit'
 import { z } from 'zod'
 
 const VALID_PROFESSIONS = PROFESSIONS.map(p => p.value) as [string, ...string[]]
@@ -12,6 +13,9 @@ export async function PATCH(request: Request) {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const rateLimitResponse = await checkRateLimit(writesRateLimit, user.id)
+  if (rateLimitResponse) return rateLimitResponse
 
   const body = await request.json()
   const parsed = schema.safeParse(body)

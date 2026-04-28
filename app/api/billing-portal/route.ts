@@ -1,10 +1,14 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { createBillingPortalSession } from '@/lib/stripe'
+import { checkRateLimit, billingRateLimit } from '@/lib/rate-limit'
 
 export async function POST() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const rateLimitResponse = await checkRateLimit(billingRateLimit, user.id)
+  if (rateLimitResponse) return rateLimitResponse
 
   const { data: profile } = await supabase
     .from('user_profiles')

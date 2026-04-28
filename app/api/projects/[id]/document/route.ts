@@ -27,7 +27,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // Pro gate — direct profile fetch, no RPC, no usage counter (D-09, D-02)
+  // Pro gate — document generation is pro-only
   const { data: profile } = await supabase
     .from('user_profiles')
     .select('plan')
@@ -40,12 +40,23 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const rateLimitResponse = await checkRateLimit(defendRateLimit, user.id)
   if (rateLimitResponse) return rateLimitResponse
 
+  // Counts against the shared defense_responses quota
+  const { data: gateResult, error: gateError } = await supabase.rpc(
+    'check_and_increment_defense_responses',
+    { uid: user.id }
+  )
+  const gate = gateResult as { allowed: boolean; reason?: string } | null
+  if (gateError || !gate?.allowed) {
+    return Response.json({ error: gate?.reason ?? 'UPGRADE_REQUIRED' }, { status: 403 })
+  }
+
   try {
     // Validate request body
     const body = await request.json()
     const parsed = documentSchema.safeParse(body)
     if (!parsed.success) {
       const issue = parsed.error.issues[0]
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
       return Response.json(
         { error: `${String(issue.path[0])}: ${issue.message}` },
         { status: 400 }
@@ -62,6 +73,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       .single()
 
     if (!project) {
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
       return Response.json({ error: 'Not found' }, { status: 404 })
     }
 
@@ -116,7 +128,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Concurrency control — same as defend route
     const slotResponse = await acquireAnthropicSlot()
-    if (slotResponse) return slotResponse
+    if (slotResponse) {
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
+      return slotResponse
+    }
 
     let document: string
     try {
@@ -132,6 +147,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     if (!document) {
+      await supabase.rpc('decrement_defense_responses', { uid: user.id })
       return Response.json({ error: 'AI generation failed — please try again' }, { status: 500 })
     }
 
@@ -139,6 +155,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return Response.json({ document })
   } catch (err) {
     console.error('Document route error:', err)
+    await supabase.rpc('decrement_defense_responses', { uid: user.id })
     return Response.json({ error: 'AI generation failed — please try again' }, { status: 500 })
   }
 }

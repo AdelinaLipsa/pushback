@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { checkRateLimit, writesRateLimit } from '@/lib/rate-limit'
 import type { Database } from '@/types/database.types'
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -6,6 +7,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const rateLimitResponse = await checkRateLimit(writesRateLimit, user.id)
+  if (rateLimitResponse) return rateLimitResponse
 
   const body = await request.json()
   const allowed = ['was_copied', 'was_sent']

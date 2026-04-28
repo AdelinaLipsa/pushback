@@ -39,6 +39,11 @@ export const toolsRateLimit = redis
   ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, '1 m'), prefix: 'pb:tools' })
   : null
 
+// 5 billing operations per minute — checkout, subscription, billing portal
+export const billingRateLimit = redis
+  ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(5, '1 m'), prefix: 'pb:billing' })
+  : null
+
 export async function checkRateLimit(
   limiter: Ratelimit | null,
   identifier: string,

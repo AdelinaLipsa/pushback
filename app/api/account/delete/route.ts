@@ -1,10 +1,14 @@
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
+import { checkRateLimit, writesRateLimit } from '@/lib/rate-limit'
 
 export async function DELETE() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const rateLimitResponse = await checkRateLimit(writesRateLimit, user.id)
+  if (rateLimitResponse) return rateLimitResponse
 
   // Fetch profile to get Stripe subscription id
   const { data: profile } = await supabase
