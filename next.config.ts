@@ -27,7 +27,6 @@ const nextConfig: NextConfig = {
       // Free trial alias
       { source: '/free-trial', destination: '/signup', permanent: true },
       // Landing page anchor sections
-      { source: '/arsenal', destination: '/#arsenal', permanent: false },
       { source: '/pricing', destination: '/#pricing', permanent: false },
       { source: '/demo', destination: '/#live-demo', permanent: false },
       // Help / product education
