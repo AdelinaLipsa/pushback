@@ -34,6 +34,61 @@ const HOW_IT_WORKS_STEPS = [
   { num: '03', label: 'Copy the reply. Send it.' },
 ]
 
+function StickyNav() {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const sentinel = document.getElementById('hero-end')
+    if (!sentinel) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(!entry.isIntersecting),
+      { threshold: 0 }
+    )
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
+        backgroundColor: 'rgba(10,10,10,0.92)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        padding: '0.75rem 1.5rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(-100%)',
+        transition: 'opacity 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+        pointerEvents: visible ? 'auto' : 'none',
+      }}
+      aria-hidden={!visible}
+    >
+      <Link href="/" style={{ fontWeight: 800, fontSize: '1.05rem', letterSpacing: '-0.03em', color: 'var(--text-primary)', textDecoration: 'none' }}>
+        pushback<span style={{ color: 'var(--brand-lime)' }}>.</span>
+      </Link>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+        <Link href="/how-it-works" style={{ color: 'var(--text-secondary)', fontSize: '0.83rem', fontWeight: 500, textDecoration: 'none' }} className="hover:text-white transition-colors hidden sm:block">
+          How it works
+        </Link>
+        <Link href="/#pricing" style={{ color: 'var(--text-secondary)', fontSize: '0.83rem', fontWeight: 500, textDecoration: 'none' }} className="hover:text-white transition-colors hidden sm:block">
+          Pricing
+        </Link>
+        <Link href="/signup" style={{ backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', padding: '0.45rem 1.1rem', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.8rem', textDecoration: 'none', letterSpacing: '-0.01em' }} className="hover:opacity-90 transition-opacity">
+          Try free →
+        </Link>
+      </div>
+    </div>
+  )
+}
+
 function ToolCarousel() {
   const [active, setActive] = useState(0)
   const [autopaused, setAutopaused] = useState(false)
@@ -332,7 +387,9 @@ export default function LandingPage() {
 
   return (
     <div style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-primary)', minHeight: '100vh', overflow: 'clip' }}>
+      <StickyNav />
       <PushbackHero />
+      <div id="hero-end" style={{ height: 1 }} />
 
       {/* Ticker */}
       <div style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)', overflow: 'clip', padding: '0.875rem 0' }}>

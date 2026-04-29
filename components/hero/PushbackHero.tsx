@@ -348,7 +348,7 @@ export default function PushbackHero() {
       gl.viewport(0, 0, canvas.width, canvas.height)
     }
     resizeCanvas()
-    setTimeout(() => setIsCanvasReady(true), 900)
+    setTimeout(() => setIsCanvasReady(true), 300)
     window.addEventListener("resize", resizeCanvas)
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -501,6 +501,15 @@ export default function PushbackHero() {
               onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" })}
             >
               Run your first situation free →
+            </a>
+            <a
+              href="/how-it-works"
+              className="inline-block mt-3 px-7 py-3 text-sm font-semibold rounded-lg transition-all duration-200"
+              style={{ border: '1px solid rgba(255,255,255,0.22)', color: 'rgba(255,255,255,0.82)', letterSpacing: '-0.01em', textShadow: '0 0 12px rgba(0,0,0,0.9)' }}
+              onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.04, duration: 0.25, ease: "power2.out" })}
+              onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" })}
+            >
+              See how it works →
             </a>
             <p className="mt-3 text-xs" style={{ color: "#d4d4d8", textShadow: "0 0 12px rgba(0,0,0,1), 0 1px 4px rgba(0,0,0,0.9)" }}>
               Free to start. No card required.
