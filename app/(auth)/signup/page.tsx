@@ -93,7 +93,7 @@ export default function SignupPage() {
     const callbackUrl = next
       ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
       : `${window.location.origin}/auth/callback`
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { emailRedirectTo: callbackUrl },
@@ -101,6 +101,8 @@ export default function SignupPage() {
     if (error) {
       setError(error.message)
       setLoading(false)
+    } else if (data.session) {
+      window.location.href = next || '/dashboard'
     } else {
       setSent(true)
     }
