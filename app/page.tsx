@@ -407,58 +407,6 @@ export default function LandingPage() {
       {/* Live demo */}
       <LiveDemo />
 
-      {/* ── SOCIAL PROOF ── TODO: replace placeholder quotes with real user testimonials */}
-      <section style={{ borderTop: '1px solid #1c1c1e', backgroundColor: 'var(--bg-surface)' }} className="py-20">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-10" data-animate>
-            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.5rem' }}>What freelancers say</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4" data-animate data-animate-delay="100">
-            {[
-              {
-                quote: "I used to spend 20 minutes writing a careful reply every time a client tried to dodge payment. Now it takes 30 seconds and the tone is better than anything I'd write under pressure.",
-                name: 'placeholder name',
-                role: 'Freelance web designer',
-              },
-              {
-                quote: "The scope creep tool alone has saved me thousands. Client asks for something outside scope, I generate the response, and 9 times out of 10 they either back down or agree to pay for it.",
-                name: 'placeholder name',
-                role: 'Brand identity designer',
-              },
-              {
-                quote: "I uploaded my standard contract and it flagged three clauses that left me exposed in a dispute. Made me fix things I'd been using for two years without questioning.",
-                name: 'placeholder name',
-                role: 'Motion designer',
-              },
-            ].map((t, i) => (
-              <div
-                key={i}
-                data-animate
-                data-animate-delay={String(i * 80)}
-                style={{
-                  backgroundColor: 'var(--bg-elevated)',
-                  border: '1px solid var(--bg-border)',
-                  borderLeft: '3px solid rgba(132,204,22,0.35)',
-                  borderRadius: '0.875rem',
-                  padding: '1.75rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '1.25rem',
-                }}
-              >
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.75, fontStyle: 'italic', flex: 1 }}>
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                <div>
-                  <p style={{ color: 'var(--text-primary)', fontSize: '0.82rem', fontWeight: 700 }}>{t.name}</p>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.15rem' }}>{t.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* How it works */}
       <section className="py-24 border-t border-[#1c1c1e]">
         <div className="max-w-5xl mx-auto px-6">
