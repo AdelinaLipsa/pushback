@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { ShieldCheck } from 'lucide-react'
 
 
 const PRODUCT_LINKS = [
@@ -167,12 +166,6 @@ export default function Footer() {
             © {new Date().getFullYear()} Pushback. All rights reserved.
           </p>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ShieldCheck size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
-              Contract text is never stored — read, analysed, deleted.
-            </p>
-          </div>
         </div>
 
       </div>
