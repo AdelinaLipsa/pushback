@@ -653,6 +653,23 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 ))}
               </div>
             )}
+            <Link
+              href="/arsenal"
+              className="fade-up hover:border-white/20 group"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '0.875rem 1rem', marginTop: '0.75rem',
+                backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
+                borderRadius: '0.625rem', textDecoration: 'none',
+                transition: 'border-color 150ms ease',
+              }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>Browse Arsenal</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{DEFENSE_TOOLS.length} tools — every situation mapped with when to use it</span>
+              </div>
+              <span style={{ color: 'var(--brand-lime)', fontSize: '0.85rem', fontWeight: 600, marginLeft: '1rem', flexShrink: 0 }}>Open →</span>
+            </Link>
           </div>
 
           {/* Right sidebar: QuotaBar + Pipeline */}
@@ -713,32 +730,6 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
       )}
 
-      {/* Arsenal CTA */}
-      <div className="fade-up" style={{ animationDelay: '0.2s' }}>
-        <Link
-          href="/arsenal"
-          style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '0.875rem 1rem',
-            backgroundColor: 'var(--bg-surface)', border: '1px solid var(--bg-border)',
-            borderRadius: '0.625rem', textDecoration: 'none',
-            transition: 'border-color 150ms ease',
-          }}
-          className="hover:border-white/20 group"
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-              Browse Arsenal
-            </span>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              {DEFENSE_TOOLS.length} tools — every situation mapped with when to use it
-            </span>
-          </div>
-          <span style={{ color: 'var(--brand-lime)', fontSize: '0.85rem', fontWeight: 600, marginLeft: '1rem', flexShrink: 0 }}>
-            Open →
-          </span>
-        </Link>
-      </div>
     </div>
   )
 }

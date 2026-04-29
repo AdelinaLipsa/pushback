@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { ExternalLink, CreditCard, Shield, Key, Check } from 'lucide-react'
 import Button from '@/components/shared/Button'
 import { startCheckout } from '@/lib/checkout'
@@ -79,6 +80,7 @@ export default function SettingsClient({ profile, nextBillingDate, isEmailUser }
     setProfessionSaving(false)
     setProfessionSaved(true)
     setTimeout(() => setProfessionSaved(false), 2200)
+    toast.success('Saved')
   }
 
   async function handleBillingPortal() {
@@ -94,7 +96,9 @@ export default function SettingsClient({ profile, nextBillingDate, isEmailUser }
     const res = await fetch('/api/account/delete', { method: 'DELETE' })
     if (!res.ok) {
       const body = await res.json().catch(() => ({}))
-      setDeleteError(body.error ?? 'Something went wrong. Try again.')
+      const msg = body.error ?? 'Something went wrong. Try again.'
+      setDeleteError(msg)
+      toast.error(msg)
       setDeleteLoading(false)
       return
     }
@@ -112,6 +116,7 @@ export default function SettingsClient({ profile, nextBillingDate, isEmailUser }
     })
     setResetSent(true)
     setResetLoading(false)
+    toast.success('Reset link sent — check your inbox')
   }
 
   return (

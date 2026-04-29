@@ -1,10 +1,22 @@
 'use client'
 
 import { useTransition } from 'react'
+import { toast } from 'sonner'
 import { setMaintenanceMode } from './actions'
 
 export function MaintenanceToggle({ isOn }: { isOn: boolean }) {
   const [pending, startTransition] = useTransition()
+
+  function handleToggle() {
+    startTransition(async () => {
+      try {
+        await setMaintenanceMode(!isOn)
+        toast.success(isOn ? 'Site is live' : 'Maintenance mode on')
+      } catch {
+        toast.error('Failed to update maintenance mode')
+      }
+    })
+  }
 
   return (
     <div className="flex items-center justify-between px-5 py-4">
@@ -15,7 +27,7 @@ export function MaintenanceToggle({ isOn }: { isOn: boolean }) {
         </p>
       </div>
       <button
-        onClick={() => startTransition(() => setMaintenanceMode(!isOn))}
+        onClick={handleToggle}
         disabled={pending}
         aria-label={isOn ? 'Turn off maintenance mode' : 'Turn on maintenance mode'}
         className={[

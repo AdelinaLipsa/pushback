@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { inputStyle, labelStyle } from '@/lib/ui'
 import { createProject } from '@/lib/api'
 
@@ -55,7 +56,8 @@ export default function NewProjectForm() {
       project_value: form.project_value ? Number(form.project_value) : null,
     })
     setLoading(false)
-    if (!result) return
+    if (!result) { toast.error('Failed to create project'); return }
+    toast.success('Project created')
     router.push(`/projects/${result.project.id}`)
   }
 

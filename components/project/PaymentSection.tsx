@@ -73,7 +73,7 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
     if (!result) return
     setEditing(false)
     router.refresh()
-    toast('Payment details saved')
+    toast.success('Payment details saved')
   }
 
   async function handleMarkReceived() {
@@ -82,7 +82,7 @@ export default function PaymentSection({ project, onHandleLatePayment }: Payment
     setMarkingReceived(false)
     if (!result) return
     router.refresh()
-    toast('Payment marked as received')
+    toast.success('Payment marked as received')
   }
 
   function handleLatePayment() {

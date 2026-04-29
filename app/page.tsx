@@ -10,6 +10,7 @@ import Footer from '@/components/shared/Footer'
 import DemoAnimation from '@/components/hero/DemoAnimation'
 import ReplyThreadAnimation from '@/components/hero/ReplyThreadAnimation'
 import ContractReveal from '@/components/hero/ContractReveal'
+import LiveDemo from '@/components/hero/LiveDemo'
 
 const TICKER_ITEMS = [
   'Client wants free revisions',
@@ -438,7 +439,7 @@ export default function LandingPage() {
       </section>
 
       {/* Tool Carousel — 3D coverflow */}
-      <section style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)' }} className="py-28">
+      <section id="arsenal" style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)' }} className="py-28">
         <div className="max-w-5xl mx-auto px-6" data-animate style={{ marginBottom: '3.5rem' }}>
           <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>The arsenal</p>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
@@ -600,6 +601,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Live demo */}
+      <LiveDemo />
 
       {/* Pricing */}
       <section id="pricing" style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)' }} className="py-28">

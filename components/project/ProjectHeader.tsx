@@ -65,14 +65,15 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
     if (!result) return
     setEditing(false)
     router.refresh()
-    toast('Project updated')
+    toast.success('Project updated')
   }
 
   async function handleDelete() {
     setDeleting(true)
     const result = await deleteProject(project.id)
     setDeleting(false)
-    if (!result) return
+    if (!result) { toast.error('Failed to delete project'); return }
+    toast.success('Project deleted')
     router.push('/projects')
   }
 

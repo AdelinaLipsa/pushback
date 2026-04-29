@@ -1,6 +1,7 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 import { setPlan, resetPeriodUsage, deleteUser } from './actions'
 import { PLANS } from '@/lib/plans'
 
@@ -50,19 +51,41 @@ function ActionButton({
 
 export function UserTable({ profiles }: { profiles: Profile[] }) {
   const [pending, startTransition] = useTransition()
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
   function handleSetPlan(userId: string, currentPlan: string) {
     const next = currentPlan === 'pro' ? 'free' : 'pro'
-    startTransition(() => setPlan(userId, next))
+    startTransition(async () => {
+      try {
+        await setPlan(userId, next)
+        toast.success(`User moved to ${next}`)
+      } catch {
+        toast.error('Failed to update plan')
+      }
+    })
   }
 
   function handleResetUsage(userId: string) {
-    startTransition(() => resetPeriodUsage(userId))
+    startTransition(async () => {
+      try {
+        await resetPeriodUsage(userId)
+        toast.success('Usage reset')
+      } catch {
+        toast.error('Failed to reset usage')
+      }
+    })
   }
 
-  function handleDelete(userId: string, email: string) {
-    if (!confirm(`Delete ${email}? This removes all their data permanently.`)) return
-    startTransition(() => deleteUser(userId))
+  function handleDelete(userId: string) {
+    setConfirmDeleteId(null)
+    startTransition(async () => {
+      try {
+        await deleteUser(userId)
+        toast.success('User deleted')
+      } catch {
+        toast.error('Failed to delete user')
+      }
+    })
   }
 
   return (
@@ -110,17 +133,29 @@ export function UserTable({ profiles }: { profiles: Profile[] }) {
                 </td>
                 <td className="px-4 py-3 text-[0.7rem] text-text-muted whitespace-nowrap">{joined}</td>
                 <td className="px-4 py-3">
-                  <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                    <ActionButton pending={pending} onClick={() => handleSetPlan(p.id, p.plan)}>
-                      {p.plan === 'pro' ? 'Downgrade' : 'Upgrade'}
-                    </ActionButton>
-                    <ActionButton pending={pending} onClick={() => handleResetUsage(p.id)}>
-                      Reset usage
-                    </ActionButton>
-                    <ActionButton pending={pending} danger onClick={() => handleDelete(p.id, p.email)}>
-                      Delete
-                    </ActionButton>
-                  </div>
+                  {confirmDeleteId === p.id ? (
+                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>Delete permanently?</span>
+                      <ActionButton pending={pending} danger onClick={() => handleDelete(p.id)}>
+                        Confirm
+                      </ActionButton>
+                      <ActionButton pending={pending} onClick={() => setConfirmDeleteId(null)}>
+                        Cancel
+                      </ActionButton>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+                      <ActionButton pending={pending} onClick={() => handleSetPlan(p.id, p.plan)}>
+                        {p.plan === 'pro' ? 'Downgrade' : 'Upgrade'}
+                      </ActionButton>
+                      <ActionButton pending={pending} onClick={() => handleResetUsage(p.id)}>
+                        Reset usage
+                      </ActionButton>
+                      <ActionButton pending={pending} danger onClick={() => setConfirmDeleteId(p.id)}>
+                        Delete
+                      </ActionButton>
+                    </div>
+                  )}
                 </td>
               </tr>
             )

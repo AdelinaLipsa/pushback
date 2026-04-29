@@ -44,6 +44,11 @@ export const billingRateLimit = redis
   ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(5, '1 m'), prefix: 'pb:billing' })
   : null
 
+// 1 demo request per IP per day — landing page live demo, cookie gate is primary
+export const demoRateLimit = redis
+  ? new Ratelimit({ redis, limiter: Ratelimit.fixedWindow(1, '24 h'), prefix: 'pb:demo' })
+  : null
+
 export async function checkRateLimit(
   limiter: Ratelimit | null,
   identifier: string,
