@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const FAQS = [
   {
     q: 'How many responses can I generate on the free plan?',
-    a: '5 AI actions and 1 contract risk summary on the free plan — enough to see the tool in action. Pro accounts get 10 AI actions and 50 full contract analyses per month.',
+    a: '3 AI responses on the free plan — enough to see the tool in action. Pro accounts get 10 AI responses and 50 full contract analyses per month.',
   },
   {
     q: 'How is this different from asking ChatGPT?',
@@ -447,7 +447,7 @@ export default async function HowItWorksPage() {
         <Link href="/signup" className="hiw-btn-primary">
           Try it free
         </Link>
-        <p style={{ color: '#3f3f46', fontSize: '0.75rem', marginTop: '0.875rem' }}>No card required. 5 free AI actions included.</p>
+        <p style={{ color: '#3f3f46', fontSize: '0.75rem', marginTop: '0.875rem' }}>No card required. 3 free AI responses included.</p>
       </div>
 
       <Footer />

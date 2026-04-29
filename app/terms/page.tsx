@@ -38,7 +38,7 @@ export default function TermsPage() {
             The Service
           </h2>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, fontSize: '1rem', marginBottom: '1rem' }}>
-            Pushback is an AI-powered tool that helps freelancers generate professional written responses to difficult client situations and analyse contract PDFs for potential risks. The free tier includes 5 AI-powered actions and 1 contract analysis. The Pro plan provides unlimited responses and contract analyses for a monthly subscription fee.
+            Pushback is an AI-powered tool that helps freelancers generate professional written responses to difficult client situations and analyse contract PDFs for potential risks. The free tier includes 3 AI-powered responses. The Pro plan provides 10 AI responses and 50 contract analyses per month for a monthly subscription fee.
           </p>
 
           <h2 style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '1.25rem', lineHeight: 1.2, marginTop: '2rem', marginBottom: '0.75rem' }}>

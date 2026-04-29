@@ -38,7 +38,7 @@ function welcomeHtml(): string {
         <tr><td style="padding:32px 40px;">
           <h1 style="color:#fafafa;font-size:1.25rem;margin:0 0 16px;">Your free account is ready.</h1>
           <p style="color:#a1a1aa;line-height:1.6;margin:0 0 16px;">
-            You have <strong style="color:#fafafa;">1 free AI-powered response</strong> and <strong style="color:#fafafa;">1 contract analysis</strong>. Use them on any project &mdash; no credit card needed.
+            You have <strong style="color:#fafafa;">3 free AI-powered responses</strong>. Use them on any situation &mdash; no credit card needed.
           </p>
           <p style="color:#a1a1aa;line-height:1.6;margin:0 0 24px;">
             When you&rsquo;re ready for unlimited access, upgrade to Pro.
