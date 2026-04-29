@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { Eye, EyeOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 type EmailStatus = 'idle' | 'checking' | 'taken' | 'clear'
@@ -50,6 +51,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [emailStatus, setEmailStatus] = useState<EmailStatus>('idle')
+  const [showPassword, setShowPassword] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const checkEmail = useCallback(async (value: string) => {
@@ -199,16 +201,45 @@ export default function SignupPage() {
 
             <div>
               <label className="block text-text-secondary text-xs font-medium mb-1.5">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => { setPassword(e.target.value); setError('') }}
-                required
-                minLength={8}
-                autoComplete="new-password"
-                placeholder="At least 8 characters"
-                className="w-full box-border bg-bg-base border border-bg-border rounded-lg px-4 py-3 text-text-primary text-sm outline-none transition-colors duration-150 focus:border-brand-lime font-[inherit]"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => { setPassword(e.target.value); setError('') }}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  placeholder="At least 8 characters"
+                  className="w-full box-border bg-bg-base border border-bg-border rounded-lg px-4 py-3 pr-11 text-text-primary text-sm outline-none transition-colors duration-150 focus:border-brand-lime font-[inherit]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(v => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors duration-150 bg-transparent border-0 cursor-pointer p-0.5"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  <span style={{ display: 'grid' }}>
+                    <Eye
+                      size={16}
+                      style={{
+                        gridArea: '1/1',
+                        opacity: showPassword ? 0 : 1,
+                        transform: showPassword ? 'scale(0.7) rotate(10deg)' : 'scale(1) rotate(0deg)',
+                        transition: 'opacity 0.2s ease, transform 0.2s ease',
+                      }}
+                    />
+                    <EyeOff
+                      size={16}
+                      style={{
+                        gridArea: '1/1',
+                        opacity: showPassword ? 1 : 0,
+                        transform: showPassword ? 'scale(1) rotate(0deg)' : 'scale(0.7) rotate(-10deg)',
+                        transition: 'opacity 0.2s ease, transform 0.2s ease',
+                      }}
+                    />
+                  </span>
+                </button>
+              </div>
               <PasswordStrength password={password} />
             </div>
 
