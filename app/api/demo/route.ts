@@ -5,16 +5,16 @@ import { checkRateLimit, demoRateLimit, acquireAnthropicSlot, releaseAnthropicSl
 import { z } from 'zod'
 
 const DEMO_TOOL_LABELS: Record<string, string> = {
-  scope_change: 'SCOPE CHANGE REQUEST',
-  payment_final: 'FINAL PAYMENT NOTICE (15+ days late)',
-  revision_limit: 'REVISION LIMIT REACHED',
+  chargeback_threat: 'CHARGEBACK THREAT',
+  review_threat: 'REVIEW THREAT',
+  ip_dispute: 'IP / SOURCE FILE DISPUTE',
 }
 
 const DEMO_COOKIE = 'pb_demo'
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30 // 30 days
 
 const demoSchema = z.object({
-  tool_type: z.enum(['scope_change', 'payment_final', 'revision_limit']),
+  tool_type: z.enum(['chargeback_threat', 'review_threat', 'ip_dispute']),
   situation: z.string().min(20).max(1000),
 })
 

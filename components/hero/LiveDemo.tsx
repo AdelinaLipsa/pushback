@@ -6,22 +6,22 @@ import Link from 'next/link'
 
 const SCENARIOS = [
   {
-    id: 'scope_change' as const,
-    label: 'Scope creep',
-    tool: 'Scope Change',
-    message: `Hi Alex,\n\nQuick one — since we're already building the site, could we add a mobile app to the scope as well? Same budget, my boss just brought it up. It honestly doesn't seem like much extra work from our side.\n\nAlso, any chance we can move the deadline to next Friday?\n\nThanks! — Sarah`,
+    id: 'chargeback_threat' as const,
+    label: 'Chargeback threat',
+    tool: 'Chargeback Threat',
+    message: `Hi Alex, I've reviewed the website and honestly I'm not happy with how it turned out — the design feels off and it doesn't match what I had in mind. I've spoken to my bank and they said I can dispute the charge. I paid €2,400 and at this point I don't think that's justified. I'm giving you 48 hours to sort this out or I'll go ahead with the dispute.\n\n— Mark`,
   },
   {
-    id: 'payment_final' as const,
-    label: 'Payment dispute',
-    tool: 'Payment Notice',
-    message: `Hey Alex, just reviewing the invoice before we send payment. Honestly, the project took longer than expected on our end to review and the back-and-forth added up. We feel €1,800 is more in line with the value delivered. Can you reissue at that amount?\n\n— Marcus`,
+    id: 'review_threat' as const,
+    label: 'Review threat',
+    tool: 'Review Threat',
+    message: `Alex, I want to be upfront — I'm going to leave a 1-star review on Google and Trustpilot and post about this on LinkedIn unless you give me a full refund. The project came in 2 weeks late (even though we couldn't get you the content on time) and I just don't feel I got what I paid for. I have 8,000 LinkedIn followers and I'm prepared to use that if this isn't resolved.\n\n— Claire`,
   },
   {
-    id: 'revision_limit' as const,
-    label: 'Revision demand',
-    tool: 'Revision Limit',
-    message: `Hi! Love the latest version, just a few more tweaks — can we move the hero image, rework the nav layout, update the colour palette to be warmer, and also revisit the footer? Shouldn't be too much work!\n\n— Priya`,
+    id: 'ip_dispute' as const,
+    label: 'IP dispute',
+    tool: 'IP / Source File Dispute',
+    message: `Hi, now that the website is live I'd like all the working files — the Figma designs, the CSS source, and especially the custom icon set and component library you built. We paid for this project so everything created for it belongs to us. Can you send a zip of everything? Our dev team will need to make updates going forward.\n\n— Tom`,
   },
 ]
 
@@ -31,7 +31,7 @@ type DemoState = 'idle' | 'loading' | 'typing' | 'done' | 'error' | 'limited'
 const DOT_DELAY = ['0s', '0.2s', '0.4s']
 
 export default function LiveDemo() {
-  const [activeScenario, setActiveScenario] = useState<ScenarioId>('scope_change')
+  const [activeScenario, setActiveScenario] = useState<ScenarioId>('chargeback_threat')
   const [message, setMessage] = useState(SCENARIOS[0].message)
   const [state, setState] = useState<DemoState>('idle')
   const [typedResponse, setTypedResponse] = useState('')
@@ -392,7 +392,7 @@ export default function LiveDemo() {
                 flexWrap: 'wrap',
               }}>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                  Sign up to save responses, analyze your contract, and access all 23 situations.
+                  Sign up to save responses, analyze your contract, and unlock all 23 situations.
                 </p>
                 <Link href="/signup" style={{
                   backgroundColor: '#84cc16',
