@@ -2,12 +2,11 @@ export const PLANS = {
   free: {
     name: 'Free',
     price: 0,
-    defense_responses: 5,
-    contracts: 1,
+    defense_responses: 3,
+    contracts: 0,
     features: [
-      '5 AI actions to try the tools',
-      '1 contract risk summary',
-      'Access to all 23 tools',
+      '3 AI responses to try the tools',
+      'Access to all 23 situations',
       'No card required'
     ]
   },
