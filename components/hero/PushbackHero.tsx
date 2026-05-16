@@ -288,10 +288,21 @@ export default function PushbackHero() {
   const sectionRef = useRef<HTMLElement>(null)
   const animateFrameFnRef = useRef<(() => void) | null>(null)
 
-  const situations = [
-    "YOUR WORK.",
-    "YOUR TERMS.",
-    "YOUR REPLY.",
+  // Skip the WebGL shader on mobile and for users requesting reduced motion.
+  // The 10-octave fbm + voronoi + plasma math tanks mid-tier mobile GPUs.
+  const [shaderEligible, setShaderEligible] = useState(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const widthOk = window.matchMedia('(min-width: 768px)').matches
+    const motionOk = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    setShaderEligible(widthOk && motionOk)
+  }, [])
+
+  const pillars = [
+    "VET.",
+    "SIGN.",
+    "REPLY.",
+    "RECOVER.",
   ]
 
   const createShader = (gl: WebGLRenderingContext, type: number, source: string) => {
@@ -308,6 +319,10 @@ export default function PushbackHero() {
   }
 
   useEffect(() => {
+    if (!shaderEligible) {
+      setIsCanvasReady(true)
+      return
+    }
     const canvas = canvasRef.current
     if (!canvas) return
     const gl = canvas.getContext("webgl")
@@ -365,7 +380,7 @@ export default function PushbackHero() {
       window.removeEventListener("resize", resizeCanvas)
       canvas.removeEventListener("mousemove", handleMouseMove)
     }
-  }, [])
+  }, [shaderEligible])
 
   useEffect(() => {
     if (topRef.current) {
@@ -377,6 +392,7 @@ export default function PushbackHero() {
   }, [])
 
   useEffect(() => {
+    if (!shaderEligible) return
     const animateFrame = () => {
       const time = (Date.now() - startTimeRef.current) * 0.001
       const gl = glRef.current
@@ -401,9 +417,10 @@ export default function PushbackHero() {
     animateFrameFnRef.current = animateFrame
     rafRef.current = requestAnimationFrame(animateFrame)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [])
+  }, [shaderEligible])
 
   useEffect(() => {
+    if (!shaderEligible) return
     const section = sectionRef.current
     if (!section) return
     const observer = new IntersectionObserver(
@@ -421,17 +438,30 @@ export default function PushbackHero() {
     )
     observer.observe(section)
     return () => observer.disconnect()
-  }, [])
+  }, [shaderEligible])
 
   return (
     <section ref={sectionRef} className="relative h-screen w-full" style={{ overflow: 'clip', background: "#0a0602" }}>
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
-        style={{ background: "#0a0602" }}
-      />
+      {shaderEligible ? (
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full"
+          style={{ background: "#0a0602" }}
+        />
+      ) : (
+        <div
+          aria-hidden
+          className="absolute inset-0 w-full h-full"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 60% at 70% 20%, rgba(132,204,22,0.22) 0%, transparent 60%), " +
+              "radial-gradient(ellipse 60% 50% at 20% 80%, rgba(132,204,22,0.12) 0%, transparent 65%), " +
+              "linear-gradient(180deg, #0a0602 0%, #0a0a0a 100%)",
+          }}
+        />
+      )}
 
-      {/* Loading overlay — fades out once WebGL is ready */}
+      {/* Loading overlay — fades out once WebGL is ready (or skipped on mobile) */}
       <div
         className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none"
         style={{
@@ -470,32 +500,38 @@ export default function PushbackHero() {
             pushback<span style={{ color: "#84cc16" }}>.</span>
           </span>
           <div className="text-right hidden md:block">
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>Professional toolkit</p>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>for the moments clients</p>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>push too far</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>The operating system</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>for difficult clients —</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#84cc16", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>not just their replies</p>
           </div>
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-end gap-10">
           <div className="text-left">
-            {situations.map((s, i) => (
+            {pillars.map((s, i) => (
               <SituationLine key={s} index={i}>{s}</SituationLine>
             ))}
           </div>
 
           <div ref={ctaRef} className="text-right md:max-w-xs shrink-0">
             <p className="mb-1 text-base font-semibold leading-snug" style={{ color: "#fafafa", textShadow: "0 0 20px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9)" }}>
-              Your client just moved the goalposts.
+              Four tools. One difficult client.
             </p>
             <p className="mb-5 text-base font-semibold" style={{ fontStyle: "italic", color: "#84cc16" }}>
-              Again.
+              Every move, prepared.
             </p>
             <p className="mb-6 text-sm leading-relaxed" style={{ color: "#fafafa", textShadow: "0 0 20px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9)" }}>
-              Pushback is a connected toolkit — contract analysis before you sign, 23 situation tools when clients push back, payment tracking that flags overdue invoices automatically, and a full paper trail if it ever escalates. Every tool in one place. Nothing improvised.
+              <strong style={{ color: '#fafafa' }}>Vet</strong> prospects for red flags before you reply.
+              <strong style={{ color: '#fafafa' }}> Sign</strong> only after a contract risk scan.
+              <strong style={{ color: '#fafafa' }}> Reply</strong> with prepared responses across 23 situations.
+              <strong style={{ color: '#fafafa' }}> Recover</strong> overdue invoices with tracked, escalating notices.
+              <br /><br />
+              Pushback is not an AI that writes emails. It&apos;s the toolkit that protects your business across the entire client lifecycle.
             </p>
+            <div className="flex flex-col gap-2 items-stretch md:items-end">
             <a
               href="/signup"
-              className="inline-block px-7 py-3 text-sm font-bold rounded-lg transition-all duration-200"
+              className="inline-flex items-center justify-center w-full md:w-64 h-12 text-sm font-bold rounded-lg transition-all duration-200"
               style={{ background: "#84cc16", color: "#0a0a0a", letterSpacing: "-0.01em" }}
               onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.04, duration: 0.25, ease: "power2.out" })}
               onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" })}
@@ -504,13 +540,14 @@ export default function PushbackHero() {
             </a>
             <a
               href="/how-it-works"
-              className="inline-block mt-3 px-7 py-3 text-sm font-semibold rounded-lg transition-all duration-200"
+              className="inline-flex items-center justify-center w-full md:w-64 h-12 text-sm font-semibold rounded-lg transition-all duration-200"
               style={{ border: '1px solid rgba(255,255,255,0.22)', color: 'rgba(255,255,255,0.82)', letterSpacing: '-0.01em', textShadow: '0 0 12px rgba(0,0,0,0.9)' }}
               onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.04, duration: 0.25, ease: "power2.out" })}
               onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" })}
             >
               See how it works →
             </a>
+            </div>
             <p className="mt-3 text-xs" style={{ color: "#d4d4d8", textShadow: "0 0 12px rgba(0,0,0,1), 0 1px 4px rgba(0,0,0,0.9)" }}>
               Free to start. No card required.
             </p>

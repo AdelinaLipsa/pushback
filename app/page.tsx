@@ -1,16 +1,19 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Check } from 'lucide-react'
+import { Check, ShieldCheck, FileSearch, MessageSquareWarning, BanknoteArrowDown } from 'lucide-react'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import { PLANS } from '@/lib/plans'
 import PushbackHero from '@/components/hero/PushbackHero'
 import Footer from '@/components/shared/Footer'
-import DemoAnimation from '@/components/hero/DemoAnimation'
-import ReplyThreadAnimation from '@/components/hero/ReplyThreadAnimation'
-import ContractReveal from '@/components/hero/ContractReveal'
-import LiveDemo from '@/components/hero/LiveDemo'
+
+// Heavy below-fold components — split so they don't ship with the hero bundle.
+const DemoAnimation = dynamic(() => import('@/components/hero/DemoAnimation'), { ssr: false })
+const ReplyThreadAnimation = dynamic(() => import('@/components/hero/ReplyThreadAnimation'), { ssr: false })
+const ContractReveal = dynamic(() => import('@/components/hero/ContractReveal'), { ssr: false })
+const LiveDemo = dynamic(() => import('@/components/hero/LiveDemo'), { ssr: false })
 
 const TICKER_ITEMS = [
   'Client wants free revisions',
@@ -93,10 +96,21 @@ function StickyNav() {
 function ToolCarousel() {
   const [active, setActive] = useState(0)
   const [autopaused, setAutopaused] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const stageRef = useRef<HTMLDivElement>(null)
   const dotNavRef = useRef<HTMLDivElement>(null)
   const cardDragRef = useRef(0)
   const n = DEFENSE_TOOLS.length
+
+  // filter: blur() on multiple cards kills mid-tier mobile GPUs — fade-only on small screens.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(max-width: 767px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
 
   useEffect(() => {
     if (autopaused) return
@@ -216,8 +230,8 @@ function ToolCarousel() {
                 flexDirection: 'column',
                 overflow: 'hidden',
                 transform: `translateX(${tx}px) translateZ(${-abs * 75}px) rotateY(${offset * 40}deg) scale(${1 - abs * 0.14})`,
-                filter: abs > 0 ? `blur(${abs * 3.5}px)` : 'none',
-                opacity: 1 - abs * 0.3,
+                filter: !isMobile && abs > 0 ? `blur(${abs * 3.5}px)` : 'none',
+                opacity: isMobile ? 1 - abs * 0.55 : 1 - abs * 0.3,
                 zIndex: 20 - abs * 5,
                 transition: [
                   'transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
@@ -392,6 +406,53 @@ export default function LandingPage() {
       <PushbackHero />
       <div id="hero-end" style={{ height: 1 }} />
 
+      {/* What's inside — 4-pillar strip. Lands before any demo so the first impression is a toolkit, not a reply generator. */}
+      <section style={{ borderTop: '1px solid var(--bg-border)', backgroundColor: 'var(--bg-base)' }} className="py-16 md:py-20">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-10" data-animate>
+            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.875rem' }}>
+              What&apos;s inside
+            </p>
+            <h2 style={{ fontWeight: 800, fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', letterSpacing: '-0.025em', lineHeight: 1.1, marginBottom: '0.875rem' }}>
+              Four connected tools. One difficult-client problem.
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, maxWidth: '52ch', margin: '0 auto' }}>
+              Pushback covers the full lifecycle — not just the reply. Each tool feeds the next, so when a client escalates you&apos;re already three steps ahead.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { Icon: ShieldCheck, label: 'Vet prospects', desc: 'Paste their first message — Pushback flags red flags before you reply.', step: '01' },
+              { Icon: FileSearch, label: 'Analyze contracts', desc: 'Upload a contract — surface missing clauses, hidden risks, negotiation priorities.', step: '02' },
+              { Icon: MessageSquareWarning, label: 'Reply to pushback', desc: '23 prepared response tools — scope creep, chargebacks, ghosting, IP grabs.', step: '03' },
+              { Icon: BanknoteArrowDown, label: 'Recover payment', desc: 'Track overdue invoices, send escalating notices, generate kill-fee invoices.', step: '04' },
+            ].map(({ Icon, label, desc, step }, idx) => (
+              <div
+                key={label}
+                data-animate
+                data-animate-delay={String(idx * 80)}
+                style={{
+                  backgroundColor: 'var(--bg-surface)',
+                  border: '1px solid var(--bg-border)',
+                  borderRadius: '0.75rem',
+                  padding: '1.25rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.625rem',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Icon size={18} style={{ color: 'var(--brand-lime)' }} aria-hidden />
+                  <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', fontSize: '0.6rem', letterSpacing: '0.1em', fontWeight: 700 }}>{step}</span>
+                </div>
+                <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>{label}</p>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', lineHeight: 1.55 }}>{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Ticker */}
       <div style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)', overflow: 'clip', padding: '0.875rem 0' }}>
         <div className="ticker-track flex gap-8 whitespace-nowrap w-max">
@@ -444,13 +505,13 @@ export default function LandingPage() {
       {/* Tool Carousel — 3D coverflow */}
       <section id="arsenal" style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)' }} className="py-28">
         <div className="max-w-5xl mx-auto px-6" data-animate style={{ marginBottom: '3.5rem' }}>
-          <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>The arsenal</p>
+          <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Tool 3 of 4 — Reply playbooks</p>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
-              23 situations.<br />A prepared response for each one.
+              23 situations.<br />A prepared playbook for each one.
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, maxWidth: '30ch' }}>
-              Scope creep. Payment stonewalling. Chargeback threats. Rate pressure. IP disputes. Ghost clients. Red flag prospects. This is not a worst-case scenario list — this is a Tuesday in freelance work. You now have a prepared response to every one of them.
+              Scope creep. Payment stonewalling. Chargeback threats. Rate pressure. IP disputes. Ghost clients. Red flag prospects. Not a worst-case scenario list — a Tuesday in freelance work. Each playbook draws on your contract, project history, and a prepared response — so you&apos;re never improvising under pressure.
             </p>
           </div>
         </div>
@@ -608,14 +669,32 @@ export default function LandingPage() {
       {/* Pricing */}
       <section id="pricing" style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)' }} className="py-28">
         <div className="max-w-4xl mx-auto px-6">
-          <div data-animate style={{ marginBottom: '4rem', textAlign: 'center' }}>
+          <div data-animate style={{ marginBottom: '3rem', textAlign: 'center' }}>
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Pricing</p>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: '1.25rem' }}>
-              Own every situation.<br />Start for free.
+              €20/month. Or one scope dispute.<br />Pick one.
             </h2>
-            <p style={{ color: 'var(--text-secondary)', maxWidth: '38ch', margin: '0 auto', lineHeight: 1.7, fontSize: '0.95rem' }}>
-              Run your first situation free. No card, no friction. Upgrade when the work gets serious.
+            <p style={{ color: 'var(--text-secondary)', maxWidth: '52ch', margin: '0 auto', lineHeight: 1.7, fontSize: '0.95rem' }}>
+              The average freelance scope dispute eats €2,400 in unbilled work. One late invoice costs three weeks of cashflow. Pushback Pro is €20/month — and you can cancel after the first month with a refund if it didn&apos;t earn it back.
             </p>
+          </div>
+
+          {/* Value anchor strip */}
+          <div data-animate data-animate-delay="80" style={{ marginBottom: '2.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
+            {[
+              { num: '€2,400', label: 'avg. cost of one scope dispute' },
+              { num: '50', label: 'contract risk scans / month' },
+              { num: '23', label: 'reply playbooks included' },
+              { num: '30 days', label: 'money-back guarantee' },
+            ].map(({ num, label }) => (
+              <div key={label} style={{
+                backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)',
+                borderRadius: '0.5rem', padding: '0.875rem 1rem', textAlign: 'center',
+              }}>
+                <p style={{ fontWeight: 800, fontSize: '1.15rem', letterSpacing: '-0.02em', color: 'var(--brand-lime)' }}>{num}</p>
+                <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.15rem', lineHeight: 1.4 }}>{label}</p>
+              </div>
+            ))}
           </div>
 
           <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
@@ -672,7 +751,7 @@ export default function LandingPage() {
                   <span style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>€{PLANS.pro.price}</span>
                   <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>/month</span>
                 </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Cancel anytime · excl. VAT</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>30-day money-back · cancel anytime · excl. VAT</p>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.875rem', marginBottom: '2rem', flex: 1, position: 'relative' }}>
                 {PLANS.pro.features.map(f => (
@@ -693,9 +772,14 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', textAlign: 'center', marginTop: '1.5rem' }}>
-            Your contract is never stored after analysis. We read it, flag the risks, delete it.
-          </p>
+          <div style={{ marginTop: '1.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', fontWeight: 600 }}>
+              Not happy in the first 30 days? Email us — full refund, no questions.
+            </p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
+              Your contract is never stored after analysis. We read it, flag the risks, delete it.
+            </p>
+          </div>
         </div>
       </section>
 
