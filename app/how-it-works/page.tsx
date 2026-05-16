@@ -8,7 +8,6 @@ import ReplyThreadAnimation from '@/components/hero/ReplyThreadAnimation'
 import VetTeaser from '@/components/how-it-works/VetTeaser'
 import RecoverTeaser from '@/components/how-it-works/RecoverTeaser'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { ShieldCheck, FileSearch, MessageSquareWarning, BanknoteArrowDown } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'How it works — Pushback',
@@ -51,10 +50,10 @@ const FAQS = [
 ]
 
 const PILLARS = [
-  { key: 'vet', code: '01', Icon: ShieldCheck, label: 'Vet', sub: 'Before you reply' },
-  { key: 'sign', code: '02', Icon: FileSearch, label: 'Sign', sub: 'Before you commit' },
-  { key: 'reply', code: '03', Icon: MessageSquareWarning, label: 'Reply', sub: 'When they push back' },
-  { key: 'recover', code: '04', Icon: BanknoteArrowDown, label: 'Recover', sub: 'When they ghost or escalate' },
+  { key: 'vet', code: '01', label: 'Vet', sub: 'Before you reply' },
+  { key: 'sign', code: '02', label: 'Sign', sub: 'Before you commit' },
+  { key: 'reply', code: '03', label: 'Reply', sub: 'When they push back' },
+  { key: 'recover', code: '04', label: 'Recover', sub: 'When they ghost or escalate' },
 ] as const
 
 export default async function HowItWorksPage() {
@@ -156,15 +155,28 @@ export default async function HowItWorksPage() {
           font-family: var(--font-mono);
         }
         .pain-quote {
-          background: rgba(239,68,68,0.04);
-          border-left: 3px solid rgba(239,68,68,0.4);
-          padding: 0.85rem 1.1rem;
-          border-radius: 0 0.5rem 0.5rem 0;
-          color: var(--text-secondary);
-          font-size: 0.92rem;
-          line-height: 1.6;
+          padding-left: 1.1rem;
+          border-left: 2px solid var(--bg-border);
+          font-family: 'Iowan Old Style', 'Charter', 'Georgia', 'Times New Roman', serif;
           font-style: italic;
-          margin-bottom: 1.5rem;
+          font-weight: 400;
+          font-size: 1.05rem;
+          line-height: 1.5;
+          color: var(--text-secondary);
+          max-width: 60ch;
+          margin: 0 0 1.75rem 0;
+        }
+        .pain-quote::before {
+          content: 'The pain';
+          display: block;
+          font-family: var(--font-mono);
+          font-style: normal;
+          font-size: 0.6rem;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          margin-bottom: 0.5rem;
         }
         .outcome {
           margin-top: 1.75rem;
@@ -207,17 +219,17 @@ export default async function HowItWorksPage() {
           margin-bottom: 0.75rem;
           display: block;
         }
-        .pillar-eyebrow {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
+        .pillar-tag {
+          font-family: 'Iowan Old Style', 'Charter', 'Georgia', 'Times New Roman', serif;
+          font-style: italic;
+          font-weight: 400;
+          font-size: 1rem;
+          color: var(--text-muted);
+          margin-bottom: 1.25rem;
+          letter-spacing: 0.01em;
+        }
+        .pillar-tag-mark {
           color: var(--brand-lime);
-          font-size: 0.62rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          font-weight: 700;
-          margin-bottom: 1rem;
-          font-family: var(--font-mono);
         }
         .pillar-grid {
           display: grid;
@@ -261,7 +273,7 @@ export default async function HowItWorksPage() {
           Reply. Recover.
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.7, maxWidth: '60ch', margin: '0 auto' }}>
-          A connected toolkit for the four moments that matter in any client engagement — before you sign, during the work, when they reply, and after the invoice is due. Here&apos;s exactly what each tool does, with the step-by-step flow.
+          A connected toolkit for the four moments that matter in any client engagement — before you reply to a prospect, before you commit to a contract, when they push back during the work, and when they ghost the invoice. Here&apos;s exactly what each tool does, with the step-by-step flow.
         </p>
       </header>
 
@@ -418,9 +430,8 @@ export default async function HowItWorksPage() {
         <div className="pillar-grid">
           <div>
             <span className="pillar-section-numeral" aria-hidden>01</span>
-            <p className="pillar-eyebrow">
-              <ShieldCheck size={12} />
-              VET — Before you reply
+            <p className="pillar-tag">
+              <span className="pillar-tag-mark">Vet</span> &middot; before you reply
             </p>
             <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.7rem, 3.5vw, 2.5rem)', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '1.25rem' }}>
               Spot the bad client before you say yes.
@@ -471,9 +482,8 @@ export default async function HowItWorksPage() {
         <div className="pillar-grid">
           <div>
             <span className="pillar-section-numeral" aria-hidden>02</span>
-            <p className="pillar-eyebrow">
-              <FileSearch size={12} />
-              SIGN — Before you commit
+            <p className="pillar-tag">
+              <span className="pillar-tag-mark">Sign</span> &middot; before you commit
             </p>
             <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.7rem, 3.5vw, 2.5rem)', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '1.25rem' }}>
               Read a contract like a lawyer — without paying one.
@@ -509,7 +519,7 @@ export default async function HowItWorksPage() {
               You sign with eyes open. Or you push back on the right clauses before signing — not three months in when they bite you.
             </p>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', marginTop: '1.5rem' }}>
-              Free plan: contract analysis on the free tier was retired so it could be a real, useful Pro feature. Pro: 50 analyses/month.
+              Contract analysis is a Pro feature — 50 full analyses per month, each runs the same clause-by-clause depth.
             </p>
           </div>
           <div>
@@ -523,9 +533,8 @@ export default async function HowItWorksPage() {
         <div className="pillar-grid">
           <div>
             <span className="pillar-section-numeral" aria-hidden>03</span>
-            <p className="pillar-eyebrow">
-              <MessageSquareWarning size={12} />
-              REPLY — When they push back
+            <p className="pillar-tag">
+              <span className="pillar-tag-mark">Reply</span> &middot; when they push back
             </p>
             <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.7rem, 3.5vw, 2.5rem)', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '1.25rem' }}>
               The right reply, ready before you&apos;ve finished reading their message.
@@ -593,9 +602,8 @@ export default async function HowItWorksPage() {
         <div className="pillar-grid">
           <div>
             <span className="pillar-section-numeral" aria-hidden>04</span>
-            <p className="pillar-eyebrow">
-              <BanknoteArrowDown size={12} />
-              RECOVER — When they ghost or escalate
+            <p className="pillar-tag">
+              <span className="pillar-tag-mark">Recover</span> &middot; when they ghost or escalate
             </p>
             <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.7rem, 3.5vw, 2.5rem)', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '1.25rem' }}>
               Make the cost of ignoring you higher than paying you.
@@ -657,7 +665,7 @@ export default async function HowItWorksPage() {
             {[
               { title: 'Not an AI email writer.', body: 'Reply playbooks are one of four tools. The differentiating depth is contract analysis and the risk engine — both built on real algorithms, not LLM prompts.' },
               { title: 'Not legal advice.', body: 'Pushback drafts ready-to-send professional responses. For high-stakes disputes, escalate to a qualified lawyer.' },
-              { title: 'Not a CRM.', body: 'It does not track leads, manage pipelines, or send invoices. It handles the moments when a client is being difficult — and only those moments.' },
+              { title: 'Not a CRM.', body: 'It does not track leads, manage pipelines, or send invoices. It covers the four moments along the lifecycle where freelancers usually lose money — and only those moments.' },
             ].map(item => (
               <div key={item.title} style={{
                 backgroundColor: 'var(--bg-base)',
