@@ -166,17 +166,30 @@ export default async function HowItWorksPage() {
           font-style: italic;
           margin-bottom: 1.5rem;
         }
-        .outcome-box {
-          margin-top: 1.5rem;
-          background: rgba(132,204,22,0.05);
-          border: 1px solid rgba(132,204,22,0.18);
-          border-radius: 0.55rem;
-          padding: 0.85rem 1.1rem;
-          color: var(--text-secondary);
-          font-size: 0.88rem;
-          line-height: 1.6;
+        .outcome {
+          margin-top: 1.75rem;
+          padding-left: 1.1rem;
+          border-left: 2px solid var(--brand-lime);
+          font-family: 'Iowan Old Style', 'Charter', 'Georgia', 'Times New Roman', serif;
+          font-style: italic;
+          font-weight: 400;
+          font-size: 1.05rem;
+          line-height: 1.5;
+          color: var(--text-primary);
+          max-width: 56ch;
         }
-        .outcome-box strong { color: var(--brand-lime); font-weight: 700; }
+        .outcome::before {
+          content: 'What changes';
+          display: block;
+          font-family: var(--font-mono);
+          font-style: normal;
+          font-size: 0.6rem;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--brand-lime);
+          margin-bottom: 0.5rem;
+        }
         .pillar-section {
           padding: 5rem 1.5rem;
           border-top: 1px solid var(--bg-border);
@@ -439,9 +452,9 @@ export default async function HowItWorksPage() {
                 </div>
               </div>
             </div>
-            <div className="outcome-box">
-              <strong>Outcome:</strong> You either negotiate from a stronger position — or walk away with a clear, articulable reason why.
-            </div>
+            <p className="outcome">
+              You either negotiate from a stronger position — or walk away with a clear, articulable reason why.
+            </p>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.75rem' }}>
               <Link href="/scan" className="hiw-btn-primary">Try it free — no signup →</Link>
               <Link href="/signup" className="hiw-btn-ghost">Get the full tool</Link>
@@ -492,9 +505,9 @@ export default async function HowItWorksPage() {
                 </div>
               </div>
             </div>
-            <div className="outcome-box">
-              <strong>Outcome:</strong> You sign with eyes open. Or you push back on the right clauses before signing — not three months in when they bite you.
-            </div>
+            <p className="outcome">
+              You sign with eyes open. Or you push back on the right clauses before signing — not three months in when they bite you.
+            </p>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', marginTop: '1.5rem' }}>
               Free plan: contract analysis on the free tier was retired so it could be a real, useful Pro feature. Pro: 50 analyses/month.
             </p>
@@ -551,9 +564,9 @@ export default async function HowItWorksPage() {
                 </div>
               </div>
             </div>
-            <div className="outcome-box">
-              <strong>Outcome:</strong> Firm, professional, contract-grounded reply in 30 seconds — not 30 minutes of agonizing over wording.
-            </div>
+            <p className="outcome">
+              Firm, professional, contract-grounded reply in 30 seconds — not 30 minutes of agonizing over wording.
+            </p>
             <div style={{ marginTop: '1.5rem' }}>
               <Link href="/arsenal" className="hiw-btn-ghost">Browse all 23 tools →</Link>
             </div>
@@ -621,9 +634,9 @@ export default async function HowItWorksPage() {
                 </div>
               </div>
             </div>
-            <div className="outcome-box">
-              <strong>Outcome:</strong> You have leverage and paperwork. They have a deadline and consequences. The conversation moves from negotiation to enforcement.
-            </div>
+            <p className="outcome">
+              You have leverage and paperwork. They have a deadline and consequences. The conversation moves from negotiation to enforcement.
+            </p>
           </div>
           <div>
             <RecoverTeaser />
