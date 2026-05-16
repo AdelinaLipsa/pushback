@@ -323,22 +323,6 @@ export default async function HowItWorksPage() {
             margin-bottom: 1.25rem;
             display: block;
           }
-          .pillar-dot {
-            position: absolute;
-            left: -0.4rem;
-            top: 3.95rem;
-            width: 0.6rem;
-            height: 0.6rem;
-            border-radius: 50%;
-            background: var(--brand-lime);
-            box-shadow: 0 0 0 4px var(--bg-base), 0 0 12px rgba(132,204,22,0.5);
-            transition: transform 200ms ease, box-shadow 200ms ease;
-          }
-          .pillar-node:not(:first-child) .pillar-dot { left: 1.1rem; }
-          .pillar-node:hover .pillar-dot {
-            transform: scale(1.3);
-            box-shadow: 0 0 0 4px var(--bg-base), 0 0 18px rgba(132,204,22,0.85);
-          }
           .pillar-label {
             font-size: 1.5rem;
             font-weight: 700;
@@ -401,11 +385,6 @@ export default async function HowItWorksPage() {
               vertical-align: middle;
             }
             .pillar-label { display: inline-block; vertical-align: middle; font-size: 1.4rem; }
-            .pillar-dot {
-              left: 0.85rem;
-              top: 2.1rem;
-            }
-            .pillar-node:not(:first-child) .pillar-dot { left: 0.85rem; }
           }
         `}</style>
 
@@ -413,7 +392,6 @@ export default async function HowItWorksPage() {
           {PILLARS.map(({ key, code, label, sub }) => (
             <a key={key} href={`#${key}`} className="pillar-node">
               <span className="pillar-numeral">{code}</span>
-              <span className="pillar-dot" aria-hidden />
               <p className="pillar-label">{label}</p>
               <p className="pillar-sub">{sub}</p>
             </a>
