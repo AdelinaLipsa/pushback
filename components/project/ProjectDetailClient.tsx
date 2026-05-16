@@ -9,7 +9,7 @@ import PaymentSection from '@/components/project/PaymentSection'
 import DefenseDashboard from '@/components/defense/DefenseDashboard'
 import ClientBehaviorCard from '@/components/project/ClientBehaviorCard'
 import ResponseHistory from '@/components/defense/ResponseHistory'
-import { computeClientRisk } from '@/lib/clientRisk'
+import { computeRisk } from '@/lib/risk'
 
 const RISK_LABEL: Record<string, string> = { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' }
 
@@ -68,7 +68,7 @@ export default function ProjectDetailClient({ project, plan, responsesUsed, auto
     ? stalledResponse.tool_type === 'payment_first' ? 'payment_second' : 'payment_final'
     : null
 
-  const clientRisk = computeClientRisk(project)
+  const risk = computeRisk(project)
 
   return (
     <>
@@ -139,8 +139,8 @@ export default function ProjectDetailClient({ project, plan, responsesUsed, auto
             </div>
           )}
 
-          {clientRisk.score > 0 && (
-            <ClientBehaviorCard score={clientRisk.score} level={clientRisk.level} signals={clientRisk.signals} clientName={project.client_name} />
+          {risk.composite > 0 && (
+            <ClientBehaviorCard risk={risk} clientName={project.client_name} />
           )}
 
           <div id="defense-dashboard">

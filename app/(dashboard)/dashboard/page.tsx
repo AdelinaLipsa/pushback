@@ -6,14 +6,15 @@ import { DefenseTool, Project } from '@/types'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import { PLANS } from '@/lib/plans'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
-import { computeClientRisk, LEVEL_LABELS, CLIENT_RISK_COLORS } from '@/lib/clientRisk'
+import { computeRisk, RISK_LEVEL_COLORS, LEVEL_THRESHOLDS, type RiskResult } from '@/lib/risk'
+import ClientRiskBadge from '@/components/project/ClientRiskBadge'
 import WelcomeToast from '@/components/shared/WelcomeToast'
 import OnboardingModal from '@/components/shared/OnboardingModal'
 import QuotaBar from '@/components/dashboard/QuotaBar'
 
 // ---- Attention alert types ----
 
-type AlertSeverity = 'overdue' | 'due-soon' | 'ghost' | 'stalled' | 'client-risk'
+type AlertSeverity = 'overdue' | 'due-soon' | 'ghost' | 'stalled'
 
 interface AttentionItem {
   projectId: string
@@ -144,11 +145,10 @@ const SEVERITY_BORDER: Record<AlertSeverity, string> = {
   'due-soon': 'var(--brand-lime)',
   ghost: '#f59e0b',
   stalled: '#f59e0b',
-  'client-risk': CLIENT_RISK_COLORS.red,
 }
 
-function AttentionAlert({ item, borderColorOverride }: { item: AttentionItem; borderColorOverride?: string }) {
-  const borderColor = borderColorOverride ?? SEVERITY_BORDER[item.severity]
+function AttentionAlert({ item }: { item: AttentionItem }) {
+  const borderColor = SEVERITY_BORDER[item.severity]
   const ctaLabel = item.ctaLabel ?? 'Handle now →'
   const href = item.handleTool
     ? `/projects/${item.projectId}?tool=${item.handleTool}`
@@ -394,33 +394,14 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const projectList = (projects ?? []) as ProjectWithResponses[]
   const attentionItems = computeAttentionItems(projectList, today)
 
-  // Client risk spotlight
-  let topRiskItem: AttentionItem | null = null
-  let topRiskBorder: string | null = null
-  if (projectList.length > 0) {
-    const scored = projectList
-      .map((p) => ({ project: p, risk: computeClientRisk(p) }))
-      .filter((entry) => entry.risk.score > 25)
-      .sort((a, b) => b.risk.score - a.risk.score)
-    const top = scored[0]
-    if (top) {
-      topRiskItem = {
-        projectId: top.project.id,
-        projectTitle: top.project.title,
-        clientName: top.project.client_name,
-        description: `Client Risk: ${top.risk.score} — ${LEVEL_LABELS[top.risk.level]}`,
-        daysDelta: null,
-        handleTool: null,
-        severity: 'client-risk',
-        ctaLabel: 'View project →',
-      }
-      topRiskBorder = CLIENT_RISK_COLORS[top.risk.level]
-    }
-  }
-  if (topRiskItem && attentionItems.some((a) => a.projectId === topRiskItem!.projectId)) {
-    topRiskItem = null
-    topRiskBorder = null
-  }
+  // Top client risk insight (Phase 14 D-21 #3). Pin `today` once so every
+  // project in the panel uses the same anchor — required for reproducible
+  // ordering within a single request (D-25, T-14-11).
+  const ranked: Array<{ project: ProjectWithResponses; risk: RiskResult }> = projectList
+    .map((p) => ({ project: p, risk: computeRisk(p, today) }))
+    .filter((entry) => entry.risk.composite >= LEVEL_THRESHOLDS.amber)
+    .sort((a, b) => b.risk.composite - a.risk.composite)
+  const top3 = ranked.slice(0, 3)
 
   // ---- Overview stats ----
   const queryFailed = !!projectsError
@@ -489,13 +470,119 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         />
       </div>
 
+      {/* Top client risk — Phase 14 D-21 #3. Sits above "Needs attention" so the
+          two surfaces are visually distinct: this panel summarises composite
+          client risk, the next one lists actionable per-project work. */}
+      {totalProjects > 0 && (
+        <div className="fade-up" style={{ marginBottom: '2rem', animationDelay: '0.05s' }}>
+          <h2 style={{ fontWeight: 600, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.75rem', color: 'var(--text-muted)' }}>
+            Top client risk
+          </h2>
+          {top3.length === 0 ? (
+            <div style={{
+              padding: '0.875rem 1rem',
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--bg-border)',
+              borderLeft: `3px solid ${RISK_LEVEL_COLORS.green}`,
+              borderRadius: '0.5rem',
+              fontSize: '0.85rem',
+              color: 'var(--text-secondary)',
+            }}>
+              All clients in the green — no action needed.
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {top3.map((entry, i) => {
+                const { project, risk } = entry
+                const levelColor = RISK_LEVEL_COLORS[risk.level]
+                return (
+                  <Link
+                    key={project.id}
+                    href={`/projects/${project.id}`}
+                    className="fade-up hover:border-white/20"
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.4rem',
+                      padding: '0.875rem 1rem',
+                      backgroundColor: 'var(--bg-surface)',
+                      border: '1px solid var(--bg-border)',
+                      borderLeft: `4px solid ${levelColor}`,
+                      borderRadius: '0.5rem',
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      transition: 'border-color 150ms ease, background-color 150ms ease',
+                      animationDelay: `${0.07 + i * 0.04}s`,
+                    }}
+                  >
+                    {/* Row 1: title · client · badge */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '0.75rem',
+                      flexWrap: 'wrap',
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.1rem',
+                        minWidth: 0,
+                        flex: 1,
+                      }}>
+                        <span style={{
+                          fontWeight: 600,
+                          fontSize: '0.9rem',
+                          color: 'var(--text-primary)',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}>
+                          {project.title}
+                          <span style={{ color: 'var(--text-muted)', fontWeight: 400, marginLeft: '0.5rem', fontSize: '0.825rem' }}>
+                            {project.client_name}
+                          </span>
+                        </span>
+                      </div>
+                      <span style={{ flexShrink: 0 }}>
+                        <ClientRiskBadge score={risk.composite} level={risk.level} />
+                      </span>
+                    </div>
+
+                    {/* Row 2: deterministic nextAction — text only per D-22 */}
+                    <span style={{
+                      fontSize: '0.875rem',
+                      color: 'var(--text-secondary)',
+                      lineHeight: 1.45,
+                    }}>
+                      {risk.nextAction}
+                    </span>
+
+                    {/* Row 3: lime-accented lever line, only when topMitigation present */}
+                    {risk.topMitigation !== null && (
+                      <span style={{
+                        fontSize: '0.775rem',
+                        color: 'var(--brand-lime)',
+                        fontWeight: 600,
+                      }}>
+                        Lever: {risk.topMitigation.action} (~{risk.topMitigation.deltaPoints} pts)
+                      </span>
+                    )}
+                  </Link>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Needs attention */}
       {totalProjects > 0 && (
         <div className="fade-up" style={{ marginBottom: '2rem', animationDelay: '0.06s' }}>
           <h2 style={{ fontWeight: 600, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.75rem', color: 'var(--text-muted)' }}>
             Needs attention
           </h2>
-          {attentionItems.length === 0 && !topRiskItem ? (
+          {attentionItems.length === 0 ? (
             nextAction ? (
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
@@ -544,11 +631,6 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                   <AttentionAlert item={item} />
                 </div>
               ))}
-              {topRiskItem && (
-                <div className="fade-up" style={{ animationDelay: `${0.09 + attentionItems.length * 0.05}s` }}>
-                  <AttentionAlert item={topRiskItem} borderColorOverride={topRiskBorder ?? undefined} />
-                </div>
-              )}
             </div>
           )}
         </div>

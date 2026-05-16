@@ -1,12 +1,12 @@
-import { CLIENT_RISK_COLORS, type ClientRiskLevel } from '@/lib/clientRisk'
+import { RISK_LEVEL_COLORS, type RiskLevel } from '@/lib/risk'
 
 interface ClientRiskBadgeProps {
   score: number
-  level: ClientRiskLevel
+  level: RiskLevel
 }
 
 export default function ClientRiskBadge({ score, level }: ClientRiskBadgeProps) {
-  const color = CLIENT_RISK_COLORS[level]
+  const color = RISK_LEVEL_COLORS[level]
   return (
     <span style={{
       backgroundColor: 'rgba(0,0,0,0.3)',
