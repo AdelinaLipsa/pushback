@@ -12,7 +12,7 @@ import { ShieldCheck, FileSearch, MessageSquareWarning, BanknoteArrowDown } from
 
 export const metadata: Metadata = {
   title: 'How it works — Pushback',
-  description: 'Pushback is four connected tools for difficult clients — vet prospects before you sign, analyze contracts for hidden risk, reply with prepared playbooks, recover overdue payments. Here is exactly how each tool works, step by step.',
+  description: 'Pushback is a connected toolkit for the four moments that matter in any client engagement — vet prospects before you sign, analyze contracts for hidden risk, reply with prepared playbooks, recover overdue payments. Here is exactly how each tool works, step by step.',
 }
 
 const FAQS = [
@@ -177,8 +177,23 @@ export default async function HowItWorksPage() {
           line-height: 1.6;
         }
         .outcome-box strong { color: var(--brand-lime); font-weight: 700; }
-        .pillar-section { padding: 5rem 1.5rem; border-top: 1px solid var(--bg-border); }
+        .pillar-section {
+          padding: 5rem 1.5rem;
+          border-top: 1px solid var(--bg-border);
+          scroll-margin-top: 2rem;
+        }
         .pillar-section:first-of-type { border-top: none; }
+        .pillar-section-numeral {
+          font-family: 'Iowan Old Style', 'Charter', 'Georgia', 'Times New Roman', serif;
+          font-style: italic;
+          font-weight: 400;
+          font-size: clamp(4.5rem, 9vw, 7rem);
+          line-height: 0.85;
+          color: var(--brand-lime);
+          letter-spacing: -0.04em;
+          margin-bottom: 0.75rem;
+          display: block;
+        }
         .pillar-eyebrow {
           display: inline-flex;
           align-items: center;
@@ -217,15 +232,23 @@ export default async function HowItWorksPage() {
       </div>
 
       {/* Hero */}
-      <header style={{ textAlign: 'center', padding: '3.5rem 1.5rem 2.5rem', maxWidth: '760px', margin: '0 auto' }}>
+      <header style={{ textAlign: 'center', padding: '3.5rem 1.5rem 2.5rem', maxWidth: '780px', margin: '0 auto' }}>
         <p style={{ color: 'var(--brand-lime)', fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '1.25rem', fontFamily: 'var(--font-mono)' }}>
           How it works
         </p>
-        <h1 style={{ color: 'var(--text-primary)', fontSize: 'clamp(2.2rem, 5vw, 3.6rem)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.03em', marginBottom: '1.25rem' }}>
-          Four tools. One difficult client.<br />Here&apos;s exactly what each does.
+        <h1 style={{
+          color: 'var(--text-primary)',
+          fontSize: 'clamp(2.6rem, 7vw, 5rem)',
+          fontWeight: 800,
+          lineHeight: 1,
+          letterSpacing: '-0.04em',
+          marginBottom: '1.25rem',
+        }}>
+          Vet. Sign.<br />
+          Reply. Recover.
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.7, maxWidth: '58ch', margin: '0 auto' }}>
-          Pushback isn&apos;t an AI email writer. It&apos;s the operating system for handling client risk across four moments — before you sign, during the work, when they push back, and after they ghost. Each tool covers one moment. Together they cover all of them.
+        <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.7, maxWidth: '60ch', margin: '0 auto' }}>
+          A connected toolkit for the four moments that matter in any client engagement — before you sign, during the work, when they reply, and after the invoice is due. Here&apos;s exactly what each tool does, with the step-by-step flow.
         </p>
       </header>
 
@@ -381,8 +404,8 @@ export default async function HowItWorksPage() {
       <section id="vet" className="pillar-section">
         <div className="pillar-grid">
           <div>
+            <span className="pillar-section-numeral" aria-hidden>01</span>
             <p className="pillar-eyebrow">
-              <span style={{ fontFamily: 'var(--font-mono)' }}>01</span>
               <ShieldCheck size={12} />
               VET — Before you reply
             </p>
@@ -434,8 +457,8 @@ export default async function HowItWorksPage() {
       <section id="sign" className="pillar-section">
         <div className="pillar-grid">
           <div>
+            <span className="pillar-section-numeral" aria-hidden>02</span>
             <p className="pillar-eyebrow">
-              <span style={{ fontFamily: 'var(--font-mono)' }}>02</span>
               <FileSearch size={12} />
               SIGN — Before you commit
             </p>
@@ -486,8 +509,8 @@ export default async function HowItWorksPage() {
       <section id="reply" className="pillar-section">
         <div className="pillar-grid">
           <div>
+            <span className="pillar-section-numeral" aria-hidden>03</span>
             <p className="pillar-eyebrow">
-              <span style={{ fontFamily: 'var(--font-mono)' }}>03</span>
               <MessageSquareWarning size={12} />
               REPLY — When they push back
             </p>
@@ -556,8 +579,8 @@ export default async function HowItWorksPage() {
       <section id="recover" className="pillar-section">
         <div className="pillar-grid">
           <div>
+            <span className="pillar-section-numeral" aria-hidden>04</span>
             <p className="pillar-eyebrow">
-              <span style={{ fontFamily: 'var(--font-mono)' }}>04</span>
               <BanknoteArrowDown size={12} />
               RECOVER — When they ghost or escalate
             </p>
@@ -653,7 +676,7 @@ export default async function HowItWorksPage() {
       {/* CTA */}
       <section style={{ textAlign: 'center', padding: '4rem 1.5rem 6rem' }}>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', marginBottom: '1.5rem', maxWidth: '50ch', margin: '0 auto 1.5rem' }}>
-          Your next difficult-client moment is coming. Have the right tool ready.
+          Run your business with the right tool ready for every moment.
         </p>
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/signup" className="hiw-btn-primary">Try it free →</Link>

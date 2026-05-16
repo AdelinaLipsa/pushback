@@ -414,10 +414,10 @@ export default function LandingPage() {
               What&apos;s inside
             </p>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', letterSpacing: '-0.025em', lineHeight: 1.1, marginBottom: '0.875rem' }}>
-              Four connected tools. One difficult-client problem.
+              Four connected tools. The full client lifecycle.
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, maxWidth: '52ch', margin: '0 auto' }}>
-              Pushback covers the full lifecycle — not just the reply. Each tool feeds the next, so when a client escalates you&apos;re already three steps ahead.
+              Each tool feeds the next — so the work you do before signing pays off when the invoice comes due, and the contract you analyze drives every reply.
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

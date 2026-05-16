@@ -244,7 +244,7 @@ export default function ScanPage() {
               <div>
                 <p style={{ fontWeight: 700, fontSize: '0.92rem', marginBottom: '0.2rem' }}>This is one tool of four.</p>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: 1.55, maxWidth: '46ch' }}>
-                  Sign up free to also analyze contracts for hidden risk, draft replies to difficult clients across 23 situations, and track overdue payments.
+                  Sign up free to also analyze contracts for hidden risk, draft replies across 23 client situations, and track overdue payments.
                 </p>
               </div>
               <Link

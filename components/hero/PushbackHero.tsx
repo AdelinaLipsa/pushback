@@ -500,9 +500,9 @@ export default function PushbackHero() {
             pushback<span style={{ color: "#84cc16" }}>.</span>
           </span>
           <div className="text-right hidden md:block">
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>The operating system</p>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>for difficult clients —</p>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#84cc16", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>not just their replies</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>A connected toolkit</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#fafafa", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>for the four moments —</p>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#84cc16", textShadow: "0 0 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)" }}>not just the replies</p>
           </div>
         </div>
 
@@ -515,7 +515,7 @@ export default function PushbackHero() {
 
           <div ref={ctaRef} className="text-right md:max-w-xs shrink-0">
             <p className="mb-1 text-base font-semibold leading-snug" style={{ color: "#fafafa", textShadow: "0 0 20px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9)" }}>
-              Four tools. One difficult client.
+              Four tools. Every client moment.
             </p>
             <p className="mb-5 text-base font-semibold" style={{ fontStyle: "italic", color: "#84cc16" }}>
               Every move, prepared.
