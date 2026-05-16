@@ -32,6 +32,7 @@ const AUTH_PAGES = ['/login', '/signup']
 const PUBLIC_API_PREFIXES = [
   '/api/webhooks/',   // Stripe — signature-verified
   '/api/check-email', // Used during signup before account exists
+  '/api/public/',     // No-signup public tools — IP-rate-limited internally
 ]
 
 function isProtectedPage(pathname: string): boolean {

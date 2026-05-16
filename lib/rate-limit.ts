@@ -49,6 +49,11 @@ export const demoRateLimit = redis
   ? new Ratelimit({ redis, limiter: Ratelimit.fixedWindow(1, '24 h'), prefix: 'pb:demo' })
   : null
 
+// 3 public scans per IP per 24h — no-auth /scan page for distribution; protects Anthropic budget
+export const publicScanRateLimit = redis
+  ? new Ratelimit({ redis, limiter: Ratelimit.fixedWindow(3, '24 h'), prefix: 'pb:public-scan' })
+  : null
+
 export async function checkRateLimit(
   limiter: Ratelimit | null,
   identifier: string,
