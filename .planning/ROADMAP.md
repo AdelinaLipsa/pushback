@@ -25,6 +25,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 11: Document Generation** - Generate structured documents (SOW amendments, dispute packages, kill fee invoices) for Pro users — one-click, not just an email (completed 2026-04-26)
 - [x] **Phase 12: Client Risk Intelligence** - Surface client behavioral risk scores from existing DB data (defense responses, overdue payments, conflict history) on the dashboard (completed 2026-04-26)
 - [x] **Phase 13: How-To & In-App Guidance** - Marketing page animated product demo (CSS-only, no video) + /how-it-works page, tool directory, inline tooltips, and FAQ so the app is self-teaching (completed 2026-04-26)
+- [ ] **Phase 14: Risk Engine — Deterministic Multi-Dimensional Scoring** - Replace the simple aggregate risk score from Phase 12 with a deterministic, auditable per-client engine scoring three dimensions (payment, scope, chargeback) using existing DB signals + contract-analysis clause coverage; output a composite score, traffic light, and recommended next action. No LLM at runtime — the explanatory layer optionally uses Claude over an already-computed score.
+- [ ] **Phase 15: Chargeback Evidence Pack** - When a chargeback hits or risk score crosses a threshold, auto-assemble a Stripe/PayPal-format PDF rebuttal pack: cover letter, contract excerpt, delivery timeline, ranked communication log, sign-off proofs, payment record. Real PDF output (server-side @react-pdf/renderer), not generated text. Visibly a tool, not a chatbot.
+- [ ] **Phase 16: Editorial Landing Page Redesign** - Drop the WebGL hero, ticker, and grid-of-cards aesthetic that reads as "modern SaaS template." Replace with an editorial layout: static hero featuring one real artifact (SVG of a contract redline), an editorial serif heading, numbered pillar list without card chrome, and a static numbered table replacing the 3D coverflow carousel.
 
 ## Phase Details
 
@@ -232,10 +235,52 @@ Plans:
 - [x] 13-03-PLAN.md — Wire /how-it-works into navigation/onboarding: Footer link replacement, Navbar Help link, DefenseDashboard empty-state hint, ProjectDetailClient new-project hint (Wave 2)
 **UI hint**: yes
 
+### Phase 14: Risk Engine — Deterministic Multi-Dimensional Scoring
+**Goal**: Every active client and project carries a deterministic, auditable risk score across three dimensions (payment, scope, chargeback) that updates as new signals arrive in the DB. Output is a composite 0–100 score, a traffic light, the recommended next action, and a per-signal evidence breakdown the freelancer can read. The whole engine is reproducible and LLM-free at runtime, so the same inputs always yield the same score.
+**Depends on**: Phase 12 (existing client risk aggregate); Phase 7 (payment tracking); Phase 11 (contract analysis output already in DB)
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. Given the same client/project DB state, the engine produces the same composite score on every call — no LLM at runtime, no stochastic inputs
+  2. Each of the three sub-scores (PaymentRisk, ScopeRisk, ChargebackRisk) is computed from at least three independent signals already present in the existing DB schema; no new external API is required
+  3. The dashboard shows the top three highest-risk clients with their composite score, traffic light, and one-line recommended action
+  4. Each risk score is auditable: a user can click into a per-signal breakdown showing which signals contributed how many points, so the score is never opaque
+  5. When a client's score crosses the red threshold (≥66), the recommended action explicitly names the most impactful single mitigation (e.g., "Get sign-off on Milestone 3 — chargeback risk drops 22 points")
+**Plans**: TBD
+
+### Phase 15: Chargeback Evidence Pack
+**Goal**: A freelancer facing or expecting a chargeback can, in one click, generate a Stripe/PayPal-acceptable PDF rebuttal pack assembled from existing project data — contract excerpt, dated delivery timeline, ranked communication log, sign-off proofs, and a generated cover letter. The output is a real downloadable artifact, not an AI-generated text.
+**Depends on**: Phase 14 (risk score triggers proactive pack assembly); existing contracts + projects + responses data
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. A user can click "Compile dispute pack" on a project and within 10 seconds receive a downloadable PDF in Stripe's evidence submission format
+  2. The pack contains, in order: cover letter, contract excerpt with relevant clauses highlighted, delivery timeline with milestone timestamps, ranked communication log, sign-off proofs, payment record placeholder
+  3. The communication-log ranking algorithm selects the most dispute-relevant messages from `responses` — not just the most recent — using a deterministic relevance score (no LLM-in-the-loop)
+  4. The PDF generation is server-side and tested with golden snapshots so output changes are caught in CI
+  5. When a client's chargeback risk score (Phase 14) crosses the red threshold, the freelancer receives a proactive notification: "Risk score 72 — assemble pack now while signals are fresh"
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 16: Editorial Landing Page Redesign
+**Goal**: The landing page no longer reads as "modern dark-SaaS template" — it reads as a tool with a clear point of view. The hero swaps WebGL noise for one real artifact (an SVG-rendered contract redline). One signature serif heading replaces all-Geist. The Lucide-grid pillar cards become a numbered editorial list without card chrome. The scrolling ticker is removed. The visual grammar moves from "AI-generated SaaS landing page" toward "editorial tool documentation."
+**Depends on**: Nothing (purely a frontend change)
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. The hero contains no continuously-running WebGL canvas; the background is a static composition of CSS gradients plus one inline SVG depicting a real product artifact
+  2. At least one major heading (hero or section title) uses an editorial serif (Instrument Serif or similar) rather than Geist, establishing a typographic contrast that templates do not have
+  3. The "What's inside" 4-pillar strip is rendered as a numbered editorial list (serif numerals 01–04) with no card backgrounds, borders, or icons-in-tiles
+  4. The scrolling ticker section is removed and not replaced — the section sequence reads hero → editorial pillars → live demo without the marketing-banner interlude
+  5. A lighthouse mobile performance audit on the new landing page scores ≥85 (the current shader-free build is already close; the redesign must not regress)
+**Plans**: 3 plans
+Plans:
+- [ ] 16-01-PLAN.md — Typography wiring (Instrument Serif via next/font/google + --font-serif) and HeroArtifactSVG.tsx (decorative inline contract-page SVG)
+- [ ] 16-02-PLAN.md — Hero rewrite: delete WebGL shader path, compose static gradient + HeroArtifactSVG, apply serif italic to pillar headline, add focus-visible state
+- [ ] 16-03-PLAN.md — Replace 4-card pillar grid with numbered <ol> editorial list, delete ticker section + CSS, prune unused Lucide imports, mobile lighthouse human-verify
+**UI hint**: yes
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15 → 16
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -252,6 +297,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 11. Document Generation | 3/3 | Complete    | 2026-04-26 |
 | 12. Client Risk Intelligence | 4/4 | Complete    | 2026-04-26 |
 | 13. How-To & In-App Guidance | 3/3 | Complete   | 2026-04-26 |
+| 14. Risk Engine (Deterministic Scoring) | 0/? | Not planned | - |
+| 15. Chargeback Evidence Pack | 0/? | Not planned | - |
+| 16. Editorial Landing Page Redesign | 0/? | Not planned | - |
 
 ## Backlog
 
