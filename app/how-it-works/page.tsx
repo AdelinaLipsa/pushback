@@ -229,43 +229,151 @@ export default async function HowItWorksPage() {
         </p>
       </header>
 
-      {/* Pillar map — 4-step compass */}
-      <section style={{ padding: '1rem 1.5rem 5rem', maxWidth: '1100px', margin: '0 auto' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '0.875rem',
-        }}>
-          {PILLARS.map(({ key, code, Icon, label, sub }) => (
-            <a
-              key={key}
-              href={`#${key}`}
-              style={{
-                backgroundColor: 'var(--bg-surface)',
-                border: '1px solid var(--bg-border)',
-                borderRadius: '0.75rem',
-                padding: '1.25rem 1.25rem',
-                textDecoration: 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.625rem',
-                transition: 'border-color 200ms ease, background-color 200ms ease',
-              }}
-              className="hover:border-lime hover:bg-elevated"
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Icon size={18} style={{ color: 'var(--brand-lime)' }} aria-hidden />
-                <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', fontSize: '0.6rem', letterSpacing: '0.1em', fontWeight: 700 }}>{code}</span>
-              </div>
-              <div>
-                <p style={{ fontWeight: 700, fontSize: '0.98rem', color: 'var(--text-primary)', letterSpacing: '-0.01em', marginBottom: '0.18rem' }}>{label}</p>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>{sub}</p>
-              </div>
+      {/* Pillar timeline — editorial, no card chrome */}
+      <section style={{ padding: '1.5rem 1.5rem 5rem', maxWidth: '1180px', margin: '0 auto' }}>
+        <style>{`
+          .pillar-timeline {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+          }
+          .pillar-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 4.2rem;
+            height: 1px;
+            background: linear-gradient(to right, transparent 0%, var(--bg-border) 8%, var(--bg-border) 92%, transparent 100%);
+          }
+          .pillar-node {
+            position: relative;
+            display: block;
+            padding: 0 1.5rem 0 0;
+            text-decoration: none;
+            color: inherit;
+          }
+          .pillar-node:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 1.5rem;
+            bottom: 1rem;
+            width: 1px;
+            background: var(--bg-border);
+          }
+          .pillar-node:not(:first-child) { padding-left: 1.5rem; }
+          .pillar-numeral {
+            font-family: 'Iowan Old Style', 'Charter', 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+            font-weight: 400;
+            font-size: 4rem;
+            line-height: 1;
+            color: var(--brand-lime);
+            letter-spacing: -0.02em;
+            margin-bottom: 1.25rem;
+            display: block;
+          }
+          .pillar-dot {
+            position: absolute;
+            left: -0.4rem;
+            top: 3.95rem;
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 50%;
+            background: var(--brand-lime);
+            box-shadow: 0 0 0 4px var(--bg-base), 0 0 12px rgba(132,204,22,0.5);
+            transition: transform 200ms ease, box-shadow 200ms ease;
+          }
+          .pillar-node:not(:first-child) .pillar-dot { left: 1.1rem; }
+          .pillar-node:hover .pillar-dot {
+            transform: scale(1.3);
+            box-shadow: 0 0 0 4px var(--bg-base), 0 0 18px rgba(132,204,22,0.85);
+          }
+          .pillar-label {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+            transition: color 200ms ease;
+          }
+          .pillar-node:hover .pillar-label { color: var(--brand-lime); }
+          .pillar-sub {
+            font-family: 'Iowan Old Style', 'Charter', 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+            font-weight: 400;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+          }
+          .pillar-jumpline {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            margin-top: 3rem;
+            font-family: 'Iowan Old Style', 'Charter', 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+          }
+
+          @media (max-width: 720px) {
+            .pillar-timeline {
+              grid-template-columns: 1fr;
+              gap: 0;
+            }
+            .pillar-timeline::before {
+              top: 0;
+              bottom: 0;
+              left: 1.1rem;
+              right: auto;
+              width: 1px;
+              height: auto;
+              background: linear-gradient(to bottom, transparent 0%, var(--bg-border) 6%, var(--bg-border) 94%, transparent 100%);
+            }
+            .pillar-node {
+              padding: 1.5rem 0 1.5rem 2.5rem;
+            }
+            .pillar-node:not(:last-child)::after {
+              right: auto;
+              top: auto;
+              bottom: 0;
+              left: 0;
+              width: 100%;
+              height: 1px;
+              background: var(--bg-border);
+              opacity: 0.4;
+            }
+            .pillar-node:not(:first-child) { padding-left: 2.5rem; }
+            .pillar-numeral {
+              font-size: 2.8rem;
+              margin-bottom: 0.4rem;
+              display: inline-block;
+              margin-right: 0.875rem;
+              vertical-align: middle;
+            }
+            .pillar-label { display: inline-block; vertical-align: middle; font-size: 1.4rem; }
+            .pillar-dot {
+              left: 0.85rem;
+              top: 2.1rem;
+            }
+            .pillar-node:not(:first-child) .pillar-dot { left: 0.85rem; }
+          }
+        `}</style>
+
+        <div className="pillar-timeline">
+          {PILLARS.map(({ key, code, label, sub }) => (
+            <a key={key} href={`#${key}`} className="pillar-node">
+              <span className="pillar-numeral">{code}</span>
+              <span className="pillar-dot" aria-hidden />
+              <p className="pillar-label">{label}</p>
+              <p className="pillar-sub">{sub}</p>
             </a>
           ))}
         </div>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', textAlign: 'center', marginTop: '1.5rem' }}>
-          Scroll down to see each tool, step by step — or jump to any one.
+
+        <p className="pillar-jumpline">
+          A client&apos;s lifecycle, in four moments. Read on, or jump to any one.
         </p>
       </section>
 
