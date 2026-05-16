@@ -202,11 +202,11 @@ describe('POST /api/projects/[id]/defend', () => {
     expect(body.id).toBe('resp-1')
   })
 
-  it('includes usage_warning when period_count >= 120', async () => {
+  it('includes usage_warning when period_count >= 7 (warns at 80% of 10-cap Pro plan)', async () => {
     setup({
       rpcMap: {
         check_and_increment_defense_responses: {
-          data: { allowed: true, period_count: 120 },
+          data: { allowed: true, period_count: 7 },
           error: null,
         },
       },
@@ -214,6 +214,6 @@ describe('POST /api/projects/[id]/defend', () => {
     const res = await POST(makeRequest(validBody), makeParams())
     expect(res.status).toBe(200)
     const body = await res.json()
-    expect(body.usage_warning).toMatch(/121 of 150/)
+    expect(body.usage_warning).toMatch(/8 of 10/)
   })
 })

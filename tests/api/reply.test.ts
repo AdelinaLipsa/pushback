@@ -52,12 +52,15 @@ function makeParams(id = 'resp-1') {
 }
 
 function setup(supabaseOpts: Parameters<typeof makeSupabaseMock>[0] = {}) {
+  const { fromMap: overrideFromMap, ...restOpts } = supabaseOpts
   const mock = makeSupabaseMock({
+    ...restOpts,
     fromMap: {
+      user_profiles: { data: { plan: 'pro' }, error: null },
       defense_responses: { data: mockDefenseResponse, error: null },
       reply_threads: { data: mockSavedThread, error: null },
+      ...(overrideFromMap ?? {}),
     },
-    ...supabaseOpts,
   })
   vi.mocked(createServerSupabaseClient).mockResolvedValue(mock as any)
   return mock
@@ -213,6 +216,7 @@ describe('POST /api/responses/[id]/reply', () => {
             ? makeChain({ data: null, error: { message: 'duplicate key', code: '23505' } as any })
             : makeChain({ data: existingThread, error: null })
         }
+        if (table === 'user_profiles') return makeChain({ data: { plan: 'pro' }, error: null })
         return makeChain(
           table === 'defense_responses'
             ? { data: mockDefenseResponse, error: null }

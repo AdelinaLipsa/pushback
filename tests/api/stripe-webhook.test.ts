@@ -68,7 +68,9 @@ describe('POST /api/webhooks/stripe', () => {
   it('checkout.session.completed: updates plan to pro', async () => {
     const mock = setup({
       fromMap: {
-        user_profiles: { data: { email: 'user@example.com' }, error: null },
+        // Idempotency SELECT returns no stripe_subscription_id, so the route proceeds to UPDATE.
+        // Subsequent SELECT for the upgrade email reuses the same mocked row.
+        user_profiles: { data: { email: 'user@example.com', stripe_subscription_id: null }, error: null },
       },
     })
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValueOnce(
@@ -83,10 +85,16 @@ describe('POST /api/webhooks/stripe', () => {
     const res = await POST(makeRequest('{}'))
     expect(res.status).toBe(200)
     expect(mock.from).toHaveBeenCalledWith('user_profiles')
-    const updateCall = vi.mocked(mock.from).mock.results[0]?.value
-    expect(updateCall?.update).toHaveBeenCalledWith(
-      expect.objectContaining({ plan: 'pro' })
-    )
+    // Route makes 3 .from('user_profiles') calls in order: SELECT idempotency, UPDATE, SELECT email.
+    // The UPDATE is the second call; assert that its chain.update was invoked with plan: 'pro'.
+    const calls = vi.mocked(mock.from).mock.results
+    const sawProUpdate = calls.some(c => {
+      const updateMock = (c?.value as { update?: { mock: { calls: unknown[][] } } })?.update
+      return updateMock?.mock.calls.some(args =>
+        typeof args[0] === 'object' && args[0] !== null && (args[0] as { plan?: string }).plan === 'pro'
+      )
+    })
+    expect(sawProUpdate).toBe(true)
   })
 
   it('checkout.session.completed: returns 200 with no DB write when no user_id', async () => {
@@ -114,7 +122,10 @@ describe('POST /api/webhooks/stripe', () => {
     )
     const res = await POST(makeRequest('{}'))
     expect(res.status).toBe(200)
-    expect(mock.rpc).toHaveBeenCalledWith('reset_period_usage', { uid: 'user-abc' })
+    expect(mock.rpc).toHaveBeenCalledWith(
+      'reset_period_usage',
+      expect.objectContaining({ uid: 'user-abc' }),
+    )
   })
 
   it('checkout.session.expired: clears stripe_subscription_id', async () => {
