@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Check, ShieldCheck, FileSearch, MessageSquareWarning, BanknoteArrowDown } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
 import { PLANS } from '@/lib/plans'
 import PushbackHero from '@/components/hero/PushbackHero'
@@ -82,9 +82,9 @@ function StickyNav() {
         <Link href="/how-it-works" style={{ color: 'var(--text-secondary)', fontSize: '0.83rem', fontWeight: 500, textDecoration: 'none' }} className="hover:text-white transition-colors hidden sm:block">
           How it works
         </Link>
-        <Link href="/#pricing" style={{ color: 'var(--text-secondary)', fontSize: '0.83rem', fontWeight: 500, textDecoration: 'none' }} className="hover:text-white transition-colors hidden sm:block">
+        <a href="#pricing" style={{ color: 'var(--text-secondary)', fontSize: '0.83rem', fontWeight: 500, textDecoration: 'none' }} className="hover:text-white transition-colors hidden sm:block">
           Pricing
-        </Link>
+        </a>
         <Link href="/signup" style={{ backgroundColor: 'var(--brand-lime)', color: '#0a0a0a', padding: '0.45rem 1.1rem', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.8rem', textDecoration: 'none', letterSpacing: '-0.01em' }} className="hover:opacity-90 transition-opacity">
           Try free →
         </Link>
@@ -406,53 +406,6 @@ export default function LandingPage() {
       <PushbackHero />
       <div id="hero-end" style={{ height: 1 }} />
 
-      {/* What's inside — 4-pillar strip. Lands before any demo so the first impression is a toolkit, not a reply generator. */}
-      <section style={{ borderTop: '1px solid var(--bg-border)', backgroundColor: 'var(--bg-base)' }} className="py-16 md:py-20">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-10" data-animate>
-            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.875rem' }}>
-              What&apos;s inside
-            </p>
-            <h2 style={{ fontWeight: 800, fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', letterSpacing: '-0.025em', lineHeight: 1.1, marginBottom: '0.875rem' }}>
-              Four connected tools. The full client lifecycle.
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, maxWidth: '52ch', margin: '0 auto' }}>
-              Each tool feeds the next — so the work you do before signing pays off when the invoice comes due, and the contract you analyze drives every reply.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { Icon: ShieldCheck, label: 'Vet prospects', desc: 'Paste their first message — Pushback flags red flags before you reply.', step: '01' },
-              { Icon: FileSearch, label: 'Analyze contracts', desc: 'Upload a contract — surface missing clauses, hidden risks, negotiation priorities.', step: '02' },
-              { Icon: MessageSquareWarning, label: 'Reply to pushback', desc: '23 prepared response tools — scope creep, chargebacks, ghosting, IP grabs.', step: '03' },
-              { Icon: BanknoteArrowDown, label: 'Recover payment', desc: 'Track overdue invoices, send escalating notices, generate kill-fee invoices.', step: '04' },
-            ].map(({ Icon, label, desc, step }, idx) => (
-              <div
-                key={label}
-                data-animate
-                data-animate-delay={String(idx * 80)}
-                style={{
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--bg-border)',
-                  borderRadius: '0.75rem',
-                  padding: '1.25rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.625rem',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Icon size={18} style={{ color: 'var(--brand-lime)' }} aria-hidden />
-                  <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', fontSize: '0.6rem', letterSpacing: '0.1em', fontWeight: 700 }}>{step}</span>
-                </div>
-                <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>{label}</p>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', lineHeight: 1.55 }}>{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Ticker */}
       <div style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)', overflow: 'clip', padding: '0.875rem 0' }}>
         <div className="ticker-track flex gap-8 whitespace-nowrap w-max">
@@ -679,57 +632,40 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Value anchor strip */}
-          <div data-animate data-animate-delay="80" style={{ marginBottom: '2.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
-            {[
-              { num: '€2,400', label: 'avg. cost of one scope dispute' },
-              { num: '50', label: 'contract risk scans / month' },
-              { num: '23', label: 'reply playbooks included' },
-              { num: '30 days', label: 'money-back guarantee' },
-            ].map(({ num, label }) => (
-              <div key={label} style={{
-                backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)',
-                borderRadius: '0.5rem', padding: '0.875rem 1rem', textAlign: 'center',
-              }}>
-                <p style={{ fontWeight: 800, fontSize: '1.15rem', letterSpacing: '-0.02em', color: 'var(--brand-lime)' }}>{num}</p>
-                <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.15rem', lineHeight: 1.4 }}>{label}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            {/* Free */}
-            <div data-animate data-animate-from="left" data-animate-delay="150" style={{ backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)', borderRadius: '1rem', padding: '2rem', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ marginBottom: '2rem' }}>
-                <div style={{ fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1rem' }}>Free</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto items-stretch">
+            {/* Free — sidekick (1/3 width on md+) */}
+            <div data-animate data-animate-from="left" data-animate-delay="150" style={{ backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)', borderRadius: '1rem', padding: '1.75rem', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ fontWeight: 600, fontSize: '0.7rem', color: 'var(--text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.875rem' }}>Free</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>€0</span>
+                  <span style={{ fontSize: '2.25rem', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>€0</span>
                 </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>No card required</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>No card required</p>
               </div>
-              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.875rem', marginBottom: '2rem', flex: 1 }}>
+              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem', flex: 1 }}>
                 {PLANS.free.features.map(f => (
-                  <li key={f} style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <Check size={14} style={{ color: 'var(--brand-lime)', flexShrink: 0 }} />
+                  <li key={f} style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', display: 'flex', alignItems: 'flex-start', gap: '0.6rem', lineHeight: 1.45 }}>
+                    <Check size={13} style={{ color: 'var(--text-muted)', flexShrink: 0, marginTop: '0.2rem' }} />
                     {f}
                   </li>
                 ))}
               </ul>
               <Link href="/signup" style={{
                 display: 'block', textAlign: 'center',
-                border: '1px solid var(--bg-border)', color: 'var(--text-primary)',
-                padding: '0.8rem', borderRadius: '0.5rem', fontWeight: 600, fontSize: '0.875rem',
-              }} className="hover:border-white/30 transition-colors">
-                Run a free situation
+                color: 'var(--text-secondary)',
+                padding: '0.7rem 0', borderRadius: '0.5rem', fontWeight: 500, fontSize: '0.82rem',
+                borderTop: '1px solid var(--bg-border)',
+              }} className="hover:text-white transition-colors">
+                Run a free situation →
               </Link>
             </div>
 
-            {/* Pro */}
-            <div data-animate data-animate-from="right" data-animate-delay="250" style={{
+            {/* Pro — dominant (2/3 width on md+) */}
+            <div data-animate data-animate-from="right" data-animate-delay="250" className="md:col-span-2" style={{
               backgroundColor: 'var(--bg-elevated)',
               border: '1px solid rgba(132,204,22,0.3)',
               borderRadius: '1rem',
-              padding: '2rem',
+              padding: '2.25rem',
               boxShadow: '0 0 60px rgba(132,204,22,0.10), inset 0 1px 0 rgba(132,204,22,0.12)',
               position: 'relative',
               overflow: 'hidden',
@@ -739,24 +675,24 @@ export default function LandingPage() {
               <div style={{
                 position: 'absolute', top: 0, right: 0,
                 background: 'radial-gradient(circle at 100% 0%, rgba(132,204,22,0.12) 0%, transparent 65%)',
-                width: '220px', height: '220px',
+                width: '260px', height: '260px',
                 pointerEvents: 'none',
               }} />
               <div style={{ marginBottom: '2rem', position: 'relative' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
                   <div style={{ fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Pro</div>
-                  <div style={{ backgroundColor: 'rgba(132,204,22,0.15)', color: 'var(--brand-lime)', fontSize: '0.6rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '4px', letterSpacing: '0.1em' }}>RECOMMENDED</div>
+                  <div style={{ backgroundColor: 'rgba(132,204,22,0.15)', color: 'var(--brand-lime)', fontSize: '0.6rem', fontWeight: 700, padding: '0.25rem 0.65rem', borderRadius: '4px', letterSpacing: '0.12em' }}>RECOMMENDED</div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem', marginBottom: '0.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem', marginBottom: '0.5rem' }}>
                   <span style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>€{PLANS.pro.price}</span>
                   <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>/month</span>
                 </div>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>30-day money-back · cancel anytime · excl. VAT</p>
               </div>
-              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.875rem', marginBottom: '2rem', flex: 1, position: 'relative' }}>
+              <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', columnGap: '1.5rem', rowGap: '0.75rem', marginBottom: '2rem', flex: 1, position: 'relative' }}>
                 {PLANS.pro.features.map(f => (
-                  <li key={f} style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <Check size={14} style={{ color: 'var(--brand-lime)', flexShrink: 0 }} />
+                  <li key={f} style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', display: 'flex', alignItems: 'flex-start', gap: '0.6rem', lineHeight: 1.45 }}>
+                    <Check size={14} style={{ color: 'var(--brand-lime)', flexShrink: 0, marginTop: '0.15rem' }} />
                     {f}
                   </li>
                 ))}
@@ -764,22 +700,14 @@ export default function LandingPage() {
               <Link href="/signup" style={{
                 display: 'block', textAlign: 'center',
                 backgroundColor: 'var(--brand-lime)', color: '#0a0a0a',
-                padding: '0.8rem', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.875rem',
+                padding: '0.85rem', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.875rem',
                 position: 'relative',
               }} className="hover:opacity-90 transition-opacity">
-                Own every situation
+                Own every situation →
               </Link>
             </div>
           </div>
 
-          <div style={{ marginTop: '1.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', fontWeight: 600 }}>
-              Not happy in the first 30 days? Email us — full refund, no questions.
-            </p>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-              Your contract is never stored after analysis. We read it, flag the risks, delete it.
-            </p>
-          </div>
         </div>
       </section>
 
