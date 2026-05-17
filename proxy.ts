@@ -51,6 +51,16 @@ function isProtectedApi(pathname: string): boolean {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Defense-in-depth for OAuth callback drift: if a Supabase redirect-URL
+  // allow-list miss caused the provider to bounce ?code=... onto the homepage
+  // instead of /auth/callback, forward it before the SPA renders and the code
+  // is lost.
+  if (pathname === '/' && request.nextUrl.searchParams.has('code')) {
+    const target = new URL('/auth/callback', request.url)
+    request.nextUrl.searchParams.forEach((v, k) => target.searchParams.set(k, v))
+    return NextResponse.redirect(target)
+  }
+
   // Maintenance mode — bypass for /maintenance, /admin, /auth, /login
   // Login must be reachable so the admin can sign in and toggle maintenance off
   const bypassMaintenance =

@@ -2,22 +2,22 @@ import Stripe from 'stripe'
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-export async function createCheckoutSession(userId: string, userEmail: string) {
+export async function createCheckoutSession(userId: string, userEmail: string, appUrl: string) {
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
     line_items: [{ price: process.env.STRIPE_PRICE_ID!, quantity: 1 }],
     customer_email: userEmail,
     metadata: { user_id: userId },
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgraded=true`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
+    success_url: `${appUrl}/dashboard?upgraded=true`,
+    cancel_url: `${appUrl}/dashboard`,
   })
   return session
 }
 
-export async function createBillingPortalSession(customerId: string) {
+export async function createBillingPortalSession(customerId: string, appUrl: string) {
   return stripe.billingPortal.sessions.create({
     customer: customerId,
-    return_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings`,
+    return_url: `${appUrl}/settings`,
   })
 }
 

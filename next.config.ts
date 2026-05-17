@@ -43,8 +43,6 @@ const nextConfig: NextConfig = {
       { source: '/contact', destination: '/feedback', permanent: true },
       // Legal / security
       { source: '/security', destination: '/privacy', permanent: true },
-      // Admin alias
-      { source: '/analytics', destination: '/admin', permanent: false },
       // Marketing pages that don't exist → home
       { source: '/about', destination: '/', permanent: false },
       { source: '/blog', destination: '/', permanent: false },

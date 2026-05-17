@@ -1,8 +1,9 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { createBillingPortalSession } from '@/lib/stripe'
 import { checkRateLimit, billingRateLimit } from '@/lib/rate-limit'
+import { appUrlFromRequest } from '@/lib/utils'
 
-export async function POST() {
+export async function POST(request: Request) {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
@@ -21,7 +22,7 @@ export async function POST() {
   }
 
   try {
-    const session = await createBillingPortalSession(profile.stripe_customer_id)
+    const session = await createBillingPortalSession(profile.stripe_customer_id, appUrlFromRequest(request))
     return Response.json({ url: session.url })
   } catch (err) {
     console.error('Billing portal error:', err)
