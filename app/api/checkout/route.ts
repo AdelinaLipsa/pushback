@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { createCheckoutSession } from '@/lib/stripe'
+import { createCheckoutSession, type BillingInterval } from '@/lib/stripe'
 import { checkRateLimit, billingRateLimit } from '@/lib/rate-limit'
 import { appUrlFromRequest } from '@/lib/utils'
 
@@ -11,8 +11,16 @@ export async function POST(request: Request) {
   const rateLimitResponse = await checkRateLimit(billingRateLimit, user.id)
   if (rateLimitResponse) return rateLimitResponse
 
+  let interval: BillingInterval = 'month'
   try {
-    const session = await createCheckoutSession(user.id, user.email ?? '', appUrlFromRequest(request))
+    const body = (await request.json().catch(() => null)) as { interval?: string } | null
+    if (body?.interval === 'year') interval = 'year'
+  } catch {
+    // body is optional — falls back to monthly
+  }
+
+  try {
+    const session = await createCheckoutSession(user.id, user.email ?? '', appUrlFromRequest(request), interval)
     return Response.json({ url: session.url })
   } catch (err) {
     console.error('Checkout error:', err)

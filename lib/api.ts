@@ -265,8 +265,12 @@ export function markResponseCopied(id: string) {
 
 // ─── Checkout ────────────────────────────────────────────────────────────────
 
-export async function checkout(): Promise<string | null> {
-  const data = await request<{ url: string }>('/api/checkout', { method: 'POST' })
+export async function checkout(interval: 'month' | 'year' = 'month'): Promise<string | null> {
+  const data = await request<{ url: string }>('/api/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ interval }),
+  })
   return data?.url ?? null
 }
 

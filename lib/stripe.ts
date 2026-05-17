@@ -2,12 +2,25 @@ import Stripe from 'stripe'
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-export async function createCheckoutSession(userId: string, userEmail: string, appUrl: string) {
+export type BillingInterval = 'month' | 'year'
+
+export async function createCheckoutSession(
+  userId: string,
+  userEmail: string,
+  appUrl: string,
+  interval: BillingInterval = 'month',
+) {
+  const priceId = interval === 'year'
+    ? process.env.STRIPE_PRICE_ID_ANNUAL
+    : process.env.STRIPE_PRICE_ID
+  if (!priceId) {
+    throw new Error(`Missing Stripe price ID for interval=${interval}`)
+  }
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
-    line_items: [{ price: process.env.STRIPE_PRICE_ID!, quantity: 1 }],
+    line_items: [{ price: priceId, quantity: 1 }],
     customer_email: userEmail,
-    metadata: { user_id: userId },
+    metadata: { user_id: userId, billing_interval: interval },
     success_url: `${appUrl}/dashboard?upgraded=true`,
     cancel_url: `${appUrl}/dashboard`,
   })

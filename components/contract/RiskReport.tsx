@@ -44,7 +44,7 @@ export default function RiskReport({ analysis, contractId, isPro }: RiskReportPr
     <div className="flex flex-col gap-6">
 
       {/* Summary — always visible */}
-      <div className="fade-up bg-bg-surface border border-bg-border rounded-xl p-6 transition-all duration-200 hover:shadow-lg hover:shadow-black/20">
+      <div className="fade-up bg-bg-surface border border-bg-border rounded-xl p-5 sm:p-6 transition-all duration-200 hover:shadow-lg hover:shadow-black/20">
         <div className="flex items-center gap-3 mb-5 flex-wrap">
           <RiskScoreBadge score={analysis.risk_score} level={analysis.risk_level as RiskLevel} />
           <span className="text-zinc-200 text-xs font-bold uppercase tracking-widest">Recommendation:</span>
@@ -53,35 +53,53 @@ export default function RiskReport({ analysis, contractId, isPro }: RiskReportPr
         <p className="text-zinc-300 leading-[1.75] text-[0.9rem] m-0">{analysis.summary}</p>
       </div>
 
-      {/* Clause details — Pro only */}
+      {/* Free preview — show first flagged clause in full, then the upgrade gate */}
       {!isPro && (
-        <div className="fade-up bg-bg-surface border border-bg-border rounded-xl p-6 flex items-start justify-between gap-6" style={{ animationDelay: '120ms' }}>
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Lock size={14} className="text-text-muted shrink-0" />
-              <p className="font-bold text-[0.9rem] m-0">Full analysis locked</p>
+        <>
+          {flaggedClauses.length > 0 && (
+            <section className="fade-up" style={{ animationDelay: '120ms' }}>
+              <div className="flex items-baseline justify-between mb-3 gap-3 flex-wrap">
+                <SectionHeader label="Top flagged clause" countColor="var(--urgency-high)" />
+                <span className="text-[0.65rem] font-bold text-text-muted tracking-[0.08em] uppercase">
+                  Preview · 1 of {flaggedClauses.length}
+                </span>
+              </div>
+              <ClauseCard clause={flaggedClauses[0]} delay={0} />
+            </section>
+          )}
+
+          <div className="fade-up bg-bg-surface border border-bg-border rounded-xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6" style={{ animationDelay: '200ms' }}>
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Lock size={14} className="text-text-muted shrink-0" />
+                <p className="font-bold text-[0.9rem] m-0">
+                  {flaggedClauses.length > 1 ? `${flaggedClauses.length - 1} more clause${flaggedClauses.length - 1 !== 1 ? 's' : ''} locked` : 'Full analysis locked'}
+                </p>
+              </div>
+              <p className="text-zinc-400 text-[0.82rem] leading-relaxed m-0">
+                {flaggedClauses.length > 1 && `${flaggedClauses.length - 1} more flagged clause${flaggedClauses.length - 1 !== 1 ? 's' : ''}`}
+                {flaggedClauses.length > 1 && missingProtections.length > 0 && ' · '}
+                {missingProtections.length > 0 && `${missingProtections.length} missing protection${missingProtections.length !== 1 ? 's' : ''}`}
+                {(flaggedClauses.length > 1 || missingProtections.length > 0)
+                  ? ' — plus the negotiation priority list and a ready-to-send counter-offer email. All unlock with Pro.'
+                  : 'Unlock missing protections, the negotiation priority list, and a ready-to-send counter-offer email with Pro.'}
+              </p>
             </div>
-            <p className="text-zinc-400 text-[0.82rem] leading-relaxed m-0">
-              {flaggedClauses.length > 0 && `${flaggedClauses.length} flagged clause${flaggedClauses.length !== 1 ? 's' : ''}`}
-              {flaggedClauses.length > 0 && missingProtections.length > 0 && ' · '}
-              {missingProtections.length > 0 && `${missingProtections.length} missing protection${missingProtections.length !== 1 ? 's' : ''}`}
-              {(flaggedClauses.length > 0 || missingProtections.length > 0) && ' — upgrade to see every clause, what to negotiate, and draft the counter-offer.'}
-            </p>
+            <button
+              onClick={() => startCheckout(setUpgradeLoading)}
+              disabled={upgradeLoading}
+              className="self-start sm:self-auto shrink-0 bg-brand-lime text-[#0a0a0a] font-bold text-[0.82rem] px-4 py-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-1.5"
+            >
+              {upgradeLoading ? <><Loader2 size={13} className="animate-spin" /> Loading…</> : 'Upgrade to Pro'}
+            </button>
           </div>
-          <button
-            onClick={() => startCheckout(setUpgradeLoading)}
-            disabled={upgradeLoading}
-            className="shrink-0 bg-brand-lime text-[#0a0a0a] font-bold text-[0.82rem] px-4 py-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-1.5"
-          >
-            {upgradeLoading ? <><Loader2 size={13} className="animate-spin" /> Loading…</> : 'Upgrade to Pro'}
-          </button>
-        </div>
+        </>
       )}
 
       {/* Mosaic grid + counter-offer — Pro only */}
       {isPro && (
       <>
-      <div className="fade-up grid grid-cols-[3fr_2fr] gap-6 items-start" style={{ animationDelay: '120ms' }}>
+      <div className="fade-up grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-8 md:gap-6 items-start" style={{ animationDelay: '120ms' }}>
 
         {/* Left column: flagged clauses + missing protections */}
         <div className="flex flex-col gap-8">

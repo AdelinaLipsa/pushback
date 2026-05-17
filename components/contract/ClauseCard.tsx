@@ -49,8 +49,11 @@ export default function ClauseCard({ clause, delay = 0 }: ClauseCardProps) {
         />
       </button>
 
-      {expanded && (
-        <div className="response-enter px-5 pb-5 flex flex-col gap-4">
+      <div
+        data-clause-detail
+        className={`${expanded ? 'response-enter' : ''} px-5 pb-5 flex-col gap-4`}
+        style={{ display: expanded ? 'flex' : 'none' }}
+      >
           {clause.quote && (
             <blockquote
               className="pl-3.5 m-0 text-zinc-300 text-[0.8rem] italic leading-relaxed"
@@ -83,8 +86,7 @@ export default function ClauseCard({ clause, delay = 0 }: ClauseCardProps) {
             </div>
             <p className="text-zinc-100 text-[0.875rem] leading-relaxed m-0">{clause.pushback_language}</p>
           </div>
-        </div>
-      )}
+      </div>
     </div>
   )
 }

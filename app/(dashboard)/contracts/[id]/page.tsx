@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import RiskReport from '@/components/contract/RiskReport'
 import ContractDeleteButton from '@/components/contract/ContractDeleteButton'
+import ContractExportButton from '@/components/contract/ContractExportButton'
 import ContractPendingState from '@/components/contract/ContractPendingState'
 import { mergeWithProAnalysis } from '@/lib/contractAnalysis'
 
@@ -25,15 +26,18 @@ export default async function ContractPage({ params }: { params: Promise<{ id: s
   const showFilename = contract.original_filename && contract.original_filename !== contract.title
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-8">
+      <div className="flex items-center justify-between mb-8" data-print-hide>
         <Link
           href="/contracts"
           className="text-text-muted text-sm no-underline inline-flex items-center gap-1.5 hover:text-text-primary transition-colors"
         >
           ← Contracts
         </Link>
-        <ContractDeleteButton contractId={contract.id} />
+        <div className="flex items-center gap-2">
+          {contract.status === 'analyzed' && <ContractExportButton />}
+          <ContractDeleteButton contractId={contract.id} />
+        </div>
       </div>
 
       <h1 className={`fade-up font-bold text-2xl tracking-tight break-words leading-snug ${showFilename ? 'mb-1' : 'mb-8'}`}>

@@ -169,6 +169,19 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
       >
         {loading ? 'Submitting…' : 'Analyze Contract →'}
       </button>
+
+      <div style={{
+        display: 'flex', alignItems: 'flex-start', gap: '0.6rem',
+        marginTop: '-0.25rem',
+        color: 'var(--text-muted)', fontSize: '0.75rem', lineHeight: 1.55,
+      }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '0.15rem', color: 'var(--brand-lime)' }}>
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span>
+          Your contract is analyzed and deleted — the body is never stored. Analysis runs on the Anthropic API, which doesn&apos;t use requests for AI training.
+        </span>
+      </div>
     </form>
   )
 }

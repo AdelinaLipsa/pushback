@@ -548,8 +548,8 @@ export default function PushbackHero() {
               See how it works →
             </a>
             </div>
-            <p className="mt-3 text-xs" style={{ color: "#d4d4d8", textShadow: "0 0 12px rgba(0,0,0,1), 0 1px 4px rgba(0,0,0,0.9)" }}>
-              Free to start. No card required.
+            <p className="mt-3 text-xs leading-relaxed" style={{ color: "#d4d4d8", textShadow: "0 0 12px rgba(0,0,0,1), 0 1px 4px rgba(0,0,0,0.9)" }}>
+              3 responses free, no card. Pro <strong style={{ color: '#fafafa' }}>€20/mo</strong> — or one scope dispute. Pick one.
             </p>
           </div>
         </div>

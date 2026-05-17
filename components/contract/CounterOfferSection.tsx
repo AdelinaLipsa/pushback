@@ -38,7 +38,7 @@ export default function CounterOfferSection({ contractId, isPro }: CounterOfferS
   if (!isPro) {
     return (
       <div className="fade-up bg-bg-surface border border-bg-border rounded-xl overflow-hidden">
-        <div className="px-6 py-5 flex items-center justify-between gap-4">
+        <div className="px-5 sm:px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h3 className="text-[0.68rem] font-bold uppercase tracking-[0.1em] text-zinc-200 m-0 mb-1">Counter-offer email</h3>
             <p className="text-zinc-400 text-[0.825rem] m-0">Draft a professional negotiation email based on the flagged clauses above.</p>
@@ -46,7 +46,7 @@ export default function CounterOfferSection({ contractId, isPro }: CounterOfferS
           <button
             onClick={() => startCheckout(setUpgradeLoading)}
             disabled={upgradeLoading}
-            className={btnCls.primary + ' shrink-0'}
+            className={btnCls.primary + ' shrink-0 self-start sm:self-auto'}
           >
             {upgradeLoading ? <><Loader2 size={14} className="animate-spin" /> Loading…</> : <><Lock size={14} /> Upgrade to Pro</>}
           </button>
@@ -57,7 +57,7 @@ export default function CounterOfferSection({ contractId, isPro }: CounterOfferS
 
   return (
     <div className="fade-up bg-bg-surface border border-bg-border rounded-xl overflow-hidden">
-      <div className="px-6 py-5 border-b border-bg-border flex items-center justify-between gap-4">
+      <div className="px-5 sm:px-6 py-5 border-b border-bg-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h3 className="text-[0.68rem] font-bold uppercase tracking-[0.1em] text-zinc-200 m-0 mb-1">Counter-offer email</h3>
           <p className="text-zinc-400 text-[0.825rem] m-0">Draft a professional email requesting the changes above — ready to copy and send.</p>
@@ -66,7 +66,7 @@ export default function CounterOfferSection({ contractId, isPro }: CounterOfferS
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className={btnCls.outline + ' shrink-0'}
+            className={btnCls.outline + ' shrink-0 self-start sm:self-auto'}
           >
             {loading ? (
               <><Loader2 size={14} className="animate-spin" /> Drafting…</>
@@ -83,8 +83,8 @@ export default function CounterOfferSection({ contractId, isPro }: CounterOfferS
       </div>
 
       {email && (
-        <div className="px-6 py-5">
-          <pre className="text-zinc-300 text-[0.875rem] leading-[1.75] whitespace-pre-wrap font-sans m-0">{email}</pre>
+        <div className="px-5 sm:px-6 py-5">
+          <pre className="text-zinc-300 text-[0.875rem] leading-[1.75] whitespace-pre-wrap break-words font-sans m-0">{email}</pre>
           <p className="text-zinc-500 text-[0.75rem] mt-4 m-0">Review and personalize before sending — replace [Client Name] and [Your name] with the actual values.</p>
         </div>
       )}

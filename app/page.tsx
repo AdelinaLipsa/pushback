@@ -97,6 +97,7 @@ function ToolCarousel() {
   const [active, setActive] = useState(0)
   const [autopaused, setAutopaused] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [viewMode, setViewMode] = useState<'coverflow' | 'list'>('coverflow')
   const stageRef = useRef<HTMLDivElement>(null)
   const dotNavRef = useRef<HTMLDivElement>(null)
   const cardDragRef = useRef(0)
@@ -185,6 +186,104 @@ function ToolCarousel() {
       onMouseEnter={() => setAutopaused(true)}
       onMouseLeave={() => setAutopaused(false)}
     >
+      {/* View toggle — coverflow vs full grid */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.75rem' }}>
+        <div role="tablist" aria-label="Tool view" style={{
+          display: 'inline-flex',
+          padding: '3px',
+          backgroundColor: 'var(--bg-base)',
+          border: '1px solid var(--bg-border)',
+          borderRadius: '9999px',
+          gap: '2px',
+        }}>
+          {([
+            { value: 'coverflow' as const, label: 'Featured' },
+            { value: 'list' as const, label: `Browse all ${n}` },
+          ]).map(opt => {
+            const active = viewMode === opt.value
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setViewMode(opt.value)}
+                style={{
+                  padding: '0.4rem 0.95rem',
+                  borderRadius: '9999px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: '0.74rem',
+                  letterSpacing: '0.01em',
+                  backgroundColor: active ? 'rgba(132,204,22,0.15)' : 'transparent',
+                  color: active ? 'var(--brand-lime)' : 'var(--text-muted)',
+                  transition: 'all 200ms ease',
+                }}
+              >
+                {opt.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {viewMode === 'list' ? (
+        <div
+          className="max-w-5xl mx-auto px-6 grid gap-3"
+          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+        >
+          {DEFENSE_TOOLS.map((tool, i) => (
+            <div
+              key={tool.type}
+              style={{
+                backgroundColor: 'var(--bg-base)',
+                border: '1px solid var(--bg-border)',
+                borderRadius: '0.75rem',
+                padding: '1rem 1.1rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.4rem',
+                transition: 'border-color 200ms ease, background-color 200ms ease',
+                cursor: 'default',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'rgba(132,204,22,0.35)'
+                e.currentTarget.style.backgroundColor = 'rgba(132,204,22,0.04)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'var(--bg-border)'
+                e.currentTarget.style.backgroundColor = 'var(--bg-base)'
+              }}
+            >
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--brand-lime)',
+                fontSize: '0.6rem',
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+              }}>
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <p style={{
+                fontWeight: 700, fontSize: '0.9rem',
+                color: 'var(--text-primary)',
+                letterSpacing: '-0.015em', lineHeight: 1.2,
+                margin: 0,
+              }}>
+                {tool.label}
+              </p>
+              <p style={{
+                color: 'var(--text-secondary)', fontSize: '0.76rem',
+                lineHeight: 1.55, margin: 0,
+              }}>
+                {tool.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
       {/* 3D stage */}
       <div
         ref={stageRef}
@@ -364,11 +463,15 @@ function ToolCarousel() {
           {String(n).padStart(2, '0')}
         </span>
       </div>
+        </>
+      )}
     </div>
   )
 }
 
 export default function LandingPage() {
+  const [billingInterval, setBillingInterval] = useState<'month' | 'year'>('month')
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -454,6 +557,157 @@ export default function LandingPage() {
 
       {/* Contract reveal — scroll-driven frame animation */}
       <ContractReveal />
+
+      {/* Privacy trust strip — appears right after the contract analysis showcase */}
+      <section style={{ backgroundColor: 'var(--bg-base)', borderTop: '1px solid #1c1c1e', borderBottom: '1px solid #1c1c1e' }} className="py-10">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-animate>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--brand-lime)', flexShrink: 0, marginTop: '0.15rem' }}>
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <div>
+                <p style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)', margin: '0 0 0.25rem' }}>
+                  Your contract is analyzed and deleted
+                </p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', lineHeight: 1.55, margin: 0 }}>
+                  Pushback reads the text to flag clauses, then drops it. The contract body is never stored on our servers.
+                </p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--brand-lime)', flexShrink: 0, marginTop: '0.15rem' }}>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <div>
+                <p style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)', margin: '0 0 0.25rem' }}>
+                  Not used to train any AI
+                </p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', lineHeight: 1.55, margin: 0 }}>
+                  Analysis runs on the Anthropic API — Anthropic does not use API requests to train its models. Your contract stays your contract.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHY NOT CHATGPT ── */}
+      <section style={{ borderTop: '1px solid #1c1c1e', backgroundColor: 'var(--bg-base)' }} className="py-28">
+        <div className="max-w-5xl mx-auto px-6">
+          <div data-animate style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>
+              Same situation, two responses
+            </p>
+            <h2 style={{ fontWeight: 800, fontSize: 'clamp(2rem, 4.5vw, 3.25rem)', letterSpacing: '-0.03em', lineHeight: 1.08, marginBottom: '1.25rem' }}>
+              Why not just ask ChatGPT?
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '52ch', margin: '0 auto' }}>
+              Same client message, same prompt. One response opens the negotiation badly. The other holds the line, references your contract, and routes the work through paperwork. Both are below — judge for yourself.
+            </p>
+          </div>
+
+          {/* The prompt */}
+          <div data-animate data-animate-delay="100" style={{
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--bg-border)',
+            borderLeft: '3px solid var(--text-muted)',
+            borderRadius: '0.75rem',
+            padding: '1.25rem 1.5rem',
+            marginBottom: '2rem',
+            maxWidth: '760px',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 0.5rem' }}>
+              The client message
+            </p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, fontStyle: 'italic', margin: 0 }}>
+              &ldquo;Hey, we love what you&apos;ve done with the homepage. Actually we&apos;d also like you to handle the about page, contact page, and a couple of subpages. We assumed that was included — can you send those over by Friday?&rdquo;
+            </p>
+          </div>
+
+          {/* Two responses */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-animate data-animate-delay="200">
+            {/* ChatGPT side */}
+            <div style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--bg-border)',
+              borderRadius: '0.875rem',
+              padding: '1.75rem',
+              display: 'flex',
+              flexDirection: 'column',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#52525b' }} />
+                <p style={{ fontWeight: 700, fontSize: '0.78rem', color: 'var(--text-muted)', letterSpacing: '0.06em', textTransform: 'uppercase', margin: 0 }}>
+                  Generic AI
+                </p>
+              </div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.86rem', lineHeight: 1.7, flex: 1, fontFamily: 'inherit', whiteSpace: 'pre-wrap' }}>
+                Hi [Client],{'\n\n'}Thanks so much for the kind feedback! I&apos;m really glad you&apos;re happy with the homepage.{'\n\n'}Regarding the additional pages — I&apos;d be happy to discuss adding those to the project. Let me know if you&apos;d like to chat about scope and timeline.{'\n\n'}Best,{'\n'}[Your name]
+              </div>
+              <div style={{
+                marginTop: '1.5rem', paddingTop: '1rem',
+                borderTop: '1px solid var(--bg-border)',
+                display: 'flex', flexDirection: 'column', gap: '0.45rem',
+              }}>
+                {[
+                  'No reference to the signed contract',
+                  'No price, no addendum, no timeline shift',
+                  'Opens negotiation soft — invites pushback',
+                ].map(flag => (
+                  <p key={flag} style={{ fontSize: '0.72rem', color: '#a1a1aa', margin: 0, paddingLeft: '0.85rem', position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: 0, color: '#71717a' }}>—</span>
+                    {flag}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            {/* Pushback side */}
+            <div style={{
+              backgroundColor: 'var(--bg-elevated)',
+              border: '1px solid rgba(132,204,22,0.3)',
+              borderRadius: '0.875rem',
+              padding: '1.75rem',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: '0 0 50px rgba(132,204,22,0.08), inset 0 1px 0 rgba(132,204,22,0.12)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'var(--brand-lime)', boxShadow: '0 0 8px rgba(132,204,22,0.6)' }} />
+                <p style={{ fontWeight: 700, fontSize: '0.78rem', color: 'var(--brand-lime)', letterSpacing: '0.06em', textTransform: 'uppercase', margin: 0 }}>
+                  Pushback — Scope Change tool
+                </p>
+              </div>
+              <div style={{ color: 'var(--text-primary)', fontSize: '0.86rem', lineHeight: 1.7, flex: 1, fontFamily: 'inherit', whiteSpace: 'pre-wrap' }}>
+                Hi [Client],{'\n\n'}Glad the homepage landed. Quick note on the additions — the original scope (signed Feb 12) covers the homepage only. The about, contact, and subpages aren&apos;t included.{'\n\n'}Happy to add them. The scope addendum runs €1,800 (~3 days of work) and shifts delivery to Friday the 28th, not this Friday. I&apos;ll send the formal addendum to sign — once that&apos;s countersigned I&apos;ll start on those pages.{'\n\n'}Let me know if that timeline works, or if you&apos;d like to phase them in differently.{'\n\n'}— [Your name]
+              </div>
+              <div style={{
+                marginTop: '1.5rem', paddingTop: '1rem',
+                borderTop: '1px solid rgba(132,204,22,0.15)',
+                display: 'flex', flexDirection: 'column', gap: '0.45rem',
+              }}>
+                {[
+                  'References the signed contract by date',
+                  'Specific price, work estimate, new delivery date',
+                  'Routes through paperwork — no work starts without signature',
+                ].map(flag => (
+                  <p key={flag} style={{ fontSize: '0.72rem', color: '#d4d4d8', margin: 0, paddingLeft: '0.85rem', position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: 0, color: 'var(--brand-lime)' }}>+</span>
+                    {flag}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <p data-animate data-animate-delay="350" style={{ color: 'var(--text-muted)', fontSize: '0.82rem', textAlign: 'center', marginTop: '2rem', lineHeight: 1.6, maxWidth: '56ch', marginLeft: 'auto', marginRight: 'auto' }}>
+            ChatGPT writes pleasant emails. Pushback knows your contract terms, the right tool for the situation, and what a freelancer needs to say to actually get paid for the work.
+          </p>
+        </div>
+      </section>
 
       {/* Tool Carousel — 3D coverflow */}
       <section id="arsenal" style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)' }} className="py-28">
@@ -619,6 +873,34 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Founder note */}
+      <section style={{ borderTop: '1px solid #1c1c1e', backgroundColor: 'var(--bg-base)' }} className="py-24">
+        <div className="max-w-3xl mx-auto px-6 text-center" data-animate>
+          <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1.5rem' }}>
+            From the founder
+          </p>
+          <p style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.05rem, 1.8vw, 1.25rem)', lineHeight: 1.6, maxWidth: '54ch', margin: '0 auto 2rem' }}>
+            &ldquo;Every tool in Pushback exists because of a specific situation I lost money on. The scope creep that ate a month of margin. The &lsquo;changed direction&rsquo; client who wanted 40% back after sign-off. The invoice that went 23 days overdue while I rewrote the reminder email four times. If this saves you one of those weeks, it&rsquo;s done its job.&rdquo;
+          </p>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{
+              width: 38, height: 38, borderRadius: '50%',
+              backgroundColor: 'var(--bg-elevated)',
+              border: '1px solid rgba(132,204,22,0.35)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 800, fontSize: '0.9rem', color: 'var(--brand-lime)',
+              letterSpacing: '-0.02em',
+            }}>
+              A
+            </div>
+            <div style={{ textAlign: 'left' }}>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', margin: 0, lineHeight: 1.2 }}>Adelina Lipsa</p>
+              <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.2, marginTop: '0.15rem' }}>Founder · Pushback</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing */}
       <section id="pricing" style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)' }} className="py-28">
         <div className="max-w-4xl mx-auto px-6">
@@ -630,6 +912,68 @@ export default function LandingPage() {
             <p style={{ color: 'var(--text-secondary)', maxWidth: '52ch', margin: '0 auto', lineHeight: 1.7, fontSize: '0.95rem' }}>
               The average freelance scope dispute eats €2,400 in unbilled work. One late invoice costs three weeks of cashflow. Pushback Pro is €20/month — and you can cancel after the first month with a refund if it didn&apos;t earn it back.
             </p>
+            <p style={{ color: 'var(--text-muted)', maxWidth: '48ch', margin: '1rem auto 0', lineHeight: 1.6, fontSize: '0.82rem' }}>
+              10 situations + 50 contract scans per month covers a freelancer juggling 3–5 active clients. The quota is the buffer for the bad weeks, not the ceiling for the good ones.
+            </p>
+          </div>
+
+          {/* Monthly / annual toggle */}
+          <div data-animate data-animate-delay="100" style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
+            <div role="tablist" aria-label="Billing interval" style={{
+              display: 'inline-flex',
+              padding: '4px',
+              backgroundColor: 'var(--bg-base)',
+              border: '1px solid var(--bg-border)',
+              borderRadius: '9999px',
+              gap: '2px',
+            }}>
+              {([
+                { value: 'month' as const, label: 'Monthly' },
+                { value: 'year' as const, label: 'Annual' },
+              ]).map(opt => {
+                const active = billingInterval === opt.value
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setBillingInterval(opt.value)}
+                    style={{
+                      padding: '0.5rem 1.1rem',
+                      borderRadius: '9999px',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                      fontSize: '0.8rem',
+                      letterSpacing: '0.01em',
+                      backgroundColor: active ? 'var(--brand-lime)' : 'transparent',
+                      color: active ? '#0a0a0a' : 'var(--text-secondary)',
+                      transition: 'all 200ms ease',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                    }}
+                  >
+                    {opt.label}
+                    {opt.value === 'year' && (
+                      <span style={{
+                        fontSize: '0.6rem',
+                        fontWeight: 700,
+                        letterSpacing: '0.06em',
+                        textTransform: 'uppercase',
+                        padding: '0.1rem 0.4rem',
+                        borderRadius: '4px',
+                        backgroundColor: active ? 'rgba(10,10,10,0.18)' : 'rgba(132,204,22,0.15)',
+                        color: active ? '#0a0a0a' : 'var(--brand-lime)',
+                      }}>
+                        Save 2 mo
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto items-stretch">
@@ -683,11 +1027,27 @@ export default function LandingPage() {
                   <div style={{ fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Pro</div>
                   <div style={{ backgroundColor: 'rgba(132,204,22,0.15)', color: 'var(--brand-lime)', fontSize: '0.6rem', fontWeight: 700, padding: '0.25rem 0.65rem', borderRadius: '4px', letterSpacing: '0.12em' }}>RECOMMENDED</div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>€{PLANS.pro.price}</span>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>/month</span>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>
+                    €{billingInterval === 'year' ? PLANS.pro.priceAnnual : PLANS.pro.price}
+                  </span>
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                    /{billingInterval === 'year' ? 'year' : 'month'}
+                  </span>
+                  {billingInterval === 'year' && (
+                    <span style={{
+                      marginLeft: '0.5rem', fontSize: '0.72rem', color: 'var(--brand-lime)',
+                      fontWeight: 700, letterSpacing: '0.04em',
+                    }}>
+                      = €{(PLANS.pro.priceAnnual / 12).toFixed(2)}/mo · save €{PLANS.pro.price * 12 - PLANS.pro.priceAnnual}
+                    </span>
+                  )}
                 </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>30-day money-back · cancel anytime · excl. VAT</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+                  {billingInterval === 'year'
+                    ? `${PLANS.pro.annualSavingMonths} months free · cancel anytime · excl. VAT`
+                    : '30-day money-back · cancel anytime · excl. VAT'}
+                </p>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', columnGap: '1.5rem', rowGap: '0.75rem', marginBottom: '2rem', flex: 1, position: 'relative' }}>
                 {PLANS.pro.features.map(f => (
@@ -697,7 +1057,7 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/signup" style={{
+              <Link href={`/signup?plan=pro&interval=${billingInterval}`} style={{
                 display: 'block', textAlign: 'center',
                 backgroundColor: 'var(--brand-lime)', color: '#0a0a0a',
                 padding: '0.85rem', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.875rem',
