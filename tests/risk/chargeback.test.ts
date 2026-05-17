@@ -14,6 +14,7 @@ function makeInput(overrides: Partial<RiskInput> = {}): RiskInput {
     paymentDueDate: null,
     paymentReceivedAt: null,
     projectValue: null,
+    hasContract: true,
     contractClauses: ['late_fee', 'kill_fee', 'payment_schedule', 'scope', 'revision_cap'],
     sentResponses: [],
     daysSinceLastResponse: null,

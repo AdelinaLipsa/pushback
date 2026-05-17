@@ -82,23 +82,26 @@ export function scoreScope(input: RiskInput): DimensionScore {
     })
   }
 
-  // Contract-gap signals — D-13. Empty `contractClauses` (no contract) fires
-  // both. Same precedent as the payment scorer.
-  if (!input.contractClauses.includes('scope')) {
-    signals.push({
-      code: 'no_scope_clause',
-      label: 'Contract has no scope clause',
-      points: 10,
-      source: 'contracts',
-    })
-  }
-  if (!input.contractClauses.includes('revision_cap')) {
-    signals.push({
-      code: 'no_revision_cap',
-      label: 'Contract has no revision cap',
-      points: 8,
-      source: 'contracts',
-    })
+  // Contract-gap signals — D-13. Only fire when a contract is actually
+  // attached. A project with no contract uploaded yet is not "at risk" for
+  // missing clauses — gated the same way as the payment scorer.
+  if (input.hasContract) {
+    if (!input.contractClauses.includes('scope')) {
+      signals.push({
+        code: 'no_scope_clause',
+        label: 'Contract has no scope clause',
+        points: 10,
+        source: 'contracts',
+      })
+    }
+    if (!input.contractClauses.includes('revision_cap')) {
+      signals.push({
+        code: 'no_revision_cap',
+        label: 'Contract has no revision cap',
+        points: 8,
+        source: 'contracts',
+      })
+    }
   }
 
   // Sum and clamp per D-13 implicit / phase-wide D-09.

@@ -77,8 +77,20 @@ export type RiskInput = {
   /** `projects.project_value` — currency-agnostic numeric. */
   projectValue: number | null
   /**
+   * Whether a freelance-protection contract (i.e. a service agreement, NOT
+   * an NDA) is attached to the project. When `false`, scorers suppress
+   * contract-gap signals (no_late_fee_clause, no_scope_clause, etc.) — the
+   * gap signals only make sense for a contract that's meant to carry those
+   * protections in the first place. Set by the orchestrator from
+   * `project.contracts.contract_type === 'service_agreement'`. NDAs and
+   * "no contract on file" both yield false here; the Contract tab handles
+   * the upload prompt.
+   */
+  hasContract: boolean
+  /**
    * Contract clause coverage — `contracts.analysis.clauses_present` array, or
    * empty array if no contract attached. Scorers check inclusion (D-10/D-13).
+   * Only consulted when `hasContract === true`.
    */
   contractClauses: string[]
   /**

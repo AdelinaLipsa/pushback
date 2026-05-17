@@ -377,7 +377,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const [{ data: projects, error: projectsError }, { data: profile }] = await Promise.all([
     supabase
       .from('projects')
-      .select('*, contracts!projects_contract_id_fkey(id, risk_score, risk_level, title, status, created_at), defense_responses(id, tool_type, created_at, was_sent)')
+      .select('*, contracts!projects_contract_id_fkey(id, risk_score, risk_level, title, status, created_at, analysis, contract_type), defense_responses(id, tool_type, created_at, was_sent)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false }),
     supabase.from('user_profiles').select('*').eq('id', user.id).single(),

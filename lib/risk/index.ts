@@ -305,6 +305,14 @@ export function computeRisk(
     paymentDueDate: project.payment_due_date,
     paymentReceivedAt: project.payment_received_at,
     projectValue: project.project_value,
+    // NDA-only projects yield false here: an NDA covers confidentiality, not
+    // freelance protections (late fee, scope, kill fee, etc.), so it should
+    // not trigger or suppress the gap signals tied to those clauses. The
+    // Contract tab still surfaces "you have an NDA but no service agreement"
+    // separately. A null/missing contract_type is treated as service_agreement
+    // for backward compatibility with rows analyzed before contract_type was
+    // recorded.
+    hasContract: project.contracts != null && (project.contracts.contract_type ?? 'service_agreement') === 'service_agreement',
     contractClauses,
     sentResponses,
     daysSinceLastResponse,

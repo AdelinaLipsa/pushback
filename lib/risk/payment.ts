@@ -86,31 +86,35 @@ export function scorePayment(input: RiskInput): DimensionScore {
     }
   }
 
-  // Contract-gap signals — D-10. Apply whether or not a due date exists; an
-  // empty `contractClauses` (no contract attached) trips all three.
-  if (!input.contractClauses.includes('late_fee')) {
-    signals.push({
-      code: 'no_late_fee_clause',
-      label: 'Contract has no late-fee clause',
-      points: 10,
-      source: 'contracts',
-    })
-  }
-  if (!input.contractClauses.includes('kill_fee')) {
-    signals.push({
-      code: 'no_kill_fee_clause',
-      label: 'Contract has no kill-fee clause',
-      points: 8,
-      source: 'contracts',
-    })
-  }
-  if (!input.contractClauses.includes('payment_schedule')) {
-    signals.push({
-      code: 'no_payment_schedule',
-      label: 'Contract has no payment-schedule clause',
-      points: 8,
-      source: 'contracts',
-    })
+  // Contract-gap signals — D-10. Apply whether or not a due date exists, but
+  // only when a contract is actually attached. A brand-new project with no
+  // contract on file should not be flagged for "missing clauses" — the user
+  // simply hasn't uploaded yet; the Contract tab handles that prompt.
+  if (input.hasContract) {
+    if (!input.contractClauses.includes('late_fee')) {
+      signals.push({
+        code: 'no_late_fee_clause',
+        label: 'Contract has no late-fee clause',
+        points: 10,
+        source: 'contracts',
+      })
+    }
+    if (!input.contractClauses.includes('kill_fee')) {
+      signals.push({
+        code: 'no_kill_fee_clause',
+        label: 'Contract has no kill-fee clause',
+        points: 8,
+        source: 'contracts',
+      })
+    }
+    if (!input.contractClauses.includes('payment_schedule')) {
+      signals.push({
+        code: 'no_payment_schedule',
+        label: 'Contract has no payment-schedule clause',
+        points: 8,
+        source: 'contracts',
+      })
+    }
   }
 
   // Repeated payment-cadence pressure — D-10 (Claude's discretion to include).

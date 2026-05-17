@@ -14,6 +14,7 @@ function makeInput(overrides: Partial<RiskInput> = {}): RiskInput {
     paymentDueDate: null,
     paymentReceivedAt: null,
     projectValue: null,
+    hasContract: true,
     // Default has every scope-relevant clause present so clause-gap signals are inert
     contractClauses: ['scope', 'revision_cap'],
     sentResponses: [],
@@ -111,12 +112,20 @@ describe('scoreScope', () => {
       expect(codes).not.toContain('no_revision_cap')
     })
 
-    it('fires both clause-gap signals when contractClauses is empty (total +18)', () => {
-      const result = scoreScope(makeInput({ contractClauses: [] }))
+    it('fires both clause-gap signals when contract is attached but empty (total +18)', () => {
+      const result = scoreScope(makeInput({ hasContract: true, contractClauses: [] }))
       const codes = result.signals.map((s) => s.code)
       expect(codes).toContain('no_scope_clause')
       expect(codes).toContain('no_revision_cap')
       expect(result.score).toBe(18)
+    })
+
+    it('fires zero clause-gap signals when no contract is attached (brand-new project)', () => {
+      const result = scoreScope(makeInput({ hasContract: false, contractClauses: [] }))
+      const codes = result.signals.map((s) => s.code)
+      expect(codes).not.toContain('no_scope_clause')
+      expect(codes).not.toContain('no_revision_cap')
+      expect(result.score).toBe(0)
     })
   })
 

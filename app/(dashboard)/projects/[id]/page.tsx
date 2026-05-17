@@ -39,7 +39,7 @@ export default async function ProjectPage({
   const [{ data: contract, error: contractError }, { data: responses, error: responsesError }] = await Promise.all([
     supabase
       .from('contracts')
-      .select('id, risk_score, risk_level, title')
+      .select('id, risk_score, risk_level, title, analysis, contract_type')
       .eq('user_id', user.id)
       .eq('project_id', id)
       .maybeSingle(),

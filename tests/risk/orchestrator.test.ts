@@ -102,11 +102,8 @@ describe('computeRisk — orchestrator', () => {
   // -------------------------------------------------------------------------
   describe('green path (empty signals)', () => {
     it('returns composite 0, level green, payment nextAction, null topMitigation for a fully-clean project', () => {
-      // "Empty" in the plan-text sense means "all clauses present, no late
-      // payment, no responses" — the engine's clause-gap signals fire on
-      // missing contracts so a truly empty `contracts: null` project still
-      // surfaces ~16 points of audit signal. Construct full clauses to test
-      // the pure-zero baseline.
+      // Fully-protected baseline: all clauses present, no late payment, no
+      // responses. Locks the pure-zero composite.
       const project = makeProject({
         contracts: { risk_score: null, risk_level: null, analysis: FULL_CLAUSES },
       })
@@ -119,6 +116,31 @@ describe('computeRisk — orchestrator', () => {
       expect(result.dimensions.payment.score).toBe(0)
       expect(result.dimensions.scope.score).toBe(0)
       expect(result.dimensions.chargeback.score).toBe(0)
+    })
+
+    it('returns composite 0 for a brand-new project with no contract attached', () => {
+      // Regression: previously fired 5 contract-gap signals (+44 across
+      // payment + scope) on every contracts-null project, surfacing a
+      // misleading "16 · Healthy" card on freshly-created projects.
+      const project = makeProject({ contracts: null })
+      const result = computeRisk(project, TODAY)
+      expect(result.composite).toBe(0)
+      expect(result.dimensions.payment.signals).toEqual([])
+      expect(result.dimensions.scope.signals).toEqual([])
+    })
+
+    it('returns composite 0 for an NDA-only project (NDA does not carry freelance protections)', () => {
+      // Regression: an NDA is a confidentiality contract, not a service
+      // agreement. It should NOT trigger "no late-fee clause" or any other
+      // freelance-protection gap signals. The Contract tab handles the
+      // "you have an NDA but no service agreement" prompt separately.
+      const project = makeProject({
+        contracts: { risk_score: null, risk_level: null, analysis: null, contract_type: 'nda' },
+      })
+      const result = computeRisk(project, TODAY)
+      expect(result.composite).toBe(0)
+      expect(result.dimensions.payment.signals).toEqual([])
+      expect(result.dimensions.scope.signals).toEqual([])
     })
   })
 

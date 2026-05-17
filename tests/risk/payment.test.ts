@@ -22,6 +22,7 @@ function makeInput(overrides: Partial<RiskInput> = {}): RiskInput {
     paymentDueDate: null,
     paymentReceivedAt: null,
     projectValue: null,
+    hasContract: true,
     contractClauses: ['late_fee', 'kill_fee', 'payment_schedule', 'scope', 'revision_cap'],
     sentResponses: [],
     daysSinceLastResponse: null,
@@ -98,14 +99,30 @@ describe('scorePayment', () => {
   })
 
   describe('contract-gap signals (D-10)', () => {
-    it('fires all three clause-gap signals when contractClauses is empty (total +26)', () => {
-      const result = scorePayment(makeInput({ contractClauses: [] }))
+    it('fires all three clause-gap signals when contract is attached but empty (total +26)', () => {
+      const result = scorePayment(makeInput({ hasContract: true, contractClauses: [] }))
       const codes = result.signals.map((s) => s.code)
       expect(codes).toContain('no_late_fee_clause')
       expect(codes).toContain('no_kill_fee_clause')
       expect(codes).toContain('no_payment_schedule')
       // 10 + 8 + 8 = 26
       expect(result.score).toBe(26)
+    })
+
+    it('fires zero clause-gap signals when no contract is attached (brand-new project)', () => {
+      const result = scorePayment(makeInput({ hasContract: false, contractClauses: [] }))
+      const codes = result.signals.map((s) => s.code)
+      expect(codes).not.toContain('no_late_fee_clause')
+      expect(codes).not.toContain('no_kill_fee_clause')
+      expect(codes).not.toContain('no_payment_schedule')
+      expect(result.score).toBe(0)
+    })
+
+    it('fires zero clause-gap signals for NDA-only projects (hasContract=false set by orchestrator)', () => {
+      // The orchestrator sets hasContract=false when contract_type === 'nda',
+      // so NDAs reach the scorer identically to "no contract on file".
+      const result = scorePayment(makeInput({ hasContract: false, contractClauses: [] }))
+      expect(result.signals).toEqual([])
     })
 
     it('fires zero clause-gap signals when all three clauses are present', () => {
