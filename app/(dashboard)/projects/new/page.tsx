@@ -2,7 +2,7 @@ import NewProjectForm from '@/components/project/NewProjectForm'
 
 export default function NewProjectPage() {
   return (
-    <div style={{ padding: '2rem', maxWidth: '560px' }}>
+    <div style={{ padding: '2rem', maxWidth: '560px', margin: '0 auto' }}>
       <h1 style={{ fontWeight: 700, fontSize: '1.75rem', letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>New project</h1>
       <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.95rem' }}>
         Name the project, add the client. You can link a contract later.

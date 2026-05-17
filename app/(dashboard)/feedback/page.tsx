@@ -39,7 +39,7 @@ export default function FeedbackPage() {
   }
 
   return (
-    <div className="p-8 max-w-[600px]">
+    <div className="p-8 max-w-[600px] mx-auto">
       <h1 className="font-bold text-[1.4rem] tracking-tight mb-1.5">Share feedback</h1>
       <p className="text-text-secondary text-sm leading-relaxed mb-8">
         What&apos;s working, what&apos;s broken, what you need — all of it is useful.

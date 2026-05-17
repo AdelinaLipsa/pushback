@@ -97,7 +97,7 @@ export default function IntakePage() {
     : null
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '760px' }}>
+    <div style={{ padding: '2rem', maxWidth: '760px', margin: '0 auto' }}>
       <h1 style={{ fontWeight: 700, fontSize: '1.75rem', letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>Project Intake Questionnaire</h1>
       <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.95rem' }}>
         Describe the project you just landed. We&apos;ll generate the questions to ask the client before you start — to prevent scope disputes, payment problems, and misaligned expectations.

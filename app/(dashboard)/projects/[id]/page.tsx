@@ -55,7 +55,7 @@ export default async function ProjectPage({
   const lockedCount = allHistory === null ? 0 : plan === 'free' ? Math.max(0, allHistory.length - 3) : 0
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1100px' }}>
+    <div style={{ padding: '2rem', maxWidth: '1100px', margin: '0 auto' }}>
       <ProjectDetailClient
         project={typedProject}
         plan={plan}
