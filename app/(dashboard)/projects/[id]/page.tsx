@@ -19,13 +19,8 @@ export default async function ProjectPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: project }, { data: profile }, { data: historyData }] = await Promise.all([
-    supabase
-      .from('projects')
-      .select('*, contracts(id, risk_score, risk_level, title), defense_responses(id, tool_type, created_at, was_sent)')
-      .eq('id', id)
-      .eq('user_id', user.id)
-      .single(),
+  const [{ data: baseProject, error: projectError }, { data: profile }, { data: historyData, error: historyError }] = await Promise.all([
+    supabase.from('projects').select('*').eq('id', id).eq('user_id', user.id).single(),
     supabase.from('user_profiles').select('*').eq('id', user.id).single(),
     activeView === 'history'
       ? supabase
@@ -34,13 +29,37 @@ export default async function ProjectPage({
           .eq('project_id', id)
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
-      : Promise.resolve({ data: null }),
+      : Promise.resolve({ data: null, error: null }),
   ])
 
-  if (!project) notFound()
+  if (projectError) console.error('[projects/[id]] base query error:', projectError)
+  if (historyError) console.error('[projects/[id]] history query error:', historyError)
+  if (!baseProject) notFound()
+
+  const [{ data: contract, error: contractError }, { data: responses, error: responsesError }] = await Promise.all([
+    supabase
+      .from('contracts')
+      .select('id, risk_score, risk_level, title')
+      .eq('user_id', user.id)
+      .eq('project_id', id)
+      .maybeSingle(),
+    supabase
+      .from('defense_responses')
+      .select('id, tool_type, created_at, was_sent')
+      .eq('user_id', user.id)
+      .eq('project_id', id)
+      .order('created_at', { ascending: false }),
+  ])
+
+  if (contractError) console.error('[projects/[id]] contract query error:', contractError)
+  if (responsesError) console.error('[projects/[id]] responses query error:', responsesError)
 
   const p = profile as UserProfile | null
-  const typedProject = project as unknown as Project & {
+  const typedProject = {
+    ...baseProject,
+    contracts: contract ?? null,
+    defense_responses: (responses ?? []) as Array<{ id: string; tool_type: DefenseTool; created_at: string; was_sent: boolean }>,
+  } as unknown as Project & {
     contracts?: { id: string; risk_score: number | null; risk_level: string | null; title: string | null } | null
     defense_responses?: Array<{ id: string; tool_type: DefenseTool; created_at: string; was_sent: boolean }> | null
   }

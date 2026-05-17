@@ -9,11 +9,56 @@ export default async function ProjectsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: projects } = await supabase
+  const { data: baseProjects, error: projectsError } = await supabase
     .from('projects')
-    .select('*, contracts(risk_score, risk_level), defense_responses(id, tool_type, created_at)')
+    .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+
+  if (projectsError) {
+    console.error('[projects/page] base query error:', projectsError)
+  }
+
+  const baseRows = baseProjects ?? []
+  const projectIds = baseRows.map((p) => p.id)
+
+  const [{ data: contracts, error: contractsError }, { data: responses, error: responsesError }] =
+    projectIds.length > 0
+      ? await Promise.all([
+          supabase
+            .from('contracts')
+            .select('id, project_id, risk_score, risk_level')
+            .eq('user_id', user.id)
+            .in('project_id', projectIds),
+          supabase
+            .from('defense_responses')
+            .select('id, project_id, tool_type, created_at')
+            .eq('user_id', user.id)
+            .in('project_id', projectIds)
+            .order('created_at', { ascending: false }),
+        ])
+      : [{ data: [], error: null }, { data: [], error: null }]
+
+  if (contractsError) console.error('[projects/page] contracts query error:', contractsError)
+  if (responsesError) console.error('[projects/page] responses query error:', responsesError)
+
+  const contractByProject = new Map<string, { risk_score: number | null; risk_level: string | null }>()
+  for (const c of contracts ?? []) {
+    if (c.project_id) contractByProject.set(c.project_id, { risk_score: c.risk_score, risk_level: c.risk_level })
+  }
+  const responsesByProject = new Map<string, Array<{ id: string; tool_type: string; created_at: string }>>()
+  for (const r of responses ?? []) {
+    if (!r.project_id || !r.created_at) continue
+    const list = responsesByProject.get(r.project_id) ?? []
+    list.push({ id: r.id, tool_type: r.tool_type, created_at: r.created_at })
+    responsesByProject.set(r.project_id, list)
+  }
+
+  const projects = baseRows.map((p) => ({
+    ...p,
+    contracts: contractByProject.get(p.id) ?? null,
+    defense_responses: responsesByProject.get(p.id) ?? [],
+  }))
 
   return (
     <div style={{ padding: '2rem' }}>
