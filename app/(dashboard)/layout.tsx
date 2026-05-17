@@ -14,7 +14,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
     supabase.from('projects').select('id, title, client_name').eq('user_id', user.id).order('created_at', { ascending: false }).limit(3),
   ])
 
-  const isAdmin = !!process.env.ADMIN_EMAIL && user.email === process.env.ADMIN_EMAIL
+  const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase()
+  const isAdmin = !!adminEmail && user.email?.toLowerCase() === adminEmail
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--bg-base)' }}>

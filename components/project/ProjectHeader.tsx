@@ -75,6 +75,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
     if (!result) { toast.error('Failed to delete project'); return }
     toast.success('Project deleted')
     router.push('/projects')
+    router.refresh()
   }
 
   return (
