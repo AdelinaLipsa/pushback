@@ -145,6 +145,8 @@ export type MessageAnalysis = {
 
 export type DocumentType = 'sow_amendment' | 'kill_fee_invoice' | 'dispute_package'
 
+export type { DisputeType, ClauseExcerpt, ScoredMessage, PackData } from './dispute'
+
 export type ContractType = 'service_agreement' | 'nda'
 
 export type RedFlag = {

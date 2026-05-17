@@ -1,0 +1,308 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PackDocument golden snapshots > renders cancelled pack 1`] = `
+{
+  "children": null,
+  "props": {
+    "data": {
+      "caseReference": "CB-2026-04-12-CAN",
+      "contractExcerpt": {
+        "available": true,
+        "clauses": [
+          {
+            "heading": "Cancellation",
+            "matchedKeyword": "cancellation",
+            "paragraph": "Either party may cancel with 14 days written notice. Kill fee equals 40% of the remaining unpaid balance plus the full value of all work completed up to the cancellation date.",
+          },
+          {
+            "heading": "Kill Fee",
+            "matchedKeyword": "kill fee",
+            "paragraph": "The Kill Fee shall be invoiced within 7 days of the cancellation notice and is payable in line with the original payment terms.",
+          },
+        ],
+      },
+      "disputeType": "cancelled",
+      "generatedAt": "2026-04-15T12:00:00.000Z",
+      "paymentRecord": {
+        "amount": null,
+        "currency": "USD",
+        "dueDate": "2026-03-30T00:00:00.000Z",
+        "placeholder": true,
+        "receivedAt": null,
+      },
+      "project": {
+        "clientName": "Globex Inc",
+        "currency": "USD",
+        "id": "proj-003",
+        "paymentAmount": null,
+        "paymentDueDate": "2026-03-30T00:00:00.000Z",
+        "paymentReceivedAt": null,
+        "projectValue": 4500,
+        "title": "Mobile app prototype",
+      },
+      "rankedMessages": [
+        {
+          "createdAt": "2026-04-05T09:00:00.000Z",
+          "response": "Per the cancellation clause, the kill fee due is USD 2,100 — covering Milestone 1 fully delivered and Milestone 2 at 80% completion.",
+          "responseId": "r-201",
+          "score": 9.2,
+          "toolType": "kill_fee",
+          "wasSent": true,
+        },
+      ],
+      "signOffs": [],
+      "timeline": [
+        {
+          "detail": null,
+          "label": "Payment due",
+          "when": "2026-03-30T00:00:00.000Z",
+        },
+        {
+          "detail": "Milestones 1 and 2 work-in-progress demo",
+          "label": "Delivery sign-off sent",
+          "when": "2026-04-02T16:00:00.000Z",
+        },
+      ],
+      "user": {
+        "businessName": "Adelina Lipsa",
+        "email": "adelina@example.com",
+      },
+    },
+  },
+  "type": "PackDocument",
+}
+`;
+
+exports[`PackDocument golden snapshots > renders not_as_described pack 1`] = `
+{
+  "children": null,
+  "props": {
+    "data": {
+      "caseReference": "CB-2026-04-12-NAD",
+      "contractExcerpt": {
+        "available": true,
+        "clauses": [
+          {
+            "heading": "Scope of Work",
+            "matchedKeyword": "scope",
+            "paragraph": "The Contractor shall deliver three (3) homepage design mockups in PNG format by the Acceptance Date, plus two (2) revision rounds per deliverable.",
+          },
+          {
+            "heading": "Acceptance",
+            "matchedKeyword": "acceptance",
+            "paragraph": "Client acceptance occurs upon written approval of each deliverable. Acceptance is presumed if no written objection is raised within 7 business days of delivery.",
+          },
+        ],
+      },
+      "disputeType": "not_as_described",
+      "generatedAt": "2026-04-15T12:00:00.000Z",
+      "paymentRecord": {
+        "amount": 2400,
+        "currency": "EUR",
+        "dueDate": "2026-03-15T00:00:00.000Z",
+        "placeholder": false,
+        "receivedAt": "2026-03-18T09:30:00.000Z",
+      },
+      "project": {
+        "clientName": "Acme GmbH",
+        "currency": "EUR",
+        "id": "proj-001",
+        "paymentAmount": 2400,
+        "paymentDueDate": "2026-03-15T00:00:00.000Z",
+        "paymentReceivedAt": "2026-03-18T09:30:00.000Z",
+        "projectValue": 2400,
+        "title": "Brand site redesign",
+      },
+      "rankedMessages": [
+        {
+          "createdAt": "2026-03-20T10:00:00.000Z",
+          "response": "Hi — confirming delivery of all three mockups. Acceptance window per contract is 7 business days.",
+          "responseId": "r-001",
+          "score": 8.42,
+          "toolType": "delivery_signoff",
+          "wasSent": true,
+        },
+        {
+          "createdAt": "2026-03-25T14:15:00.000Z",
+          "response": "Noting that the additional motion treatment you asked for falls outside the agreed scope. Happy to scope it as a follow-on.",
+          "responseId": "r-002",
+          "score": 5.91,
+          "toolType": "scope_change",
+          "wasSent": true,
+        },
+      ],
+      "signOffs": [
+        {
+          "text": "Hi — confirming delivery of all three mockups. Acceptance window per contract is 7 business days.",
+          "when": "2026-03-20T10:00:00.000Z",
+        },
+      ],
+      "timeline": [
+        {
+          "detail": "2400 EUR",
+          "label": "Payment due",
+          "when": "2026-03-15T00:00:00.000Z",
+        },
+        {
+          "detail": "2400 EUR",
+          "label": "Payment received",
+          "when": "2026-03-18T09:30:00.000Z",
+        },
+        {
+          "detail": "Final homepage mockups delivered",
+          "label": "Delivery sign-off sent",
+          "when": "2026-03-20T10:00:00.000Z",
+        },
+      ],
+      "user": {
+        "businessName": "Adelina Lipsa",
+        "email": "adelina@example.com",
+      },
+    },
+  },
+  "type": "PackDocument",
+}
+`;
+
+exports[`PackDocument golden snapshots > renders not_received pack 1`] = `
+{
+  "children": null,
+  "props": {
+    "data": {
+      "caseReference": "CB-2026-04-12-NR",
+      "contractExcerpt": {
+        "available": true,
+        "clauses": [
+          {
+            "heading": "Delivery",
+            "matchedKeyword": "delivery",
+            "paragraph": "Final deliverables shall be transferred via a shared Dropbox link upon receipt of final payment. The transfer event is logged automatically by the file-sharing platform.",
+          },
+        ],
+      },
+      "disputeType": "not_received",
+      "generatedAt": "2026-04-15T12:00:00.000Z",
+      "paymentRecord": {
+        "amount": 1200,
+        "currency": "EUR",
+        "dueDate": "2026-02-28T00:00:00.000Z",
+        "placeholder": false,
+        "receivedAt": "2026-03-03T11:00:00.000Z",
+      },
+      "project": {
+        "clientName": "Northwind Ltd",
+        "currency": "EUR",
+        "id": "proj-002",
+        "paymentAmount": 1200,
+        "paymentDueDate": "2026-02-28T00:00:00.000Z",
+        "paymentReceivedAt": "2026-03-03T11:00:00.000Z",
+        "projectValue": 1200,
+        "title": "Pitch deck production",
+      },
+      "rankedMessages": [
+        {
+          "createdAt": "2026-03-04T09:00:00.000Z",
+          "response": "Confirming the Dropbox link was shared with your work email immediately after payment cleared on March 3. The platform logs receipt.",
+          "responseId": "r-101",
+          "score": 7.1,
+          "toolType": "dispute_response",
+          "wasSent": true,
+        },
+        {
+          "createdAt": "2026-03-18T10:00:00.000Z",
+          "response": "Following up — please confirm you were able to access the shared folder. Let me know if you need a re-share to a different address.",
+          "responseId": "r-102",
+          "score": 4.55,
+          "toolType": "feedback_stall",
+          "wasSent": true,
+        },
+      ],
+      "signOffs": [],
+      "timeline": [
+        {
+          "detail": "1200 EUR",
+          "label": "Payment due",
+          "when": "2026-02-28T00:00:00.000Z",
+        },
+        {
+          "detail": "1200 EUR",
+          "label": "Payment received",
+          "when": "2026-03-03T11:00:00.000Z",
+        },
+        {
+          "detail": "Shared with vince@northwind.example",
+          "label": "Files delivered via Dropbox",
+          "when": "2026-03-03T12:30:00.000Z",
+        },
+      ],
+      "user": {
+        "businessName": "Adelina Lipsa",
+        "email": "adelina@example.com",
+      },
+    },
+  },
+  "type": "PackDocument",
+}
+`;
+
+exports[`PackDocument golden snapshots > renders unauthorized pack 1`] = `
+{
+  "children": null,
+  "props": {
+    "data": {
+      "caseReference": "CB-2026-04-12-UNA",
+      "contractExcerpt": {
+        "available": false,
+        "clauses": [],
+      },
+      "disputeType": "unauthorized",
+      "generatedAt": "2026-04-15T12:00:00.000Z",
+      "paymentRecord": {
+        "amount": 800,
+        "currency": "EUR",
+        "dueDate": "2026-03-01T00:00:00.000Z",
+        "placeholder": false,
+        "receivedAt": "2026-03-01T08:45:00.000Z",
+      },
+      "project": {
+        "clientName": "Initech",
+        "currency": "EUR",
+        "id": "proj-004",
+        "paymentAmount": 800,
+        "paymentDueDate": "2026-03-01T00:00:00.000Z",
+        "paymentReceivedAt": "2026-03-01T08:45:00.000Z",
+        "projectValue": 800,
+        "title": "Quarterly retainer — copy",
+      },
+      "rankedMessages": [
+        {
+          "createdAt": "2026-03-25T11:00:00.000Z",
+          "response": "This retainer has been active for two quarters and was authorized in writing via the agreement signed by your finance lead on Jan 12. Happy to share the signed copy and the original invoice.",
+          "responseId": "r-301",
+          "score": 6.4,
+          "toolType": "chargeback_threat",
+          "wasSent": true,
+        },
+      ],
+      "signOffs": [],
+      "timeline": [
+        {
+          "detail": "800 EUR",
+          "label": "Payment due",
+          "when": "2026-03-01T00:00:00.000Z",
+        },
+        {
+          "detail": "800 EUR",
+          "label": "Payment received",
+          "when": "2026-03-01T08:45:00.000Z",
+        },
+      ],
+      "user": {
+        "businessName": "Adelina Lipsa",
+        "email": "adelina@example.com",
+      },
+    },
+  },
+  "type": "PackDocument",
+}
+`;

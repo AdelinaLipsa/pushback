@@ -204,6 +204,47 @@ export async function generateDocument(
   }
 }
 
+// ─── Dispute Pack ───────────────────────────────────────────────────────────
+
+export type DisputePackResult =
+  | { upgradeRequired: true }
+  | { quotaExceeded: true }
+  | { blob: Blob; filename: string; upgradeRequired?: false }
+  | null
+
+export async function generateDisputePack(
+  projectId: string,
+  body: {
+    dispute_type: 'not_as_described' | 'not_received' | 'cancelled' | 'unauthorized'
+    case_reference?: string
+  },
+): Promise<DisputePackResult> {
+  try {
+    const res = await fetch(`/api/projects/${projectId}/dispute-pack`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    const contentType = res.headers.get('content-type') ?? ''
+    if (res.ok && contentType.includes('application/pdf')) {
+      const blob = await res.blob()
+      const cd = res.headers.get('content-disposition') ?? ''
+      const m = /filename="([^"]+)"/.exec(cd)
+      const filename = m?.[1] ?? `dispute-pack-${body.dispute_type}.pdf`
+      return { blob, filename }
+    }
+    let data: { error?: string } = {}
+    try { data = await res.json() } catch { /* server returned non-JSON */ }
+    if (res.status === 403 && data.error === 'PRO_REQUIRED') return { upgradeRequired: true }
+    if (res.status === 403 && data.error === 'UPGRADE_REQUIRED') return { quotaExceeded: true }
+    toast.error(data?.error ?? 'Pack generation failed — please try again.')
+    return null
+  } catch {
+    toast.error('Network error — check your connection.')
+    return null
+  }
+}
+
 // ─── Responses (fire-and-forget) ─────────────────────────────────────────────
 
 export function markResponseSent(id: string) {

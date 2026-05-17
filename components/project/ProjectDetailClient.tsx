@@ -8,6 +8,7 @@ import ProjectHeader from '@/components/project/ProjectHeader'
 import PaymentSection from '@/components/project/PaymentSection'
 import DefenseDashboard from '@/components/defense/DefenseDashboard'
 import ClientBehaviorCard from '@/components/project/ClientBehaviorCard'
+import DisputePackSection from '@/components/project/DisputePackSection'
 import ResponseHistory from '@/components/defense/ResponseHistory'
 import { computeRisk } from '@/lib/risk'
 
@@ -142,6 +143,8 @@ export default function ProjectDetailClient({ project, plan, responsesUsed, auto
           {risk.composite > 0 && (
             <ClientBehaviorCard risk={risk} clientName={project.client_name} />
           )}
+
+          <DisputePackSection project={project} plan={plan} />
 
           <div id="defense-dashboard">
             <DefenseDashboard
