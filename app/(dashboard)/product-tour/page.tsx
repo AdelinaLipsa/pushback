@@ -4,346 +4,433 @@ import {
   FileText,
   MessageSquare,
   ShieldCheck,
-  ClipboardList,
   BookOpen,
   BarChart2,
   Send,
+  ClipboardList,
+  ArrowUpRight,
+  Flag,
+  Scan,
+  Receipt,
+  ScrollText,
+  Compass,
 } from 'lucide-react'
 
+type IconType = React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>
+
+interface Tool {
+  name: string
+  href: string
+  helps: string
+  Icon: IconType
+}
+
 interface Moment {
+  number: string
   label: string
-  Icon: React.ComponentType<{ size?: number; className?: string }>
+  Icon: IconType
+  eyebrow: string
   headline: string
   when: string
-  tools: { name: string; href: string; helps: string }[]
+  tools: Tool[]
 }
 
 const MOMENTS: Moment[] = [
   {
+    number: '01',
     label: 'VET',
     Icon: AlertTriangle,
-    headline: 'Before you sign — scan the prospect for risk.',
-    when: 'A new client emails you. You haven\'t agreed to anything yet. Something feels off.',
+    eyebrow: 'PROSPECT',
+    headline: 'Scan the prospect before you sign anything.',
+    when: 'A new client emails you. Nothing is in writing yet. Something feels off.',
     tools: [
       {
         name: 'Red Flag Detector',
         href: '/red-flag',
-        helps: 'Paste the prospect\'s message and get every risk flag — scope, payment, IP, timeline, client posture — graded "safe / caution / no" with reasoning.',
+        helps: "Paste what they sent. We grade every risk — scope, payment, IP, timeline, posture — safe / caution / no, with the reasoning.",
+        Icon: Flag,
       },
       {
         name: 'Intake Questions',
         href: '/intake',
-        helps: 'Describe the project; get a tailored list of questions to ask the client before you quote, organized by category (scope, payment, rights, timeline).',
+        helps: 'Describe the project, get a tailored question list across scope, payment, rights, and timeline — before you quote.',
+        Icon: ClipboardList,
       },
     ],
   },
   {
+    number: '02',
     label: 'SIGN',
     Icon: FileText,
-    headline: 'Before you sign — analyze the contract for clauses that could cost you.',
-    when: 'They sent the service agreement. You\'re about to sign.',
+    eyebrow: 'CONTRACT',
+    headline: 'Analyze the contract for the clauses that quietly cost you.',
+    when: "They sent the service agreement. You're about to sign.",
     tools: [
       {
         name: 'Analyze a contract',
         href: '/contracts/new',
-        helps: 'Upload the PDF or paste the text. Get a 0-10 risk score, every flagged clause with severity, missing protections (late-fee, kill-fee, scope, revisions, payment schedule), and a verdict.',
+        helps: 'Upload the PDF or paste the text. Get a 0–10 risk score, every flagged clause with severity, and the protections that are missing.',
+        Icon: Scan,
       },
     ],
   },
   {
+    number: '03',
     label: 'REPLY',
     Icon: MessageSquare,
-    headline: 'Mid-project — when the client gets difficult, send a prepared response.',
-    when: 'They\'re asking for free work, pushing scope, going silent on payment, or threatening a chargeback.',
+    eyebrow: 'IN-FLIGHT',
+    headline: 'When the client gets difficult, answer from a prepared posture.',
+    when: 'Free-work demands. Scope creep. Silence on payment. Chargeback threats.',
     tools: [
       {
-        name: 'Defense Dashboard (per project)',
+        name: 'Defense Dashboard',
         href: '/projects',
-        helps: 'Open the project. Paste what the client said. We identify the situation across 23 types and produce a contract-grounded reply — payment reminders, scope pushback, chargeback rebuttals, sign-off requests, and more.',
+        helps: 'Open the project, paste what the client said. We identify the situation across 23 types and produce a contract-grounded reply.',
+        Icon: MessageSquare,
       },
       {
         name: 'Arsenal',
         href: '/arsenal',
-        helps: 'Browse the full catalog of 23 reply situations grouped by category. Reference when you\'re not sure which tool fits the moment.',
+        helps: 'Browse the full catalog of 23 reply situations grouped by category. Reference when the moment is ambiguous.',
+        Icon: BookOpen,
       },
     ],
   },
   {
+    number: '04',
     label: 'RECOVER',
     Icon: ShieldCheck,
-    headline: 'After delivery — chase late payment and defend against disputes.',
-    when: 'Invoice is overdue, or the client just filed a chargeback / threatened one.',
+    eyebrow: 'POST-DELIVERY',
+    headline: 'Chase the invoice. Defend the chargeback. Hold the line.',
+    when: 'The invoice is overdue, or the dispute just landed in your inbox.',
     tools: [
       {
         name: 'Payment tracking',
         href: '/projects',
-        helps: 'Set the due date on a project; we surface overdue invoices on the dashboard and suggest escalation cadence (first reminder → second → final notice).',
+        helps: 'Set a due date on the project. Overdue invoices surface on the dashboard with the right escalation cadence pre-staged.',
+        Icon: Receipt,
       },
       {
         name: 'Dispute Pack',
         href: '/projects',
-        helps: 'Pro feature. Generates a Stripe/PayPal-ready 7-page PDF rebuttal — cover letter, contract excerpts, delivery timeline, communication log, sign-off proofs, payment record, summary. One click, downloadable.',
+        helps: 'Pro feature. One click generates a Stripe / PayPal-ready 7-page PDF rebuttal — contract excerpts, timeline, communication log, sign-off proofs.',
+        Icon: ScrollText,
       },
     ],
   },
 ]
 
-const ELSEWHERE: { name: string; href: string; Icon: React.ComponentType<{ size?: number; className?: string }>; helps: string }[] = [
+interface Step {
+  number: string
+  title: string
+  body: string
+}
+
+const STEPS: Step[] = [
+  {
+    number: '01',
+    title: 'Create a project',
+    body: 'Each client engagement is a project. Name it, add the due date, drop in any quirks worth remembering.',
+  },
+  {
+    number: '02',
+    title: 'Add the contract (optional)',
+    body: 'Uploading the service agreement powers smarter replies, deeper risk scoring, and the Dispute Pack.',
+  },
+  {
+    number: '03',
+    title: 'Use the right tool when something happens',
+    body: 'Paste the client message into the project. The right reply is one click away — no template hunting.',
+  },
+  {
+    number: '04',
+    title: 'Recover or defend',
+    body: 'Mark invoices received when paid. If they delay or dispute, the cadence and rebuttal pack are ready.',
+  },
+]
+
+interface Reference {
+  name: string
+  href: string
+  Icon: IconType
+  helps: string
+}
+
+const REFERENCE: Reference[] = [
   {
     name: 'Arsenal',
     href: '/arsenal',
     Icon: BookOpen,
-    helps: 'Browse all 23 reply situations grouped by category.',
+    helps: 'All 23 reply situations, grouped.',
   },
   {
     name: 'Analytics',
     href: '/analytics',
     Icon: BarChart2,
-    helps: 'Your usage + outcomes: responses sent, client win rate, contract risk distribution, monthly quota.',
+    helps: 'Your usage, win rate, and outcomes.',
   },
   {
     name: 'Feedback',
     href: '/feedback',
     Icon: Send,
-    helps: 'Report a bug, request a feature, or tell us what\'s missing. We read every submission.',
+    helps: 'Report a bug. Request a feature.',
   },
 ]
 
-const STEPS: { number: string; title: string; body: string }[] = [
-  {
-    number: '01',
-    title: 'Create a project',
-    body: 'Each client engagement is a project. Add the client name, optional project value + due date, optional notes about the client\'s quirks.',
-  },
-  {
-    number: '02',
-    title: 'Optional — upload the contract',
-    body: 'If you\'re about to sign or already have, upload the service agreement. The contract risk score + clause analysis powers smarter replies and the Dispute Pack.',
-  },
-  {
-    number: '03',
-    title: 'Use the right tool when something happens',
-    body: 'Client gets difficult? Open the project, paste their message, generate a reply. The tool you need is one click away.',
-  },
-  {
-    number: '04',
-    title: 'Recover overdue payment or defend a chargeback',
-    body: 'Mark the invoice received when paid. If they don\'t pay or dispute, the escalation cadence and Dispute Pack are ready.',
-  },
-]
-
-const sectionEyebrow: React.CSSProperties = {
-  fontSize: '0.7rem',
-  fontWeight: 600,
-  textTransform: 'uppercase',
-  letterSpacing: '0.1em',
-  color: 'var(--text-muted)',
-  margin: '0 0 0.75rem 0',
+const serifItalic: React.CSSProperties = {
+  fontFamily: 'var(--font-serif)',
+  fontStyle: 'italic',
 }
 
 export default function ProductTourPage() {
   return (
-    <div style={{ padding: '2rem', maxWidth: '900px', margin: '0 auto' }}>
-      {/* Header */}
-      <div className="fade-up" style={{ marginBottom: '2.5rem' }}>
-        <h1 style={{ fontWeight: 700, fontSize: '1.75rem', letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
-          Product tour
+    <div className="mx-auto w-full max-w-3xl px-6 py-12 md:px-10 md:py-16">
+      {/* ─── Hero ────────────────────────────────────────────────── */}
+      <header className="fade-up mb-20 md:mb-24">
+        <div className="mb-5 flex items-center gap-2.5">
+          <Compass size={14} className="text-brand-lime" strokeWidth={2} aria-hidden />
+          <span className="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-text-muted">
+            Field guide · v1
+          </span>
+        </div>
+        <h1
+          className="mb-5 text-[2.25rem] font-bold leading-[1.05] tracking-[-0.03em] text-text-primary md:text-[2.75rem]"
+        >
+          Four moments,{' '}
+          <span style={serifItalic} className="text-text-secondary">
+            four toolkits.
+          </span>
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, maxWidth: '60ch' }}>
-          A 2-minute orientation. Pushback covers four moments in every client engagement —
-          vet, sign, reply, recover. Each moment has dedicated tools you can reach from this
-          dashboard. Here&apos;s what they do and when to use them.
+        <p className="max-w-[58ch] text-[0.95rem] leading-[1.65] text-text-secondary">
+          Pushback isn&apos;t a single tool — it&apos;s a chain of small ones built for the exact
+          moment a freelance engagement turns difficult. This page walks the chain end to
+          end, in the order you&apos;ll meet it.
         </p>
-      </div>
+      </header>
 
-      {/* The four moments */}
-      <section className="fade-up" style={{ animationDelay: '0.05s', marginBottom: '3rem' }}>
-        <p style={sectionEyebrow}>The four client moments</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {MOMENTS.map((m) => (
-            <div
+      {/* ─── The four moments ────────────────────────────────────── */}
+      <section aria-labelledby="moments-heading" className="mb-24 md:mb-28">
+        <h2 id="moments-heading" className="sr-only">
+          The four client moments
+        </h2>
+
+        <ol className="space-y-20 md:space-y-24">
+          {MOMENTS.map((m, idx) => (
+            <li
               key={m.label}
-              style={{
-                backgroundColor: 'var(--bg-surface)',
-                border: '1px solid var(--bg-border)',
-                borderLeft: '3px solid var(--brand-lime)',
-                borderRadius: '0.75rem',
-                padding: '1.25rem 1.5rem',
-              }}
+              className="fade-up relative"
+              style={{ animationDelay: `${0.05 + idx * 0.04}s` }}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
-                <div
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '0.5rem',
-                    backgroundColor: 'rgba(132,204,22,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <m.Icon size={18} className="text-brand-lime" />
+              {/* Chapter divider — hairline + lime tick */}
+              <div className="mb-8 flex items-center gap-3">
+                <span className="block h-[1px] w-8 bg-brand-lime" aria-hidden />
+                <span className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-text-muted">
+                  {m.eyebrow}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-4 md:grid-cols-[6rem_1fr] md:gap-x-10">
+                {/* Number — monospace, oversized */}
+                <div className="font-mono text-[2.5rem] font-light leading-none text-text-muted md:text-[3rem]">
+                  {m.number}
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.625rem', marginBottom: '0.25rem' }}>
-                    <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', color: 'var(--brand-lime)' }}>
+
+                {/* Moment headline + content */}
+                <div className="min-w-0">
+                  {/* Verb label — oversized display */}
+                  <div className="mb-5 flex items-baseline gap-3">
+                    <span className="text-[2.75rem] font-black leading-[0.85] tracking-[-0.04em] text-text-primary md:text-[4rem]">
                       {m.label}
                     </span>
-                    <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                      {m.headline}
-                    </span>
+                    <m.Icon
+                      size={20}
+                      strokeWidth={1.75}
+                      className="hidden text-brand-lime md:block"
+                      aria-hidden
+                    />
                   </div>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                    <span style={{ fontStyle: 'italic', color: 'var(--text-muted)' }}>When: </span>
+
+                  {/* Headline sentence */}
+                  <h3 className="mb-3 max-w-[40ch] text-[1.1rem] font-semibold leading-[1.35] tracking-[-0.01em] text-text-primary md:text-[1.2rem]">
+                    {m.headline}
+                  </h3>
+
+                  {/* Italic pull-quote "when" */}
+                  <p
+                    className="mb-8 max-w-[44ch] text-[1rem] leading-[1.55] text-text-secondary md:text-[1.05rem]"
+                    style={serifItalic}
+                  >
                     {m.when}
                   </p>
+
+                  {/* Tools row */}
+                  <ul className="grid gap-3 sm:grid-cols-2" aria-label={`Tools for ${m.label.toLowerCase()}`}>
+                    {m.tools.map((t) => (
+                      <li key={t.name} className="min-w-0">
+                        <Link
+                          href={t.href}
+                          className="group block rounded-lg border border-bg-border bg-bg-surface/50 p-4 transition-all duration-200 hover:border-brand-lime/40 hover:bg-bg-surface focus-visible:border-brand-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime/30"
+                        >
+                          <div className="mb-2 flex items-start justify-between gap-3">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <t.Icon
+                                size={13}
+                                strokeWidth={1.75}
+                                className="shrink-0 text-text-muted transition-colors group-hover:text-brand-lime"
+                                aria-hidden
+                              />
+                              <span className="truncate text-[0.875rem] font-semibold text-text-primary">
+                                {t.name}
+                              </span>
+                            </div>
+                            <ArrowUpRight
+                              size={14}
+                              strokeWidth={1.75}
+                              className="shrink-0 text-text-muted transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-lime"
+                              aria-hidden
+                            />
+                          </div>
+                          <p className="text-[0.825rem] leading-[1.5] text-text-secondary">
+                            {t.helps}
+                          </p>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
-
-              <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-                {m.tools.map((t) => (
-                  <li
-                    key={t.name}
-                    style={{
-                      backgroundColor: 'var(--bg-elevated)',
-                      borderRadius: '0.5rem',
-                      padding: '0.75rem 0.875rem',
-                    }}
-                  >
-                    <Link
-                      href={t.href}
-                      style={{
-                        color: 'var(--brand-lime)',
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        textDecoration: 'none',
-                      }}
-                      className="hover:opacity-80 transition-opacity"
-                    >
-                      {t.name} →
-                    </Link>
-                    <p style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', margin: '0.3rem 0 0 0', lineHeight: 1.5 }}>
-                      {t.helps}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
 
-      {/* Getting started */}
-      <section className="fade-up" style={{ animationDelay: '0.1s', marginBottom: '3rem' }}>
-        <p style={sectionEyebrow}>Getting started</p>
-        <div
-          style={{
-            backgroundColor: 'var(--bg-surface)',
-            border: '1px solid var(--bg-border)',
-            borderRadius: '0.75rem',
-            padding: '1.5rem 1.75rem',
-          }}
+      {/* ─── Getting started ─────────────────────────────────────── */}
+      <section
+        aria-labelledby="start-heading"
+        className="fade-up mb-24 md:mb-28"
+        style={{ animationDelay: '0.3s' }}
+      >
+        <div className="mb-10 flex items-center gap-3">
+          <span className="block h-[1px] w-8 bg-brand-lime" aria-hidden />
+          <span className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-text-muted">
+            Path
+          </span>
+        </div>
+
+        <h2
+          id="start-heading"
+          className="mb-12 max-w-[28ch] text-[1.75rem] font-bold leading-[1.15] tracking-[-0.02em] text-text-primary md:text-[2rem]"
         >
-          <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1.125rem' }}>
-            {STEPS.map((s) => (
-              <li key={s.number} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                <span
-                  style={{
-                    fontVariantNumeric: 'tabular-nums',
-                    fontSize: '0.875rem',
-                    fontWeight: 700,
-                    color: 'var(--brand-lime)',
-                    letterSpacing: '0.05em',
-                    flexShrink: 0,
-                    marginTop: '0.15rem',
-                  }}
-                >
-                  {s.number}
-                </span>
-                <div>
-                  <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 0.25rem 0' }}>
-                    {s.title}
-                  </p>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                    {s.body}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid var(--bg-border)' }}>
-            <Link
-              href="/projects/new"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.375rem',
-                backgroundColor: 'var(--brand-lime)',
-                color: '#0a0a0a',
-                fontWeight: 700,
-                padding: '0.6rem 1.25rem',
-                borderRadius: '0.5rem',
-                textDecoration: 'none',
-                fontSize: '0.9rem',
-              }}
-              className="hover:opacity-90 transition-opacity"
-            >
-              Create your first project →
-            </Link>
-          </div>
-        </div>
-      </section>
+          The shortest path through the toolkit.
+        </h2>
 
-      {/* Reference */}
-      <section className="fade-up" style={{ animationDelay: '0.15s', marginBottom: '2rem' }}>
-        <p style={sectionEyebrow}>Elsewhere in the app</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.75rem' }}>
-          {ELSEWHERE.map((e) => (
-            <Link
-              key={e.name}
-              href={e.href}
-              style={{
-                backgroundColor: 'var(--bg-surface)',
-                border: '1px solid var(--bg-border)',
-                borderRadius: '0.625rem',
-                padding: '1rem 1.125rem',
-                textDecoration: 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.5rem',
-                transition: 'border-color 150ms ease',
-              }}
-              className="hover:border-zinc-600"
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <e.Icon size={14} className="text-brand-lime" />
-                <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  {e.name}
-                </span>
+        <ol className="space-y-8 border-l border-bg-border pl-6 md:space-y-10 md:pl-8">
+          {STEPS.map((s) => (
+            <li key={s.number} className="relative">
+              {/* Lime tick on the timeline */}
+              <span
+                aria-hidden
+                className="absolute -left-[1.625rem] top-1.5 h-2 w-2 rounded-full bg-brand-lime md:-left-[2.125rem]"
+              />
+              <div className="mb-1 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-brand-lime">
+                Step {s.number}
               </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                {e.helps}
+              <h3 className="mb-1.5 text-[1.05rem] font-semibold leading-tight tracking-[-0.01em] text-text-primary">
+                {s.title}
+              </h3>
+              <p className="max-w-[52ch] text-[0.925rem] leading-[1.6] text-text-secondary">
+                {s.body}
               </p>
-            </Link>
+            </li>
           ))}
+        </ol>
+
+        <div className="mt-12 md:mt-14">
+          <Link
+            href="/projects/new"
+            className="group inline-flex items-center gap-2 rounded-lg bg-brand-lime px-5 py-3 text-[0.9rem] font-bold tracking-tight text-[#0a0a0a] transition-opacity duration-150 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base"
+          >
+            Create your first project
+            <ArrowUpRight
+              size={15}
+              strokeWidth={2.25}
+              className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              aria-hidden
+            />
+          </Link>
         </div>
       </section>
 
-      {/* Closer */}
-      <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--bg-border)' }}>
-        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', margin: 0 }}>
+      {/* ─── Reference ────────────────────────────────────────────── */}
+      <section
+        aria-labelledby="reference-heading"
+        className="fade-up mb-20"
+        style={{ animationDelay: '0.4s' }}
+      >
+        <div className="mb-6 flex items-center gap-3">
+          <span className="block h-[1px] w-8 bg-brand-lime" aria-hidden />
+          <span className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-text-muted">
+            Elsewhere
+          </span>
+        </div>
+
+        <h2
+          id="reference-heading"
+          className="mb-8 max-w-[36ch] text-[1.25rem] font-semibold leading-tight tracking-[-0.01em] text-text-primary md:text-[1.4rem]"
+        >
+          Three places worth remembering.
+        </h2>
+
+        <ul className="grid gap-3 sm:grid-cols-3">
+          {REFERENCE.map((r) => (
+            <li key={r.name}>
+              <Link
+                href={r.href}
+                className="group block h-full rounded-lg border border-bg-border bg-bg-surface/40 p-4 transition-all duration-200 hover:border-brand-lime/40 hover:bg-bg-surface focus-visible:border-brand-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime/30"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <r.Icon
+                    size={14}
+                    strokeWidth={1.75}
+                    className="text-text-muted transition-colors group-hover:text-brand-lime"
+                    aria-hidden
+                  />
+                  <ArrowUpRight
+                    size={13}
+                    strokeWidth={1.75}
+                    className="text-text-muted transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-lime"
+                    aria-hidden
+                  />
+                </div>
+                <div className="mb-1 text-[0.875rem] font-semibold text-text-primary">
+                  {r.name}
+                </div>
+                <p className="text-[0.8rem] leading-[1.5] text-text-secondary">{r.helps}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* ─── Closer ──────────────────────────────────────────────── */}
+      <footer
+        className="fade-up border-t border-bg-border pt-8"
+        style={{ animationDelay: '0.5s' }}
+      >
+        <p
+          className="text-center text-[0.95rem] text-text-secondary"
+          style={serifItalic}
+        >
           Stuck or missing something?{' '}
           <Link
             href="/feedback"
-            style={{ color: 'var(--brand-lime)', textDecoration: 'none', fontWeight: 600 }}
-            className="hover:opacity-80 transition-opacity"
+            className="text-brand-lime no-underline transition-opacity duration-150 hover:opacity-80 focus-visible:outline-none focus-visible:underline focus-visible:decoration-brand-lime focus-visible:underline-offset-4"
+            style={{ fontStyle: 'normal', fontFamily: 'var(--font-sans, inherit)', fontWeight: 600 }}
           >
             Tell us →
           </Link>
         </p>
-      </div>
+      </footer>
     </div>
   )
 }
