@@ -15,6 +15,7 @@ import {
   ScrollText,
   Compass,
 } from 'lucide-react'
+import ScrollReveal from '@/components/shared/ScrollReveal'
 
 type IconType = React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>
 
@@ -186,7 +187,7 @@ export default function ProductTourPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-12 md:px-10 md:py-16">
       {/* ─── Hero ────────────────────────────────────────────────── */}
-      <header className="fade-up mb-20 md:mb-24">
+      <header className="mb-20 md:mb-24">
         <div className="mb-5 flex items-center gap-2.5">
           <Compass size={14} className="text-brand-lime" strokeWidth={2} aria-hidden />
           <span className="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-text-muted">
@@ -216,10 +217,12 @@ export default function ProductTourPage() {
 
         <ol className="space-y-20 md:space-y-24">
           {MOMENTS.map((m, idx) => (
-            <li
+            <ScrollReveal
               key={m.label}
-              className="fade-up relative"
-              style={{ animationDelay: `${0.05 + idx * 0.04}s` }}
+              as="li"
+              direction={idx % 2 === 0 ? 'left' : 'right'}
+              distance={60}
+              className="relative"
             >
               {/* Chapter divider — hairline + lime tick */}
               <div className="mb-8 flex items-center gap-3">
@@ -299,17 +302,14 @@ export default function ProductTourPage() {
                   </ul>
                 </div>
               </div>
-            </li>
+            </ScrollReveal>
           ))}
         </ol>
       </section>
 
       {/* ─── Getting started ─────────────────────────────────────── */}
-      <section
-        aria-labelledby="start-heading"
-        className="fade-up mb-24 md:mb-28"
-        style={{ animationDelay: '0.3s' }}
-      >
+      <section aria-labelledby="start-heading" className="mb-24 md:mb-28">
+       <ScrollReveal direction="up" distance={48}>
         <div className="mb-10 flex items-center gap-3">
           <span className="block h-[1px] w-8 bg-brand-lime" aria-hidden />
           <span className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-text-muted">
@@ -359,14 +359,12 @@ export default function ProductTourPage() {
             />
           </Link>
         </div>
+        </ScrollReveal>
       </section>
 
       {/* ─── Reference ────────────────────────────────────────────── */}
-      <section
-        aria-labelledby="reference-heading"
-        className="fade-up mb-20"
-        style={{ animationDelay: '0.4s' }}
-      >
+      <section aria-labelledby="reference-heading" className="mb-20">
+       <ScrollReveal direction="up" distance={32}>
         <div className="mb-6 flex items-center gap-3">
           <span className="block h-[1px] w-8 bg-brand-lime" aria-hidden />
           <span className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-text-muted">
@@ -410,13 +408,11 @@ export default function ProductTourPage() {
             </li>
           ))}
         </ul>
+       </ScrollReveal>
       </section>
 
       {/* ─── Closer ──────────────────────────────────────────────── */}
-      <footer
-        className="fade-up border-t border-bg-border pt-8"
-        style={{ animationDelay: '0.5s' }}
-      >
+      <ScrollReveal direction="up" distance={24} as="div" className="border-t border-bg-border pt-8">
         <p
           className="text-center text-[0.95rem] text-text-secondary"
           style={serifItalic}
@@ -430,7 +426,7 @@ export default function ProductTourPage() {
             Tell us →
           </Link>
         </p>
-      </footer>
+      </ScrollReveal>
     </div>
   )
 }
