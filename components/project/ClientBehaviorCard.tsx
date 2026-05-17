@@ -40,6 +40,49 @@ function humanizeLabel(label: string): string {
   return label.replace(/^Contract has no /, 'Missing ')
 }
 
+// One-sentence plain-English explanation per signal code. Answers "why does
+// this matter for me as a freelancer?" so the user isn't decoding category
+// labels like "no_kill_fee_clause" mentally. Codes not in this map fall back
+// to no description (the label itself is the explanation in those cases —
+// e.g. "Payment 5 days late" is self-evident).
+const SIGNAL_DESCRIPTIONS: Record<string, string> = {
+  // Contract gaps — payment dimension
+  no_late_fee_clause:
+    "Your contract doesn't define what the client owes you when payment is late.",
+  no_kill_fee_clause:
+    'No agreed payout if the client cancels mid-project — you absorb the loss.',
+  no_payment_schedule:
+    'The entire fee depends on final approval; no milestone payments to fall back on.',
+  // Contract gaps — scope dimension
+  no_scope_clause:
+    "Work scope isn't legally defined — scope creep has no contractual stop sign.",
+  no_revision_cap:
+    'No agreed limit on revisions — every "small tweak" is binding.',
+  // Payment lateness (label already says how many days — these add behavioural read)
+  late_severe: 'Sustained non-payment — usually a recovery problem, not a billing one.',
+  late_moderate: 'Payment is past due and may indicate a stalling pattern.',
+  late_minor: 'Just over the due date — most clients self-correct within a few days.',
+  on_time: 'Client paid before the due date — they value the working relationship.',
+  // Behavioural patterns
+  partial_payment_pressure:
+    "You've sent multiple cadence reminders — this client typically requires chasing.",
+  // Chargeback risk patterns
+  silence_14d:
+    'Client has gone silent after recent activity — common precursor to a chargeback.',
+  no_signoff_on_delivery:
+    'Client engaged after delivery but never signed off — disputes love this ambiguity.',
+  // Defensive messages sent (these reflect YOUR posture, not the client's behaviour)
+  chargeback_threat_sent: 'You sent a chargeback-threat response — situation has escalated.',
+  dispute_response_sent: 'You sent a dispute-response — actively defending against a claim.',
+  review_threat_sent: 'You sent a review-threat response — reputational pressure in play.',
+  scope_change_sent: 'You sent a scope-change pushback — client tried to expand the work.',
+  revision_pressure_sent: 'You sent a revision-limit response — client wanted more rounds.',
+  goalpost_shift_sent:
+    "You sent a moving-goalposts response — client changed what 'done' means.",
+  post_handoff_request_sent:
+    'You sent a post-handoff pushback — client asked for work after sign-off.',
+}
+
 function topSignals(
   risk: RiskResult,
   limit: number,
@@ -161,15 +204,7 @@ function Donut({ risk }: DonutProps) {
   )
 }
 
-function LegendRow({
-  color,
-  label,
-  weight,
-}: {
-  color: string
-  label: string
-  weight: string
-}) {
+function LegendRow({ color, label }: { color: string; label: string }) {
   return (
     <div
       style={{
@@ -177,7 +212,7 @@ function LegendRow({
         alignItems: 'center',
         gap: '0.5rem',
         fontSize: '0.75rem',
-        color: 'var(--text-muted)',
+        color: 'var(--text-secondary)',
       }}
     >
       <span
@@ -190,8 +225,7 @@ function LegendRow({
           flexShrink: 0,
         }}
       />
-      <span style={{ color: 'var(--text-secondary)' }}>{label}</span>
-      <span style={{ marginLeft: 'auto', fontVariantNumeric: 'tabular-nums' }}>{weight}</span>
+      <span>{label}</span>
     </div>
   )
 }
@@ -199,21 +233,25 @@ function LegendRow({
 function SignalRow({
   signal,
   dimension,
+  dimensionLevelColor,
 }: {
   signal: RiskSignal
   dimension: RiskDimension
+  dimensionLevelColor: string
 }) {
-  const dimColor = RISK_LEVEL_COLORS[levelFromScore(signal.points)]
+  // Dot tracks the DIMENSION's overall colour, not the signal's individual
+  // points. Otherwise every low-point signal renders green even when the
+  // dimension itself is orange/red — visually contradicts the donut.
+  const dimColor = dimensionLevelColor
+  const description = SIGNAL_DESCRIPTIONS[signal.code]
   return (
     <li
       style={{
         display: 'flex',
         alignItems: 'flex-start',
         gap: '0.625rem',
-        fontSize: '0.85rem',
-        color: 'var(--text-secondary)',
         listStyle: 'none',
-        padding: '0.25rem 0',
+        padding: '0.5rem 0',
       }}
     >
       <span
@@ -223,24 +261,38 @@ function SignalRow({
           height: '8px',
           borderRadius: '9999px',
           backgroundColor: dimColor,
-          marginTop: '0.4rem',
+          marginTop: '0.45rem',
           flexShrink: 0,
         }}
       />
-      <span>
-        {humanizeLabel(signal.label)}
-        <span
-          style={{
-            marginLeft: '0.4rem',
-            fontSize: '0.7rem',
-            color: 'var(--text-muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.06em',
-          }}
-        >
-          · {DIMENSION_LABELS[dimension]}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.125rem', minWidth: 0 }}>
+        <span style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+          {humanizeLabel(signal.label)}
+          <span
+            style={{
+              marginLeft: '0.5rem',
+              fontSize: '0.65rem',
+              color: 'var(--text-muted)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              fontWeight: 600,
+            }}
+          >
+            {DIMENSION_LABELS[dimension]}
+          </span>
         </span>
-      </span>
+        {description && (
+          <span
+            style={{
+              fontSize: '0.8rem',
+              color: 'var(--text-secondary)',
+              lineHeight: 1.4,
+            }}
+          >
+            {description}
+          </span>
+        )}
+      </div>
     </li>
   )
 }
@@ -251,14 +303,21 @@ export default function ClientBehaviorCard({ risk, clientName }: ClientBehaviorC
   const totalPositive = countPositiveSignals(risk)
   const moreCount = Math.max(0, totalPositive - top.length)
 
-  const paymentColor = RISK_LEVEL_COLORS[levelFromScore(risk.dimensions.payment.score)]
-  const scopeColor = RISK_LEVEL_COLORS[levelFromScore(risk.dimensions.scope.score)]
-  const chargebackColor = RISK_LEVEL_COLORS[levelFromScore(risk.dimensions.chargeback.score)]
+  const dimensionColors: Record<RiskDimension, string> = {
+    payment: RISK_LEVEL_COLORS[levelFromScore(risk.dimensions.payment.score)],
+    scope: RISK_LEVEL_COLORS[levelFromScore(risk.dimensions.scope.score)],
+    chargeback: RISK_LEVEL_COLORS[levelFromScore(risk.dimensions.chargeback.score)],
+  }
 
-  // Prefer the actionable mitigation as the closing CTA. Fall back to the
-  // deterministic nextAction sentence (always present) for green / no-lever
-  // states.
-  const ctaText = risk.topMitigation?.action ?? risk.nextAction
+  // Prefer the actionable mitigation when one is computed. When the level is
+  // green AND there are still positive-points signals (e.g. contract gaps on a
+  // healthy project), the generic "no action needed" verdict contradicts the
+  // signal list — fall through to a constructive sentence instead.
+  const ctaText =
+    risk.topMitigation?.action ??
+    (risk.level === 'green' && top.length > 0
+      ? 'Address the items above to harden your contract template — protects every future project, not just this one.'
+      : risk.nextAction)
 
   return (
     <div
@@ -317,9 +376,9 @@ export default function ClientBehaviorCard({ risk, clientName }: ClientBehaviorC
               minWidth: '140px',
             }}
           >
-            <LegendRow color={paymentColor} label={DIMENSION_LABELS.payment} weight="40%" />
-            <LegendRow color={scopeColor} label={DIMENSION_LABELS.scope} weight="30%" />
-            <LegendRow color={chargebackColor} label={DIMENSION_LABELS.chargeback} weight="30%" />
+            <LegendRow color={dimensionColors.payment} label={DIMENSION_LABELS.payment} />
+            <LegendRow color={dimensionColors.scope} label={DIMENSION_LABELS.scope} />
+            <LegendRow color={dimensionColors.chargeback} label={DIMENSION_LABELS.chargeback} />
           </div>
         </div>
 
@@ -341,7 +400,12 @@ export default function ClientBehaviorCard({ risk, clientName }: ClientBehaviorC
               </p>
               <ul style={{ margin: 0, padding: 0 }}>
                 {top.map(({ signal, dimension }, i) => (
-                  <SignalRow key={`${signal.code}-${i}`} signal={signal} dimension={dimension} />
+                  <SignalRow
+                    key={`${signal.code}-${i}`}
+                    signal={signal}
+                    dimension={dimension}
+                    dimensionLevelColor={dimensionColors[dimension]}
+                  />
                 ))}
               </ul>
               {moreCount > 0 && (
