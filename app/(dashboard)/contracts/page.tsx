@@ -9,11 +9,45 @@ export default async function ContractsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: contracts } = await supabase
+  const { data: baseContracts, error: contractsError } = await supabase
     .from('contracts')
-    .select('*, projects(title)')
+    .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+
+  if (contractsError) {
+    console.error('[contracts/page] base query error:', contractsError)
+  }
+
+  const baseRows = baseContracts ?? []
+  const projectIds = Array.from(
+    new Set(baseRows.map((c) => c.project_id).filter((id): id is string => !!id)),
+  )
+
+  const { data: linkedProjects, error: projectsError } =
+    projectIds.length > 0
+      ? await supabase
+          .from('projects')
+          .select('id, title')
+          .eq('user_id', user.id)
+          .in('id', projectIds)
+      : { data: [], error: null }
+
+  if (projectsError) {
+    console.error('[contracts/page] projects query error:', projectsError)
+  }
+
+  const projectTitleById = new Map<string, string>()
+  for (const p of linkedProjects ?? []) {
+    projectTitleById.set(p.id, p.title)
+  }
+
+  const contracts = baseRows.map((c) => ({
+    ...c,
+    projects: c.project_id && projectTitleById.has(c.project_id)
+      ? { title: projectTitleById.get(c.project_id)! }
+      : null,
+  }))
 
   return (
     <div style={{ padding: '2rem' }}>
