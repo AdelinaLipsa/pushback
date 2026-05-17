@@ -48,13 +48,13 @@ const MOMENTS: Moment[] = [
       {
         name: 'Red Flag Detector',
         href: '/red-flag',
-        helps: "Paste what they sent. We grade every risk — scope, payment, IP, timeline, posture — safe / caution / no, with the reasoning.",
+        helps: "Paste what they sent. Every risk graded — scope, payment, IP, timeline, posture — so you know which clauses the contract has to lock down.",
         Icon: Flag,
       },
       {
         name: 'Intake Questions',
         href: '/intake',
-        helps: 'Describe the project, get a tailored question list across scope, payment, rights, and timeline — before you quote.',
+        helps: 'A tailored question list across scope, payment, rights, and timeline — so the contract reflects what was actually agreed, not what gets remembered later.',
         Icon: ClipboardList,
       },
     ],
@@ -80,19 +80,19 @@ const MOMENTS: Moment[] = [
     label: 'REPLY',
     Icon: MessageSquare,
     eyebrow: 'IN-FLIGHT',
-    headline: 'When the client gets difficult, answer from a prepared posture.',
+    headline: 'Enforce the contract when the client tries to walk past it.',
     when: 'Free-work demands. Scope creep. Silence on payment. Chargeback threats.',
     tools: [
       {
         name: 'Defense Dashboard',
         href: '/projects',
-        helps: 'Open the project, paste what the client said. We identify the situation across 23 types and produce a contract-grounded reply.',
+        helps: 'Paste what the client said. The toolkit matches it against the 23 contract-protected situations and surfaces the specific clause that already covers you — the reply is the by-product, not the point.',
         Icon: MessageSquare,
       },
       {
         name: 'Arsenal',
         href: '/arsenal',
-        helps: 'Browse the full catalog of 23 reply situations grouped by category. Reference when the moment is ambiguous.',
+        helps: 'The full catalog of 23 contract-protected situations, grouped by category. Reference when you’re not sure which clause applies.',
         Icon: BookOpen,
       },
     ],
@@ -197,15 +197,16 @@ export default function ProductTourPage() {
         <h1
           className="mb-5 text-[2.25rem] font-bold leading-[1.05] tracking-[-0.03em] text-text-primary md:text-[2.75rem]"
         >
-          Four moments,{' '}
+          Your contract is the spine.{' '}
           <span style={serifItalic} className="text-text-secondary">
-            four toolkits.
+            The toolkit is the muscle around it.
           </span>
         </h1>
         <p className="max-w-[58ch] text-[0.95rem] leading-[1.65] text-text-secondary">
-          Pushback isn&apos;t a single tool — it&apos;s a chain of small ones built for the exact
-          moment a freelance engagement turns difficult. This page walks the chain end to
-          end, in the order you&apos;ll meet it.
+          Pushback isn&apos;t an AI that writes emails. It&apos;s the contract-grounded toolkit that
+          protects every freelance engagement — vetted before you sign, analyzed when you do,
+          enforced when the client pushes back, defended after delivery. Four moments, one
+          contract, one chain of tools that all trace back to it.
         </p>
       </header>
 
