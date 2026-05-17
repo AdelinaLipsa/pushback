@@ -521,12 +521,12 @@ export default function PushbackHero() {
               Every move, prepared.
             </p>
             <p className="mb-6 text-sm leading-relaxed" style={{ color: "#fafafa", textShadow: "0 0 20px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9)" }}>
-              <strong style={{ color: '#fafafa' }}>Vet</strong> prospects for red flags before you reply.
+              <strong style={{ color: '#fafafa' }}>Vet</strong> prospects for red flags before you sign.
               <strong style={{ color: '#fafafa' }}> Sign</strong> only after a contract risk scan.
-              <strong style={{ color: '#fafafa' }}> Reply</strong> with prepared responses across 23 situations.
+              <strong style={{ color: '#fafafa' }}> Reply</strong> with the right tool, not the right wording.
               <strong style={{ color: '#fafafa' }}> Recover</strong> overdue invoices with tracked, escalating notices.
               <br /><br />
-              Pushback is not an AI that writes emails. It&apos;s the toolkit that protects your business across the entire client lifecycle.
+              Pushback is not an AI that writes emails. It&apos;s 23 purpose-built tools — each calibrated to a specific client situation, each pulling from your contract and project context.
             </p>
             <div className="flex flex-col gap-2 items-stretch md:items-end">
             <a

@@ -33,9 +33,9 @@ const TICKER_ITEMS = [
 ]
 
 const HOW_IT_WORKS_STEPS = [
-  { num: '01', label: 'Describe what the client did' },
-  { num: '02', label: 'Pick the tool that matches the situation' },
-  { num: '03', label: 'Copy the reply. Send it.' },
+  { num: '01', label: 'Identify the situation' },
+  { num: '02', label: 'Pick up the right tool' },
+  { num: '03', label: 'Send what it builds — reply, document, escalation' },
 ]
 
 function StickyNav() {
@@ -530,10 +530,10 @@ export default function LandingPage() {
           <div className="text-center mb-12" data-animate>
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>How it works</p>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: '1.25rem' }}>
-              Every client situation has a correct response.<br />You now have all of them covered.
+              A specific tool for every client situation —<br />not a chatbot guessing.
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '40ch', margin: '0 auto' }}>
-              Select the situation. Describe what happened. Pushback drafts the right response for exactly where the conversation is — firm, professional, copy-ready.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '44ch', margin: '0 auto' }}>
+              Each tool is built for one specific situation — scope creep, kill fee, chargeback threat, ghost client. You don&apos;t prompt it. You pick it. The output is a copy-ready artifact: a reply, an addendum, a dispute pack.
             </p>
           </div>
 
@@ -597,13 +597,13 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-6">
           <div data-animate style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>
-              Same situation, two responses
+              Generic AI vs purpose-built tool
             </p>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2rem, 4.5vw, 3.25rem)', letterSpacing: '-0.03em', lineHeight: 1.08, marginBottom: '1.25rem' }}>
               Why not just ask ChatGPT?
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '52ch', margin: '0 auto' }}>
-              Same client message, same prompt. One response opens the negotiation badly. The other holds the line, references your contract, and routes the work through paperwork. Both are below — judge for yourself.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '54ch', margin: '0 auto' }}>
+              ChatGPT writes pleasant emails. Pushback identifies what kind of conflict you&apos;re in, pulls the matching tool, references the clauses you actually signed, and routes the work through paperwork. The reply below is the visible artifact — the system behind it is the product.
             </p>
           </div>
 
@@ -712,13 +712,13 @@ export default function LandingPage() {
       {/* Tool Carousel — 3D coverflow */}
       <section id="arsenal" style={{ backgroundColor: 'var(--bg-surface)', borderTop: '1px solid var(--bg-border)', borderBottom: '1px solid var(--bg-border)' }} className="py-28">
         <div className="max-w-5xl mx-auto px-6" data-animate style={{ marginBottom: '3.5rem' }}>
-          <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Tool 3 of 4 — Reply playbooks</p>
+          <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>The arsenal — 3 of 4</p>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
-              23 situations.<br />A prepared playbook for each one.
+              23 tools.<br />One for every situation that costs you money.
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, maxWidth: '30ch' }}>
-              Scope creep. Payment stonewalling. Chargeback threats. Rate pressure. IP disputes. Ghost clients. Red flag prospects. Not a worst-case scenario list — a Tuesday in freelance work. Each playbook draws on your contract, project history, and a prepared response — so you&apos;re never improvising under pressure.
+              Scope creep. Payment stonewalling. Chargeback threats. Rate pressure. IP disputes. Ghost clients. Red-flag prospects. Not a worst-case scenario list — a Tuesday in freelance work. Each tool is calibrated to a specific situation and pulls from your contract and project history. The output is whatever the situation needs — a reply, a formal document, an escalation.
             </p>
           </div>
         </div>
@@ -841,21 +841,21 @@ export default function LandingPage() {
       <section style={{ borderTop: '1px solid #1c1c1e', backgroundColor: 'var(--bg-surface)' }} className="py-28">
         <div className="max-w-5xl mx-auto px-6">
           <div data-animate style={{ marginBottom: '3.5rem' }}>
-            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Reply threading</p>
+            <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>Conversation tracking</p>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem', flexWrap: 'wrap' }}>
               <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
-                When they reply,<br />you&apos;re already ready.
+                Every exchange,<br />on the record.
               </h2>
               <div style={{ maxWidth: '32ch' }}>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.25rem' }}>
-                  Paste their reply and Pushback reads the room — backing down, doubling down, or escalating — then drafts the right follow-up for where the conversation actually is.
+                  The tool keeps the conversation in context — what you sent, what they sent back, where the stance shifted. So you&apos;re never reconstructing a thread from scratch, and you have the full record if it escalates.
                 </p>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.625rem', marginBottom: '1.25rem' }}>
                   {[
-                    'Stance detection in under 3 seconds',
-                    'Follow-up tailored to their exact response',
-                    'Every exchange on record — nothing lost if they escalate later',
-                    'Copy-ready — no editing needed',
+                    'Client stance tracked turn by turn',
+                    'Full thread on record — usable in a dispute',
+                    'Contract terms surfaced at the right moment',
+                    'Picks up where the last exchange left off',
                   ].map(item => (
                     <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
                       <Check size={13} style={{ color: 'var(--brand-lime)', flexShrink: 0, marginTop: '0.2rem' }} />
