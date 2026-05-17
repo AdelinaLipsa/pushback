@@ -530,10 +530,10 @@ export default function LandingPage() {
           <div className="text-center mb-12" data-animate>
             <p style={{ color: 'var(--brand-lime)', fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>How it works</p>
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: '1.25rem' }}>
-              A specific tool for every client situation —<br />not a chatbot guessing.
+              Three steps.<br />Under thirty seconds.
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '44ch', margin: '0 auto' }}>
-              Each tool is built for one specific situation — scope creep, kill fee, chargeback threat, ghost client. You don&apos;t prompt it. You pick it. The output is a copy-ready artifact: a reply, an addendum, a dispute pack.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '40ch', margin: '0 auto' }}>
+              From a hostile client email to a sent reply — without redrafting the same paragraph five times.
             </p>
           </div>
 
@@ -602,8 +602,8 @@ export default function LandingPage() {
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(2rem, 4.5vw, 3.25rem)', letterSpacing: '-0.03em', lineHeight: 1.08, marginBottom: '1.25rem' }}>
               Why not just ask ChatGPT?
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '54ch', margin: '0 auto' }}>
-              ChatGPT writes pleasant emails. Pushback identifies what kind of conflict you&apos;re in, pulls the matching tool, references the clauses you actually signed, and routes the work through paperwork. The reply below is the visible artifact — the system behind it is the product.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: '52ch', margin: '0 auto' }}>
+              Same client message. Two outputs. Judge for yourself.
             </p>
           </div>
 
@@ -703,9 +703,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <p data-animate data-animate-delay="350" style={{ color: 'var(--text-muted)', fontSize: '0.82rem', textAlign: 'center', marginTop: '2rem', lineHeight: 1.6, maxWidth: '56ch', marginLeft: 'auto', marginRight: 'auto' }}>
-            ChatGPT writes pleasant emails. Pushback knows your contract terms, the right tool for the situation, and what a freelancer needs to say to actually get paid for the work.
-          </p>
         </div>
       </section>
 
@@ -718,7 +715,7 @@ export default function LandingPage() {
               23 tools.<br />One for every situation that costs you money.
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, maxWidth: '30ch' }}>
-              Scope creep. Payment stonewalling. Chargeback threats. Rate pressure. IP disputes. Ghost clients. Red-flag prospects. Not a worst-case scenario list — a Tuesday in freelance work. Each tool is calibrated to a specific situation and pulls from your contract and project history. The output is whatever the situation needs — a reply, a formal document, an escalation.
+              Scope creep. Payment stonewalling. Chargeback threats. Rate pressure. IP disputes. Ghost clients. Red-flag prospects. Not a worst-case scenario list — a Tuesday in freelance work.
             </p>
           </div>
         </div>
