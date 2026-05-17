@@ -25,7 +25,21 @@ export async function POST(request: Request) {
     const session = event.data.object
     const userId = session.metadata?.user_id
     if (!userId) return Response.json({ received: true })
-    if (!session.subscription) return Response.json({ received: true })
+
+    // Stripe may return `customer` and `subscription` as either string IDs or
+    // fully-expanded objects depending on how the checkout session was created.
+    // A bare `as string` cast is type-level only — at runtime an expanded
+    // object would land in the DB column verbatim. Normalize to the string ID.
+    const subscriptionId =
+      typeof session.subscription === 'string'
+        ? session.subscription
+        : session.subscription?.id ?? null
+    const customerId =
+      typeof session.customer === 'string'
+        ? session.customer
+        : session.customer?.id ?? null
+
+    if (!subscriptionId) return Response.json({ received: true })
 
     // Idempotency guard: skip if this subscription is already recorded
     const { data: existing } = await supabase
@@ -33,13 +47,13 @@ export async function POST(request: Request) {
       .select('stripe_subscription_id')
       .eq('id', userId)
       .single()
-    if (existing?.stripe_subscription_id === session.subscription) {
+    if (existing?.stripe_subscription_id === subscriptionId) {
       return Response.json({ received: true })
     }
 
     const { error } = await supabase
       .from('user_profiles')
-      .update({ plan: 'pro', stripe_customer_id: session.customer as string, stripe_subscription_id: session.subscription as string })
+      .update({ plan: 'pro', stripe_customer_id: customerId, stripe_subscription_id: subscriptionId })
       .eq('id', userId)
 
     if (error) {
@@ -66,7 +80,7 @@ export async function POST(request: Request) {
       }
 
       try {
-        const sub = await stripe.subscriptions.retrieve(session.subscription as string)
+        const sub = await stripe.subscriptions.retrieve(subscriptionId)
         // CRITICAL: current_period_end lives on SubscriptionItem in Stripe v22,
         // NOT on the Subscription root. Using `sub.current_period_end` silently
         // returns undefined and falls through to the fallback copy.
@@ -101,8 +115,14 @@ export async function POST(request: Request) {
         .eq('stripe_subscription_id', subscriptionId)
         .single()
       if (profileData?.id) {
-        // Pass period_end so the RPC skips duplicate resets for the same billing period
-        await supabase.rpc('reset_period_usage', { uid: profileData.id, new_period_end: periodEnd })
+        // Pass period_end so the RPC skips duplicate resets for the same billing period.
+        // A silent failure here means the user's monthly quota never resets — return
+        // 500 so Stripe retries the webhook and the failure is visible to monitoring.
+        const { error: rpcError } = await supabase.rpc('reset_period_usage', { uid: profileData.id, new_period_end: periodEnd })
+        if (rpcError) {
+          console.error('reset_period_usage RPC failed:', rpcError.message)
+          return Response.json({ error: 'Period usage reset failed' }, { status: 500 })
+        }
       }
     }
   }
@@ -123,17 +143,26 @@ export async function POST(request: Request) {
     const subscription = event.data.object
     const newStatus = subscription.status
     const plan = (newStatus === 'active' || newStatus === 'trialing') ? 'pro' : 'free'
-    await supabase
+    // Parity with the deleted branch: surface DB failures as 5xx so Stripe
+    // retries instead of letting a missed plan flip linger silently.
+    const { error } = await supabase
       .from('user_profiles')
       .update({ plan })
       .eq('stripe_subscription_id', subscription.id)
+
+    if (error) {
+      console.error('Failed to update subscription plan:', error.message)
+      return Response.json({ error: 'Database update failed' }, { status: 500 })
+    }
   }
 
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object
+    // Null the subscription pointer too — leaving the dead ID in place means a
+    // late-arriving event for that subscription could re-match this user row.
     const { error } = await supabase
       .from('user_profiles')
-      .update({ plan: 'free' })
+      .update({ plan: 'free', stripe_subscription_id: null })
       .eq('stripe_subscription_id', subscription.id)
 
     if (error) {
