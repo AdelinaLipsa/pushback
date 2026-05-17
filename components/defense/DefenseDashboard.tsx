@@ -30,6 +30,10 @@ const TOOL_MAP = Object.fromEntries(DEFENSE_TOOLS.map(t => [t.type, t])) as Reco
 
 const CATEGORIES = TOOL_CATEGORIES
 
+// Four bread-and-butter freelance situations — surfaced as quick picks so users
+// can skip the AI analyze step when the situation is obvious.
+const QUICK_PICKS: DefenseTool[] = ['payment_first', 'scope_change', 'ghost_client', 'revision_limit']
+
 interface DefenseDashboardProps {
   projectId: string
   plan: 'free' | 'pro'
@@ -54,6 +58,8 @@ function ToolSidebar({
   responsesUsed: number
 }) {
   const FREE_LIMIT = PLANS.free.defense_responses
+  const remaining = FREE_LIMIT - responsesUsed
+  const atLimit = remaining <= 0
 
   return (
     <div style={{
@@ -67,16 +73,13 @@ function ToolSidebar({
       top: '1.5rem',
       maxHeight: 'calc(100vh - 3rem)',
       overflowY: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
     }}>
-      <div style={{ padding: '0.25rem 0.5rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ padding: '0.25rem 0.5rem', marginBottom: '0.75rem' }}>
         <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
           Situation
         </span>
-        {plan === 'free' && (
-          <span style={{ fontSize: '0.65rem', color: FREE_LIMIT - responsesUsed <= 0 ? 'var(--urgency-high)' : 'var(--text-muted)' }}>
-            {FREE_LIMIT - responsesUsed} left
-          </span>
-        )}
       </div>
 
       {CATEGORIES.map((cat, ci) => (
@@ -145,6 +148,48 @@ function ToolSidebar({
           })}
         </div>
       ))}
+
+      {plan === 'free' && (
+        <div style={{
+          marginTop: '0.875rem',
+          paddingTop: '0.75rem',
+          borderTop: '1px solid var(--bg-border)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.375rem',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', padding: '0 0.5rem' }}>
+            <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              AI actions
+            </span>
+            <span style={{ fontSize: '0.7rem', fontWeight: 600, color: atLimit ? 'var(--urgency-high)' : 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
+              {Math.max(0, remaining)} / {FREE_LIMIT}
+            </span>
+          </div>
+          {atLimit && (
+            <Link
+              href="/settings?upgrade=1"
+              style={{
+                display: 'block',
+                margin: '0 0.5rem',
+                padding: '0.375rem 0.5rem',
+                backgroundColor: 'rgba(132,204,22,0.08)',
+                border: '1px solid rgba(132,204,22,0.25)',
+                borderRadius: '0.375rem',
+                color: 'var(--brand-lime)',
+                fontSize: '0.68rem',
+                fontWeight: 600,
+                textAlign: 'center',
+                textDecoration: 'none',
+                letterSpacing: '0.01em',
+              }}
+              className="hover:opacity-80 transition-opacity"
+            >
+              Upgrade to Pro
+            </Link>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -280,7 +325,7 @@ export default function DefenseDashboard({
               Paste a client message — we'll identify the situation
             </label>
             <textarea
-              rows={4}
+              rows={6}
               maxLength={3000}
               value={messageInput}
               onChange={e => setMessageInput(e.target.value)}
@@ -304,17 +349,58 @@ export default function DefenseDashboard({
               </button>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1.25rem 0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1.5rem 0 1rem' }}>
               <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--bg-border)' }} />
-              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>or pick from the left</span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>or jump to a common situation</span>
               <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--bg-border)' }} />
             </div>
 
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem' }}>
+              {QUICK_PICKS.map(type => {
+                const tool = TOOL_MAP[type]
+                if (!tool) return null
+                const Icon = ICON_MAP[tool.icon]
+                const colors = URGENCY_COLORS[tool.urgency]
+                return (
+                  <button
+                    key={type}
+                    onClick={() => selectTool(tool)}
+                    title={tool.description}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.625rem 0.75rem',
+                      backgroundColor: 'transparent',
+                      border: '1px solid var(--bg-border)',
+                      borderRadius: '0.5rem',
+                      cursor: 'pointer',
+                      textAlign: 'left' as const,
+                      transition: 'border-color 150ms ease, background-color 150ms ease',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = 'rgba(132,204,22,0.4)'
+                      e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = 'var(--bg-border)'
+                      e.currentTarget.style.backgroundColor = 'transparent'
+                    }}
+                  >
+                    {Icon && <Icon size={14} strokeWidth={1.75} style={{ color: colors.border, flexShrink: 0 }} />}
+                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.25 }}>
+                      {tool.label}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+
             {!analysisResult && (
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem', textAlign: 'center' }}>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '1rem', textAlign: 'center' }}>
                 Not sure which tool?{' '}
                 <Link href="/arsenal" style={{ color: 'var(--brand-lime)', textDecoration: 'none' }}>
-                  See the tool guide →
+                  See all 23 →
                 </Link>
               </p>
             )}
