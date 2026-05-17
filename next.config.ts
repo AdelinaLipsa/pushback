@@ -3,13 +3,22 @@ import { withSentryConfig } from '@sentry/nextjs'
 
 const isDev = process.env.NODE_ENV === 'development'
 
+// CSP allowlist notes:
+// - Stripe needs js.stripe.com (script), api.stripe.com (xhr), and three
+//   frame domains (js, hooks, m.stripe.network for 3-D Secure). Without
+//   these the upgrade flow creates an `incomplete` subscription but
+//   Stripe Elements can never mount and the user sees a broken /checkout.
+// - Vercel Live (vercel.live/feedback.js + websockets) is the in-product
+//   comments widget. Harmless console warning if blocked; allowed here so
+//   the warning stops cluttering devtools.
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''};
+  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://js.stripe.com https://vercel.live;
   style-src 'self' 'unsafe-inline';
-  img-src 'self' blob: data:;
-  font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://*.supabase.co wss://*.supabase.co https://sentry.io https://*.sentry.io;
+  img-src 'self' blob: data: https://*.stripe.com;
+  font-src 'self' https://fonts.gstatic.com https://vercel.live;
+  frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://m.stripe.network https://vercel.live;
+  connect-src 'self' https://*.supabase.co wss://*.supabase.co https://sentry.io https://*.sentry.io https://api.stripe.com https://q.stripe.com https://vercel.live wss://ws-us3.pusher.com;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
