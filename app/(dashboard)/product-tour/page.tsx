@@ -42,19 +42,19 @@ const MOMENTS: Moment[] = [
     label: 'VET',
     Icon: AlertTriangle,
     eyebrow: 'PROSPECT',
-    headline: 'Scan the prospect before you sign anything.',
-    when: 'A new client emails you. Nothing is in writing yet. Something feels off.',
+    headline: 'Catch the bad client before they’re a client.',
+    when: 'The first email already reads like a problem. You’ve felt this before — and last time it cost you a month.',
     tools: [
       {
         name: 'Red Flag Detector',
         href: '/red-flag',
-        helps: "Paste what they sent. Every risk graded — scope, payment, IP, timeline, posture — so you know which clauses the contract has to lock down.",
+        helps: "Paste what they sent. Every risk graded across scope, payment, IP, timeline, and posture — so you walk into contract talks already knowing which clauses have to lock down. One hour here saves the month you’d lose on the wrong client.",
         Icon: Flag,
       },
       {
         name: 'Intake Questions',
         href: '/intake',
-        helps: 'A tailored question list across scope, payment, rights, and timeline — so the contract reflects what was actually agreed, not what gets remembered later.',
+        helps: 'The questions a senior lawyer would ask before you say yes — scope, payment, rights, timeline, sign-off. The answers become the contract. The contract becomes the leverage.',
         Icon: ClipboardList,
       },
     ],
@@ -64,13 +64,13 @@ const MOMENTS: Moment[] = [
     label: 'SIGN',
     Icon: FileText,
     eyebrow: 'CONTRACT',
-    headline: 'Analyze the contract for the clauses that quietly cost you.',
-    when: "They sent the service agreement. You're about to sign.",
+    headline: 'Surface the clauses that quietly cost you — before you sign them.',
+    when: 'They sent the service agreement. Most of it is fine. The parts that aren’t are the parts you’d skim.',
     tools: [
       {
         name: 'Analyze a contract',
         href: '/contracts/new',
-        helps: 'Upload the PDF or paste the text. Get a 0–10 risk score, every flagged clause with severity, and the protections that are missing.',
+        helps: 'Upload the PDF or paste the text. A 0–10 risk score, every flagged clause graded by severity, and the protections you’re missing — laid out plainly. Sign the contract that protects you, or negotiate the version that does.',
         Icon: Scan,
       },
     ],
@@ -80,19 +80,19 @@ const MOMENTS: Moment[] = [
     label: 'REPLY',
     Icon: MessageSquare,
     eyebrow: 'IN-FLIGHT',
-    headline: 'Enforce the contract when the client tries to walk past it.',
-    when: 'Free-work demands. Scope creep. Silence on payment. Chargeback threats.',
+    headline: 'When they push, push back with the contract they signed.',
+    when: 'Free-work demands. Scope creep. Silence on payment. Approved-then-changed. Chargeback threats. Twenty-three of these. Every one drains hours and dignity.',
     tools: [
       {
         name: 'Defense Dashboard',
         href: '/projects',
-        helps: 'Paste what the client said. The toolkit matches it against the 23 contract-protected situations and surfaces the specific clause that already covers you — the reply is the by-product, not the point.',
+        helps: 'Paste what the client said. The toolkit matches it against the 23 contract-protected situations and pulls the exact clause that already covers you. The reply is the by-product. The leverage is the point.',
         Icon: MessageSquare,
       },
       {
         name: 'Arsenal',
         href: '/arsenal',
-        helps: 'The full catalog of 23 contract-protected situations, grouped by category. Reference when you’re not sure which clause applies.',
+        helps: 'The full catalog of 23 contract-protected situations, grouped by category. The shelf you reach for when you need to know — without a doubt — that what they’re asking for isn’t in scope.',
         Icon: BookOpen,
       },
     ],
@@ -102,19 +102,19 @@ const MOMENTS: Moment[] = [
     label: 'RECOVER',
     Icon: ShieldCheck,
     eyebrow: 'POST-DELIVERY',
-    headline: 'Chase the invoice. Defend the chargeback. Hold the line.',
-    when: 'The invoice is overdue, or the dispute just landed in your inbox.',
+    headline: 'When the invoice slips or the dispute lands, you’re already packed for the fight.',
+    when: 'Overdue invoices. Chargeback filings. The moment that decides whether the work pays — or doesn’t.',
     tools: [
       {
         name: 'Payment tracking',
         href: '/projects',
-        helps: 'Set a due date on the project. Overdue invoices surface on the dashboard with the right escalation cadence pre-staged.',
+        helps: 'Set a due date on the project. Overdue invoices surface on the dashboard with the right escalation cadence already staged — polite, firm, final. You stop chasing and start collecting.',
         Icon: Receipt,
       },
       {
         name: 'Dispute Pack',
         href: '/projects',
-        helps: 'Pro feature. One click generates a Stripe / PayPal-ready 7-page PDF rebuttal — contract excerpts, timeline, communication log, sign-off proofs.',
+        helps: 'Pro feature. One click generates a Stripe / PayPal-ready 7-page rebuttal PDF — contract excerpts, timeline, communication log, sign-off proofs. The packet the bank actually reads. Most disputes flip with it.',
         Icon: ScrollText,
       },
     ],
@@ -130,23 +130,23 @@ interface Step {
 const STEPS: Step[] = [
   {
     number: '01',
-    title: 'Create a project',
-    body: 'Each client engagement is a project. Name it, add the due date, drop in any quirks worth remembering.',
+    title: 'Open a project',
+    body: 'Every engagement is its own dossier. Name the client, set the due date, drop in the quirks worth remembering. This is the spine everything else hangs on.',
   },
   {
     number: '02',
-    title: 'Add the contract (optional)',
-    body: 'Uploading the service agreement powers smarter replies, deeper risk scoring, and the Dispute Pack.',
+    title: 'Drop in the contract',
+    body: 'Optional — but it’s how the toolkit gets sharp. The contract powers smarter replies, deeper risk scoring, and the Dispute Pack if a chargeback ever lands. Most users do this first.',
   },
   {
     number: '03',
-    title: 'Use the right tool when something happens',
-    body: 'Paste the client message into the project. The right reply is one click away — no template hunting.',
+    title: 'Reach for the right tool when something happens',
+    body: 'Paste the client message into the project. The right counter is one click away — already grounded in the clause they signed. No template hunting. No drafting under pressure.',
   },
   {
     number: '04',
-    title: 'Recover or defend',
-    body: 'Mark invoices received when paid. If they delay or dispute, the cadence and rebuttal pack are ready.',
+    title: 'Get paid. Defend the dispute.',
+    body: 'Mark invoices received when paid. If they delay, the escalation cadence runs itself. If they dispute, the rebuttal pack is one click from generated.',
   },
 ]
 
@@ -162,19 +162,19 @@ const REFERENCE: Reference[] = [
     name: 'Arsenal',
     href: '/arsenal',
     Icon: BookOpen,
-    helps: 'All 23 reply situations, grouped.',
+    helps: 'All 23 situations, grouped. The shelf you reach for under pressure.',
   },
   {
     name: 'Analytics',
     href: '/analytics',
     Icon: BarChart2,
-    helps: 'Your usage, win rate, and outcomes.',
+    helps: 'Your usage, win rate, and the revenue you recovered.',
   },
   {
     name: 'Feedback',
     href: '/feedback',
     Icon: Send,
-    helps: 'Report a bug. Request a feature.',
+    helps: 'Report a bug. Request a tool. Push us harder.',
   },
 ]
 
@@ -203,12 +203,56 @@ export default function ProductTourPage() {
           </span>
         </h1>
         <p className="max-w-[58ch] text-[0.95rem] leading-[1.65] text-text-secondary">
-          Pushback isn&apos;t an AI that writes emails. It&apos;s the contract-grounded toolkit that
-          protects every freelance engagement — vetted before you sign, analyzed when you do,
-          enforced when the client pushes back, defended after delivery. Four moments, one
-          contract, one chain of tools that all trace back to it.
+          Twenty-three things clients try when they think no one&apos;s watching. Four moments
+          where each one shows up. Pushback walks every move back to the clause they signed —
+          so you stop drafting replies under pressure and start working from leverage.
         </p>
       </header>
+
+      {/* ─── By the numbers ──────────────────────────────────────── */}
+      <section
+        aria-labelledby="numbers-heading"
+        className="mb-24 border-y border-bg-border py-10 md:mb-28 md:py-12"
+      >
+        <h2 id="numbers-heading" className="sr-only">
+          By the numbers
+        </h2>
+        <dl className="grid grid-cols-3 divide-x divide-bg-border">
+          <div className="pr-4 md:pr-6">
+            <dt className="mb-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-text-muted">
+              Moments
+            </dt>
+            <dd className="mb-1.5 text-[2.5rem] font-black leading-none tracking-[-0.04em] text-text-primary md:text-[3rem]">
+              4
+            </dd>
+            <p className="max-w-[20ch] text-[0.78rem] leading-[1.45] text-text-secondary">
+              Covered end to end — vet, sign, reply, recover.
+            </p>
+          </div>
+          <div className="px-4 md:px-6">
+            <dt className="mb-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-text-muted">
+              Situations
+            </dt>
+            <dd className="mb-1.5 text-[2.5rem] font-black leading-none tracking-[-0.04em] text-brand-lime md:text-[3rem]">
+              23
+            </dd>
+            <p className="max-w-[20ch] text-[0.78rem] leading-[1.45] text-text-secondary">
+              Contract-protected counter-moves, ready before the moment hits.
+            </p>
+          </div>
+          <div className="pl-4 md:pl-6">
+            <dt className="mb-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-text-muted">
+              Drafting
+            </dt>
+            <dd className="mb-1.5 text-[2.5rem] font-black leading-none tracking-[-0.04em] text-text-primary md:text-[3rem]">
+              0
+            </dd>
+            <p className="max-w-[20ch] text-[0.78rem] leading-[1.45] text-text-secondary">
+              Seconds spent inventing replies under pressure.
+            </p>
+          </div>
+        </dl>
+      </section>
 
       {/* ─── The four moments ────────────────────────────────────── */}
       <section aria-labelledby="moments-heading" className="mb-24 md:mb-28">
@@ -413,20 +457,22 @@ export default function ProductTourPage() {
       </section>
 
       {/* ─── Closer ──────────────────────────────────────────────── */}
-      <ScrollReveal direction="up" distance={24} as="div" className="border-t border-bg-border pt-8">
+      <ScrollReveal direction="up" distance={24} as="div" className="border-t border-bg-border pt-10">
         <p
-          className="text-center text-[0.95rem] text-text-secondary"
+          className="mx-auto max-w-[42ch] text-center text-[1.05rem] leading-[1.5] text-text-secondary md:text-[1.15rem]"
           style={serifItalic}
         >
-          Stuck or missing something?{' '}
+          Twenty-three situations. You&apos;ll meet most of them.
+          The first one you log is the one you stop dreading.
+        </p>
+        <div className="mt-7 text-center">
           <Link
             href="/feedback"
-            className="text-brand-lime no-underline transition-opacity duration-150 hover:opacity-80 focus-visible:outline-none focus-visible:underline focus-visible:decoration-brand-lime focus-visible:underline-offset-4"
-            style={{ fontStyle: 'normal', fontFamily: 'var(--font-sans, inherit)', fontWeight: 600 }}
+            className="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-text-muted transition-colors duration-150 hover:text-brand-lime focus-visible:text-brand-lime focus-visible:outline-none"
           >
-            Tell us →
+            Missing a tool? Tell us →
           </Link>
-        </p>
+        </div>
       </ScrollReveal>
     </div>
   )
