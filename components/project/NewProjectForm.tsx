@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { inputStyle, labelStyle } from '@/lib/ui'
+import { inputStyle, labelStyle, selectStyle } from '@/lib/ui'
 import { createProject } from '@/lib/api'
 
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'CAD', 'AUD', 'CHF']
@@ -125,7 +125,7 @@ export default function NewProjectForm() {
           <select
             value={form.currency}
             onChange={e => set('currency', e.target.value)}
-            style={{ ...inputStyle, width: 'auto', minWidth: '80px' }}
+            style={{ ...selectStyle, width: 'auto', minWidth: '96px' }}
             onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
             onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}
           >

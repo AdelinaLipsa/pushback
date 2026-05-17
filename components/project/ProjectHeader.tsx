@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { toast } from 'sonner'
 import { Pencil, Trash2, Check, X } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { inputStyle, labelStyle, dialogContentStyle } from '@/lib/ui'
+import { inputStyle, labelStyle, dialogContentStyle, selectStyle } from '@/lib/ui'
 import { updateProject, deleteProject } from '@/lib/api'
 import Button from '@/components/shared/Button'
 
@@ -169,7 +169,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
               </div>
               <div>
                 <label style={labelStyle}>Currency</label>
-                <select value={form.currency} onChange={e => set('currency', e.target.value)} style={{ ...inputStyle, width: 'auto', minWidth: '80px' }}
+                <select value={form.currency} onChange={e => set('currency', e.target.value)} style={{ ...selectStyle, width: 'auto', minWidth: '96px' }}
                   onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
                   onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}>
                   {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -178,7 +178,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
             </div>
             <div>
               <label style={labelStyle}>Status</label>
-              <select value={form.status} onChange={e => set('status', e.target.value)} style={inputStyle}
+              <select value={form.status} onChange={e => set('status', e.target.value)} style={selectStyle}
                 onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand-lime)' }}
                 onBlur={e => { e.currentTarget.style.borderColor = 'var(--bg-border)' }}>
                 {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}

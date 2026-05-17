@@ -179,7 +179,18 @@ export default function SettingsClient({ profile, nextBillingDate, isEmailUser }
                     value={profession}
                     onChange={e => { setProfession(e.target.value); setProfessionSaved(false) }}
                     className="flex-1 text-sm text-text-primary rounded-lg px-3 py-2 border border-bg-border focus:outline-none focus:border-brand-lime/40 transition-colors"
-                    style={{ backgroundColor: 'var(--bg-elevated)' }}
+                    style={{
+                      backgroundColor: 'var(--bg-elevated)',
+                      appearance: 'none',
+                      WebkitAppearance: 'none',
+                      MozAppearance: 'none',
+                      backgroundImage:
+                        "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>\")",
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right 0.625rem center',
+                      paddingRight: '2rem',
+                      cursor: 'pointer',
+                    }}
                   >
                     <option value="">Not specified</option>
                     {PROFESSIONS.map(p => (

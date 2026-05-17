@@ -12,9 +12,6 @@ interface ClientBehaviorCardProps {
   clientName: string
 }
 
-// D-21 expanded copy — locked for v1. The label expands the Phase 12 strings
-// ("No concerns" / "Watch this client" / "High-risk client") into action-oriented
-// guidance that pairs naturally with the deterministic nextAction sentence.
 const LEVEL_LABELS: Record<RiskLevel, string> = {
   green: 'Healthy',
   amber: 'Watch closely',
@@ -27,165 +24,241 @@ const DIMENSION_LABELS: Record<RiskDimension, string> = {
   chargeback: 'Chargeback',
 }
 
-const SOURCE_LABELS: Record<RiskSignal['source'], string> = {
-  projects: 'Project',
-  responses: 'Responses',
-  contracts: 'Contract',
+// Composite-weighting per D-18: payment 0.4, scope 0.3, chargeback 0.3.
+// The donut arcs are sized by these weights — what dominates the composite
+// math is visually dominant — and each arc is coloured by its own sub-level
+// so an amber dimension inside a green composite still reads amber.
+const DIMENSION_WEIGHTS: Record<RiskDimension, number> = {
+  payment: 0.4,
+  scope: 0.3,
+  chargeback: 0.3,
 }
 
-function formatPoints(points: number): string {
-  if (points > 0) return `+${points}`
-  if (points < 0) return `${points}` // already has a minus sign
-  return '0'
+// "Contract has no X clause" → "Missing X clause". Reduces three-row vertical
+// stack of near-identical phrasing into something scannable.
+function humanizeLabel(label: string): string {
+  return label.replace(/^Contract has no /, 'Missing ')
 }
 
-function DimensionBar({ label, score }: { label: string; score: number }) {
-  // Per D-21 / Plan 03 spec: each dimension bar uses the colour that the
-  // *individual* dimension score maps to via levelFromScore — so a dimension
-  // that's amber inside a red composite still renders amber. Renders zero
-  // dimensions as a flat empty track in green colour (subtle visual).
-  const dimLevel = levelFromScore(score)
-  const fillColor = RISK_LEVEL_COLORS[dimLevel]
-  const widthPct = Math.max(0, Math.min(100, score))
+function topSignals(
+  risk: RiskResult,
+  limit: number,
+): Array<{ signal: RiskSignal; dimension: RiskDimension }> {
+  const all: Array<{ signal: RiskSignal; dimension: RiskDimension }> = []
+  for (const dim of ['payment', 'scope', 'chargeback'] as RiskDimension[]) {
+    for (const s of risk.dimensions[dim].signals) {
+      if (s.points > 0) all.push({ signal: s, dimension: dim })
+    }
+  }
+  all.sort((a, b) => b.signal.points - a.signal.points)
+  return all.slice(0, limit)
+}
+
+function countPositiveSignals(risk: RiskResult): number {
+  let n = 0
+  for (const dim of ['payment', 'scope', 'chargeback'] as RiskDimension[]) {
+    for (const s of risk.dimensions[dim].signals) if (s.points > 0) n++
+  }
+  return n
+}
+
+interface DonutProps {
+  risk: RiskResult
+}
+
+function Donut({ risk }: DonutProps) {
+  const R = 64
+  const STROKE = 14
+  const SIZE = R * 2 + STROKE
+  const CX = SIZE / 2
+  const C = 2 * Math.PI * R
+  const GAP_PX = 6
+
+  const compositeColor = RISK_LEVEL_COLORS[risk.level]
+
+  // For each arc: dasharray = visible-length + remaining; offset starts the
+  // arc at the end of the previous one. Negative dashoffset rotates *forward*
+  // along the perimeter; the parent transform rotates -90deg so 0° = top.
+  const dims: RiskDimension[] = ['payment', 'scope', 'chargeback']
+  let cumulative = 0
+  const arcs = dims.map((dim) => {
+    const weight = DIMENSION_WEIGHTS[dim]
+    const fullLen = weight * C
+    const visibleLen = Math.max(0, fullLen - GAP_PX)
+    const offset = -cumulative
+    const color = RISK_LEVEL_COLORS[levelFromScore(risk.dimensions[dim].score)]
+    const score = risk.dimensions[dim].score
+    cumulative += fullLen
+    return { dim, visibleLen, offset, color, score }
+  })
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.75rem',
-    }}>
-      <span style={{
-        width: '90px',
-        flexShrink: 0,
-        fontSize: '0.7rem',
-        fontWeight: 600,
-        letterSpacing: '0.06em',
-        textTransform: 'uppercase',
+    <svg
+      viewBox={`0 0 ${SIZE} ${SIZE}`}
+      width={SIZE}
+      height={SIZE}
+      role="img"
+      aria-label={`Composite risk score ${risk.composite}, level ${LEVEL_LABELS[risk.level]}. Payment subscore ${risk.dimensions.payment.score}, scope subscore ${risk.dimensions.scope.score}, chargeback subscore ${risk.dimensions.chargeback.score}.`}
+      style={{ display: 'block', flexShrink: 0 }}
+    >
+      {/* Background ring */}
+      <circle
+        cx={CX}
+        cy={CX}
+        r={R}
+        fill="none"
+        stroke="var(--bg-elevated)"
+        strokeWidth={STROKE}
+      />
+      {/* Weighted arcs */}
+      <g transform={`rotate(-90 ${CX} ${CX})`}>
+        {arcs.map((arc) => (
+          <circle
+            key={arc.dim}
+            cx={CX}
+            cy={CX}
+            r={R}
+            fill="none"
+            stroke={arc.color}
+            strokeWidth={STROKE}
+            strokeLinecap="butt"
+            strokeDasharray={`${arc.visibleLen} ${C - arc.visibleLen}`}
+            strokeDashoffset={arc.offset}
+          />
+        ))}
+      </g>
+      {/* Center text */}
+      <text
+        x={CX}
+        y={CX - 2}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        style={{
+          fontSize: '2.25rem',
+          fontWeight: 700,
+          fill: compositeColor,
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        {risk.composite}
+      </text>
+      <text
+        x={CX}
+        y={CX + 22}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        style={{
+          fontSize: '0.7rem',
+          fontWeight: 600,
+          fill: 'var(--text-muted)',
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+        }}
+      >
+        {LEVEL_LABELS[risk.level]}
+      </text>
+    </svg>
+  )
+}
+
+function LegendRow({
+  color,
+  label,
+  weight,
+}: {
+  color: string
+  label: string
+  weight: string
+}) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        fontSize: '0.75rem',
         color: 'var(--text-muted)',
-      }}>
-        {label}
-      </span>
-      <div style={{
-        flex: 1,
-        height: '6px',
-        backgroundColor: 'var(--bg-elevated)',
-        borderRadius: '9999px',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          width: `${widthPct}%`,
-          height: '100%',
-          backgroundColor: fillColor,
-          transition: 'width 200ms ease',
-        }} />
-      </div>
-      <span style={{
-        width: '32px',
-        flexShrink: 0,
-        textAlign: 'right',
-        fontSize: '0.8rem',
-        fontWeight: 600,
-        color: 'var(--text-secondary)',
-        fontVariantNumeric: 'tabular-nums',
-      }}>
-        {score}
-      </span>
+      }}
+    >
+      <span
+        aria-hidden="true"
+        style={{
+          width: '8px',
+          height: '8px',
+          borderRadius: '9999px',
+          backgroundColor: color,
+          flexShrink: 0,
+        }}
+      />
+      <span style={{ color: 'var(--text-secondary)' }}>{label}</span>
+      <span style={{ marginLeft: 'auto', fontVariantNumeric: 'tabular-nums' }}>{weight}</span>
     </div>
   )
 }
 
-function SignalGroup({
-  label,
-  signals,
+function SignalRow({
+  signal,
+  dimension,
 }: {
-  label: string
-  signals: RiskSignal[]
+  signal: RiskSignal
+  dimension: RiskDimension
 }) {
-  // Sub-header row per D-23. When the dimension has zero signals we still
-  // render a placeholder row so the table structure is consistent and the
-  // user can audit that we checked the dimension (auditability — SC #4).
+  const dimColor = RISK_LEVEL_COLORS[levelFromScore(signal.points)]
   return (
-    <>
-      <tr>
-        <td
-          colSpan={3}
+    <li
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '0.625rem',
+        fontSize: '0.85rem',
+        color: 'var(--text-secondary)',
+        listStyle: 'none',
+        padding: '0.25rem 0',
+      }}
+    >
+      <span
+        aria-hidden="true"
+        style={{
+          width: '8px',
+          height: '8px',
+          borderRadius: '9999px',
+          backgroundColor: dimColor,
+          marginTop: '0.4rem',
+          flexShrink: 0,
+        }}
+      />
+      <span>
+        {humanizeLabel(signal.label)}
+        <span
           style={{
-            padding: '0.5rem 0.625rem 0.25rem',
-            fontSize: '0.65rem',
-            fontWeight: 700,
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
+            marginLeft: '0.4rem',
+            fontSize: '0.7rem',
             color: 'var(--text-muted)',
-            backgroundColor: 'transparent',
+            textTransform: 'uppercase',
+            letterSpacing: '0.06em',
           }}
         >
-          {label}
-        </td>
-      </tr>
-      {signals.length === 0 ? (
-        <tr>
-          <td
-            colSpan={3}
-            style={{
-              padding: '0.4rem 0.625rem',
-              fontSize: '0.8rem',
-              color: 'var(--text-muted)',
-              fontStyle: 'italic',
-              backgroundColor: 'var(--bg-elevated)',
-              borderRadius: '0.375rem',
-            }}
-          >
-            No signals
-          </td>
-        </tr>
-      ) : (
-        signals.map((signal, i) => (
-          <tr
-            key={`${signal.code}-${i}`}
-            style={{
-              backgroundColor: i % 2 === 0 ? 'var(--bg-elevated)' : 'transparent',
-            }}
-          >
-            <td style={{
-              padding: '0.4rem 0.625rem',
-              fontSize: '0.8rem',
-              color: 'var(--text-secondary)',
-            }}>
-              {signal.label}
-            </td>
-            <td style={{
-              padding: '0.4rem 0.625rem',
-              fontSize: '0.75rem',
-              color: 'var(--text-muted)',
-              whiteSpace: 'nowrap',
-            }}>
-              {SOURCE_LABELS[signal.source]}
-            </td>
-            <td style={{
-              padding: '0.4rem 0.625rem',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-              color: signal.points > 0 ? 'var(--urgency-high)' : signal.points < 0 ? 'var(--brand-green)' : 'var(--text-muted)',
-              textAlign: 'right',
-              fontVariantNumeric: 'tabular-nums',
-              whiteSpace: 'nowrap',
-            }}>
-              {formatPoints(signal.points)}
-            </td>
-          </tr>
-        ))
-      )}
-    </>
+          · {DIMENSION_LABELS[dimension]}
+        </span>
+      </span>
+    </li>
   )
 }
 
 export default function ClientBehaviorCard({ risk, clientName }: ClientBehaviorCardProps) {
   const accent = RISK_LEVEL_COLORS[risk.level]
-  const levelLabel = LEVEL_LABELS[risk.level]
-  const composite = risk.composite
-  const compositeWidth = Math.max(0, Math.min(100, composite))
+  const top = topSignals(risk, 3)
+  const totalPositive = countPositiveSignals(risk)
+  const moreCount = Math.max(0, totalPositive - top.length)
 
-  const showTopMitigation = risk.topMitigation !== null && risk.level !== 'green'
+  const paymentColor = RISK_LEVEL_COLORS[levelFromScore(risk.dimensions.payment.score)]
+  const scopeColor = RISK_LEVEL_COLORS[levelFromScore(risk.dimensions.scope.score)]
+  const chargebackColor = RISK_LEVEL_COLORS[levelFromScore(risk.dimensions.chargeback.score)]
+
+  // Prefer the actionable mitigation as the closing CTA. Fall back to the
+  // deterministic nextAction sentence (always present) for green / no-lever
+  // states.
+  const ctaText = risk.topMitigation?.action ?? risk.nextAction
 
   return (
     <div
@@ -197,164 +270,123 @@ export default function ClientBehaviorCard({ risk, clientName }: ClientBehaviorC
         border: '1px solid var(--bg-border)',
         borderLeft: `4px solid ${accent}`,
         borderRadius: '0.875rem',
-        padding: '1rem 1.5rem',
+        padding: '1.25rem 1.5rem',
       }}
     >
-      {/* 1. Header row — Phase 12 carryover */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'baseline',
-        justifyContent: 'space-between',
-        gap: '1rem',
-      }}>
-        <span style={{
-          fontSize: '0.875rem',
-          fontWeight: 600,
-          color: 'var(--text-secondary)',
-        }}>
+      {/* Header */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+          gap: '1rem',
+          marginBottom: '1rem',
+        }}
+      >
+        <span
+          style={{
+            fontSize: '0.875rem',
+            fontWeight: 600,
+            color: 'var(--text-secondary)',
+          }}
+        >
           Client Risk
           <span style={{ fontWeight: 400, color: 'var(--text-muted)', marginLeft: '0.4rem' }}>
             · {clientName}
           </span>
         </span>
-        <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: '0.5rem' }}>
-          <span style={{
-            fontSize: '1.5rem',
-            fontWeight: 600,
-            color: accent,
-            lineHeight: 1,
-          }}>
-            {composite}
-          </span>
-          <span style={{
-            fontSize: '0.875rem',
-            fontWeight: 400,
-            color: 'var(--text-muted)',
-          }}>
-            · {levelLabel}
-          </span>
-        </span>
       </div>
 
-      {/* 2. Composite bar */}
-      <div style={{
-        marginTop: '0.875rem',
-        height: '8px',
-        backgroundColor: 'var(--bg-elevated)',
-        borderRadius: '9999px',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          width: `${compositeWidth}%`,
-          height: '100%',
-          backgroundColor: accent,
-          transition: 'width 200ms ease',
-        }} />
-      </div>
-
-      {/* 3. Three dimension bars */}
-      <div style={{
-        marginTop: '0.875rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.5rem',
-      }}>
-        <DimensionBar label={DIMENSION_LABELS.payment} score={risk.dimensions.payment.score} />
-        <DimensionBar label={DIMENSION_LABELS.scope} score={risk.dimensions.scope.score} />
-        <DimensionBar label={DIMENSION_LABELS.chargeback} score={risk.dimensions.chargeback.score} />
-      </div>
-
-      {/* 4. nextAction line — text only per D-22 */}
-      <p style={{
-        marginTop: '0.875rem',
-        marginBottom: 0,
-        fontSize: '0.875rem',
-        color: 'var(--text-secondary)',
-        lineHeight: 1.45,
-      }}>
-        {risk.nextAction}
-      </p>
-
-      {/* 5. topMitigation callout */}
-      {showTopMitigation && risk.topMitigation !== null && (
-        <div style={{
-          marginTop: '0.875rem',
-          padding: '0.625rem 0.875rem',
-          backgroundColor: 'var(--bg-elevated)',
-          border: '1px solid var(--bg-border)',
-          borderLeft: '3px solid var(--brand-lime)',
-          borderRadius: '0.5rem',
+      {/* Two-column: donut + content */}
+      <div
+        style={{
           display: 'flex',
-          flexDirection: 'column',
-          gap: '0.2rem',
-        }}>
-          <span style={{
-            fontSize: '0.825rem',
-            fontWeight: 600,
-            color: 'var(--text-primary)',
-          }}>
-            Biggest lever: {risk.topMitigation.action}
-          </span>
-          <span style={{
-            fontSize: '0.75rem',
-            color: 'var(--text-muted)',
-          }}>
-            Removing this signal would drop the composite by ~{risk.topMitigation.deltaPoints} points.
-          </span>
+          gap: '1.75rem',
+          alignItems: 'flex-start',
+          flexWrap: 'wrap',
+        }}
+      >
+        {/* Left column: donut + weighted legend */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', flexShrink: 0 }}>
+          <Donut risk={risk} />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.3rem',
+              minWidth: '140px',
+            }}
+          >
+            <LegendRow color={paymentColor} label={DIMENSION_LABELS.payment} weight="40%" />
+            <LegendRow color={scopeColor} label={DIMENSION_LABELS.scope} weight="30%" />
+            <LegendRow color={chargebackColor} label={DIMENSION_LABELS.chargeback} weight="30%" />
+          </div>
         </div>
-      )}
 
-      {/* 6. Per-signal evidence table — D-23 (Success Criteria #4) */}
-      <div style={{ marginTop: '1rem' }}>
-        <table style={{
-          width: '100%',
-          borderCollapse: 'separate',
-          borderSpacing: '0 2px',
-          tableLayout: 'auto',
-        }}>
-          <thead>
-            <tr>
-              <th style={{
-                textAlign: 'left',
-                padding: '0 0.625rem 0.375rem',
-                fontSize: '0.65rem',
-                fontWeight: 700,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: 'var(--text-muted)',
-              }}>
-                Signal
-              </th>
-              <th style={{
-                textAlign: 'left',
-                padding: '0 0.625rem 0.375rem',
-                fontSize: '0.65rem',
-                fontWeight: 700,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: 'var(--text-muted)',
-              }}>
-                Source
-              </th>
-              <th style={{
-                textAlign: 'right',
-                padding: '0 0.625rem 0.375rem',
-                fontSize: '0.65rem',
-                fontWeight: 700,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: 'var(--text-muted)',
-              }}>
-                Points
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <SignalGroup label="Payment" signals={risk.dimensions.payment.signals} />
-            <SignalGroup label="Scope" signals={risk.dimensions.scope.signals} />
-            <SignalGroup label="Chargeback" signals={risk.dimensions.chargeback.signals} />
-          </tbody>
-        </table>
+        {/* Right column: what's driving + action */}
+        <div style={{ flex: 1, minWidth: '260px', display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+          {top.length > 0 ? (
+            <div>
+              <p
+                style={{
+                  fontSize: '0.7rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: 'var(--text-muted)',
+                  margin: '0 0 0.5rem 0',
+                }}
+              >
+                What&apos;s driving it
+              </p>
+              <ul style={{ margin: 0, padding: 0 }}>
+                {top.map(({ signal, dimension }, i) => (
+                  <SignalRow key={`${signal.code}-${i}`} signal={signal} dimension={dimension} />
+                ))}
+              </ul>
+              {moreCount > 0 && (
+                <p
+                  style={{
+                    fontSize: '0.75rem',
+                    color: 'var(--text-muted)',
+                    margin: '0.4rem 0 0 0.625rem',
+                  }}
+                >
+                  +{moreCount} more signal{moreCount === 1 ? '' : 's'}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p
+              style={{
+                fontSize: '0.875rem',
+                color: 'var(--text-secondary)',
+                margin: 0,
+              }}
+            >
+              {risk.nextAction}
+            </p>
+          )}
+
+          {/* CTA — uses topMitigation when present (the actionable one),
+              falls back to nextAction for green / no-lever states. */}
+          {top.length > 0 && (
+            <div
+              style={{
+                padding: '0.625rem 0.875rem',
+                backgroundColor: 'var(--bg-elevated)',
+                border: '1px solid var(--bg-border)',
+                borderLeft: '3px solid var(--brand-lime)',
+                borderRadius: '0.5rem',
+                fontSize: '0.825rem',
+                color: 'var(--text-primary)',
+                lineHeight: 1.5,
+              }}
+            >
+              {ctaText}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

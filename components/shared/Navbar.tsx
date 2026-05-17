@@ -39,7 +39,7 @@ const NAV_SECTIONS: { label: string; items: { href: string; label: string; Icon:
     items: [
       { href: '/settings', label: 'Settings', Icon: Settings },
       { href: '/feedback', label: 'Feedback', Icon: MessageSquare },
-      { href: '/how-it-works', label: 'Help', Icon: HelpCircle },
+      { href: '/how-it-works', label: 'Product tour', Icon: HelpCircle },
     ],
   },
 ]

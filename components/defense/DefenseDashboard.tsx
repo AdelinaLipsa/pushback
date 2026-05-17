@@ -313,7 +313,7 @@ export default function DefenseDashboard({
             {!analysisResult && (
               <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem', textAlign: 'center' }}>
                 Not sure which tool?{' '}
-                <Link href="/how-it-works" style={{ color: 'var(--brand-lime)', textDecoration: 'none' }}>
+                <Link href="/arsenal" style={{ color: 'var(--brand-lime)', textDecoration: 'none' }}>
                   See the tool guide →
                 </Link>
               </p>

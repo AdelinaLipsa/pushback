@@ -18,6 +18,23 @@ export const labelStyle: React.CSSProperties = {
   marginBottom: '0.5rem',
 }
 
+// Native <select> elements ship a different chevron per browser/OS, which looks
+// off-brand on the dark surface. Use this style instead of inputStyle on any
+// <select> to suppress the native arrow and paint a Lucide-style chevron via
+// inline SVG. The chevron stroke colour matches var(--text-muted) at #71717a.
+export const selectStyle: React.CSSProperties = {
+  ...inputStyle,
+  appearance: 'none',
+  WebkitAppearance: 'none',
+  MozAppearance: 'none',
+  backgroundImage:
+    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>\")",
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'right 0.625rem center',
+  paddingRight: '2rem',
+  cursor: 'pointer',
+}
+
 // Tailwind class strings — use className={btnCls.x} for proper hover/focus/disabled states.
 export const btnCls = {
   primary:
