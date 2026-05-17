@@ -49,13 +49,13 @@ function NavLink({ href, label, Icon, active }: { href: string; label: string; I
     <Link
       href={href}
       className={[
-        'flex items-center gap-2.5 pl-2.5 pr-3 py-2 rounded-lg text-sm no-underline transition-all duration-150 border-l-2',
+        'flex items-center gap-2.5 pl-2.5 pr-3 py-1.5 rounded-lg text-xs no-underline transition-all duration-150 border-l-2',
         active
           ? 'bg-bg-elevated text-text-primary border-brand-lime font-semibold'
           : 'text-text-secondary border-transparent hover:bg-bg-elevated/60 hover:text-text-primary font-normal',
       ].join(' ')}
     >
-      <Icon size={15} strokeWidth={active ? 2 : 1.5} className="shrink-0" />
+      <Icon size={14} strokeWidth={active ? 2 : 1.5} className="shrink-0" />
       {label}
     </Link>
   )
@@ -66,13 +66,13 @@ function ProjectNavItem({ project, active }: { project: SidebarProject; active: 
     <Link
       href={`/projects/${project.id}`}
       className={[
-        'flex items-center gap-2.5 pl-2.5 pr-3 py-2 rounded-lg text-sm no-underline transition-all duration-150 border-l-2',
+        'flex items-center gap-2.5 pl-2.5 pr-3 py-1.5 rounded-lg text-xs no-underline transition-all duration-150 border-l-2',
         active
           ? 'bg-bg-elevated text-text-primary border-brand-lime font-semibold'
           : 'text-text-secondary border-transparent hover:bg-bg-elevated/60 hover:text-text-primary font-normal',
       ].join(' ')}
     >
-      <Briefcase size={13} strokeWidth={active ? 2 : 1.5} className="shrink-0" />
+      <Briefcase size={12} strokeWidth={active ? 2 : 1.5} className="shrink-0" />
       <span className="truncate">{project.title}</span>
     </Link>
   )
@@ -166,13 +166,13 @@ export default function Navbar({ profile, isAdmin, recentProjects }: NavbarProps
                     <Link
                       href="/admin"
                       className={[
-                        'flex items-center gap-2.5 pl-2.5 pr-3 py-2 rounded-lg text-sm no-underline transition-all duration-150 border-l-2',
+                        'flex items-center gap-2.5 pl-2.5 pr-3 py-1.5 rounded-lg text-xs no-underline transition-all duration-150 border-l-2',
                         isActive('/admin')
                           ? 'bg-bg-elevated text-text-primary border-brand-lime font-semibold'
                           : 'text-text-muted border-transparent hover:bg-bg-elevated/60 hover:text-text-secondary font-normal',
                       ].join(' ')}
                     >
-                      <ShieldCheck size={15} strokeWidth={isActive('/admin') ? 2 : 1.5} className="shrink-0" />
+                      <ShieldCheck size={14} strokeWidth={isActive('/admin') ? 2 : 1.5} className="shrink-0" />
                       Admin
                     </Link>
                   )}
@@ -187,9 +187,9 @@ export default function Navbar({ profile, isAdmin, recentProjects }: NavbarProps
               <button
                 onClick={() => startCheckout(setCheckoutLoading)}
                 disabled={checkoutLoading}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-brand-lime border border-brand-lime/20 hover:bg-brand-lime/5 hover:border-brand-lime/40 transition-all duration-150 cursor-pointer bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-brand-lime border border-brand-lime/20 hover:bg-brand-lime/5 hover:border-brand-lime/40 transition-all duration-150 cursor-pointer bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <ArrowUpCircle size={15} strokeWidth={1.5} className="shrink-0" />
+                <ArrowUpCircle size={14} strokeWidth={1.5} className="shrink-0" />
                 {checkoutLoading ? 'Loading…' : 'Upgrade to Pro'}
               </button>
             )}
@@ -198,9 +198,9 @@ export default function Navbar({ profile, isAdmin, recentProjects }: NavbarProps
               <button
                 onClick={handleBillingPortal}
                 disabled={portalLoading}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all duration-150 cursor-pointer bg-transparent border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all duration-150 cursor-pointer bg-transparent border-0 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <CreditCard size={15} strokeWidth={1.5} className="shrink-0" />
+                <CreditCard size={14} strokeWidth={1.5} className="shrink-0" />
                 {portalLoading ? 'Loading…' : 'Billing portal'}
               </button>
             )}
@@ -220,9 +220,9 @@ export default function Navbar({ profile, isAdmin, recentProjects }: NavbarProps
           </div>
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all duration-150 cursor-pointer border-0 bg-transparent text-left"
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all duration-150 cursor-pointer border-0 bg-transparent text-left"
           >
-            <LogOut size={14} strokeWidth={1.5} className="shrink-0" />
+            <LogOut size={13} strokeWidth={1.5} className="shrink-0" />
             Sign out
           </button>
         </div>
