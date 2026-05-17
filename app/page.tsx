@@ -1045,8 +1045,8 @@ export default function LandingPage() {
                 </div>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
                   {billingInterval === 'year'
-                    ? `${PLANS.pro.annualSavingMonths} months free · cancel anytime · excl. VAT`
-                    : '30-day money-back · cancel anytime · excl. VAT'}
+                    ? `${PLANS.pro.annualSavingMonths} months free · cancel anytime`
+                    : '30-day money-back · cancel anytime'}
                 </p>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', columnGap: '1.5rem', rowGap: '0.75rem', marginBottom: '2rem', flex: 1, position: 'relative' }}>

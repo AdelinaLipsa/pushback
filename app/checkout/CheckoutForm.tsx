@@ -79,7 +79,7 @@ function PayForm() {
         {loading ? 'Processing…' : `Pay €${PLANS.pro.price}/month`}
       </button>
       <p className="mt-3 text-center text-xs text-text-muted">
-        Cancel any time · excl. VAT · secured by Stripe
+        Cancel any time · secured by Stripe
       </p>
     </form>
   )

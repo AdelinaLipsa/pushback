@@ -62,6 +62,7 @@ function Divider() {
 
 export default function SettingsClient({ profile, nextBillingDate, isEmailUser }: Props) {
   const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [billingInterval, setBillingInterval] = useState<'month' | 'year'>('month')
   const [portalLoading, setPortalLoading] = useState(false)
   const [resetSent, setResetSent] = useState(false)
   const [resetLoading, setResetLoading] = useState(false)
@@ -323,11 +324,63 @@ export default function SettingsClient({ profile, nextBillingDate, isEmailUser }
                     Recommended
                   </span>
                 </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black tracking-tight">€{PLANS.pro.price}</span>
-                  <span className="text-sm text-text-muted">/month</span>
+
+                {/* Monthly / annual toggle */}
+                <div role="tablist" aria-label="Billing interval" className="inline-flex p-[3px] rounded-full mb-3 gap-[2px]" style={{ backgroundColor: 'var(--bg-base)', border: '1px solid var(--bg-border)' }}>
+                  {([
+                    { value: 'month' as const, label: 'Monthly' },
+                    { value: 'year' as const, label: 'Annual' },
+                  ]).map(opt => {
+                    const active = billingInterval === opt.value
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        role="tab"
+                        aria-selected={active}
+                        onClick={() => setBillingInterval(opt.value)}
+                        className="px-3 py-1 rounded-full border-0 cursor-pointer font-semibold transition-all inline-flex items-center gap-1.5"
+                        style={{
+                          fontSize: '0.72rem',
+                          letterSpacing: '0.01em',
+                          backgroundColor: active ? 'var(--brand-lime)' : 'transparent',
+                          color: active ? '#0a0a0a' : 'var(--text-muted)',
+                        }}
+                      >
+                        {opt.label}
+                        {opt.value === 'year' && (
+                          <span style={{
+                            fontSize: '0.55rem', fontWeight: 700, letterSpacing: '0.06em',
+                            textTransform: 'uppercase', padding: '0.08rem 0.35rem', borderRadius: '3px',
+                            backgroundColor: active ? 'rgba(10,10,10,0.18)' : 'rgba(132,204,22,0.15)',
+                            color: active ? '#0a0a0a' : 'var(--brand-lime)',
+                          }}>
+                            -2 mo
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
                 </div>
-                <p className="text-[11px] text-text-muted mt-1">excl. VAT · cancel anytime</p>
+
+                <div className="flex items-baseline gap-1 flex-wrap">
+                  <span className="text-3xl font-black tracking-tight">
+                    €{billingInterval === 'year' ? PLANS.pro.priceAnnual : PLANS.pro.price}
+                  </span>
+                  <span className="text-sm text-text-muted">
+                    /{billingInterval === 'year' ? 'year' : 'month'}
+                  </span>
+                  {billingInterval === 'year' && (
+                    <span className="text-[11px] font-bold ml-1" style={{ color: 'var(--brand-lime)' }}>
+                      = €{(PLANS.pro.priceAnnual / 12).toFixed(2)}/mo · save €{PLANS.pro.price * 12 - PLANS.pro.priceAnnual}
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-text-muted mt-1">
+                  {billingInterval === 'year'
+                    ? `${PLANS.pro.annualSavingMonths} months free · cancel anytime`
+                    : 'cancel anytime'}
+                </p>
               </div>
 
               {/* Features */}
@@ -346,10 +399,10 @@ export default function SettingsClient({ profile, nextBillingDate, isEmailUser }
                   variant="primary"
                   size="md"
                   loading={checkoutLoading}
-                  onClick={() => startCheckout(setCheckoutLoading)}
+                  onClick={() => startCheckout(setCheckoutLoading, billingInterval)}
                   className="w-full justify-center"
                 >
-                  Get Pro
+                  Get Pro {billingInterval === 'year' ? 'annual' : 'monthly'}
                 </Button>
               </div>
             </div>
