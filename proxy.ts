@@ -23,6 +23,7 @@ const PROTECTED_PAGES = [
   '/analytics',
   '/admin',
   '/checkout',
+  '/product-tour',
 ]
 
 // Auth pages — redirect to /dashboard if already signed in
