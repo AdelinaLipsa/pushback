@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { FolderPlus, ShieldCheck, FileText, Zap, DollarSign } from 'lucide-react'
+import { FolderPlus, ShieldCheck, FileText, Zap, DollarSign, AlertTriangle, MessageSquare } from 'lucide-react'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { DefenseTool, Project } from '@/types'
 import { DEFENSE_TOOLS } from '@/lib/defenseTools'
@@ -302,6 +302,19 @@ function computePaymentPipeline(projects: ProjectWithResponses[]): PipelineItem[
     .sort((a, b) => URGENCY_ORDER[a.urgency] - URGENCY_ORDER[b.urgency])
     .slice(0, 6)
 }
+
+// ---- Four moments quick-nav ----
+const FOUR_MOMENTS: Array<{
+  label: string
+  helper: string
+  href: string
+  Icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string; style?: React.CSSProperties }>
+}> = [
+  { label: 'Vet',     helper: 'Red Flag Detector',   href: '/red-flag',      Icon: AlertTriangle },
+  { label: 'Sign',    helper: 'Analyze a contract',  href: '/contracts/new', Icon: FileText },
+  { label: 'Reply',   helper: 'Defense Dashboard',   href: '/projects',      Icon: MessageSquare },
+  { label: 'Recover', helper: 'Payments & disputes', href: '/projects',      Icon: ShieldCheck },
+]
 
 // ---- Overview stat tile ----
 function StatTile({ label, value, sub, accentColor }: { label: string; value: string | number; sub?: string; accentColor?: string }) {
@@ -807,6 +820,66 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                   })}
                 </div>
               )}
+            </div>
+
+            {/* Four moments quick-nav — discovery card mirroring the product tour
+                architecture. Fills the right column with on-brand navigation. */}
+            <div style={{
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--bg-border)',
+              borderRadius: '0.75rem',
+              padding: '0.875rem 1rem',
+              display: 'flex', flexDirection: 'column', gap: '0.5rem',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>
+                  Four moments
+                </span>
+                <Link
+                  href="/product-tour"
+                  style={{ fontSize: '0.66rem', color: 'var(--text-muted)', textDecoration: 'none', letterSpacing: '0.01em' }}
+                  className="hover:text-text-secondary transition-colors"
+                >
+                  Tour →
+                </Link>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {FOUR_MOMENTS.map(m => (
+                  <Link
+                    key={m.label}
+                    href={m.href}
+                    className="group hover:bg-bg-elevated"
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '0.6rem',
+                      padding: '0.45rem 0.4rem',
+                      margin: '0 -0.4rem',
+                      borderRadius: '0.375rem',
+                      textDecoration: 'none',
+                      transition: 'background-color 150ms ease',
+                    }}
+                  >
+                    <m.Icon
+                      size={13}
+                      strokeWidth={1.75}
+                      className="shrink-0 text-text-muted transition-colors group-hover:text-brand-lime"
+                    />
+                    <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '0.05rem' }}>
+                      <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.2 }}>
+                        {m.label}
+                      </span>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', lineHeight: 1.2 }}>
+                        {m.helper}
+                      </span>
+                    </div>
+                    <span
+                      className="text-text-muted transition-colors group-hover:text-brand-lime"
+                      style={{ fontSize: '0.75rem', flexShrink: 0 }}
+                    >
+                      →
+                    </span>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>

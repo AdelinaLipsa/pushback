@@ -19,13 +19,36 @@ function barColor(pct: number): string {
 
 function UsageBar({ label, used, limit }: { label: string; used: number; limit: number | null }) {
   const [width, setWidth] = useState(0)
-  const pct = limit === null ? 0 : Math.min(used / limit, 1)
+  const pct = limit === null || limit === 0 ? 0 : Math.min(used / limit, 1)
   const color = limit === null ? '#84cc16' : barColor(pct)
 
   useEffect(() => {
     const t = setTimeout(() => setWidth(pct * 100), 80)
     return () => clearTimeout(t)
   }, [pct])
+
+  // limit=0 means the feature isn't included on the current plan — render as
+  // a "Pro feature" cue instead of a broken N/0 red bar.
+  if (limit === 0) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 500 }}>{label}</span>
+        <Link
+          href="/settings?upgrade=1"
+          style={{
+            fontSize: '0.66rem',
+            color: 'var(--brand-lime)',
+            fontWeight: 600,
+            textDecoration: 'none',
+            letterSpacing: '0.01em',
+          }}
+          className="hover:opacity-80 transition-opacity"
+        >
+          Pro feature →
+        </Link>
+      </div>
+    )
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
