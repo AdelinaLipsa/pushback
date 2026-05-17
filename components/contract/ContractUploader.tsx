@@ -169,11 +169,6 @@ export default function ContractUploader({ projectId }: ContractUploaderProps) {
       >
         {loading ? 'Submitting…' : 'Analyze Contract →'}
       </button>
-
-      <p className="text-text-muted text-[0.75rem] text-center leading-relaxed">
-        Your contract is analyzed securely and only you can access the results.
-      </p>
-
     </form>
   )
 }
